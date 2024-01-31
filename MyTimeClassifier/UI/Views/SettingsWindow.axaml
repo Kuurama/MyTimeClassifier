@@ -2,10 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:MyTimeClassifier.ViewModels"
+        xmlns:viewModels1="clr-namespace:MyTimeClassifier.UI.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="MyTimeClassifier.Views.SettingsWindow"
-        x:DataType="viewModels:SettingsWindowViewModel"
+        x:Class="MyTimeClassifier.UI.Views.SettingsWindow"
+        x:DataType="viewModels1:SettingsWindowViewModel"
         Title="SettingWindow">
     <TextBlock Text="{Binding Greeting}" />
 </Window>

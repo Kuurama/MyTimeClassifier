@@ -1,30 +1,47 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
-namespace MyTimeClassifier.Configuration;
+namespace MyTimeClassifier.Database.Entities;
 
 public sealed class Configuration : INotifyPropertyChanged
 {
-    public static readonly Configuration Instance = new();
+    private const uint MAX_PROGRAM_NAME_LENGTH = 63;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    [Key]
+    private uint m_Id;
+    private List<Job> m_Jobs = [];
 
+    [MaxLength((int)MAX_PROGRAM_NAME_LENGTH)]
     private string m_ProgramName = "MyTimeClassifier";
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public uint Id
+    {
+        get => m_Id;
+        set => SetField(ref m_Id, value);
+    }
+
+    [MaxLength((int)MAX_PROGRAM_NAME_LENGTH)]
     public string ProgramName
     {
         get => m_ProgramName;
         set => SetField(ref m_ProgramName, value);
     }
 
+    public List<Job> Jobs
+    {
+        get => m_Jobs;
+        set => SetField(ref m_Jobs, value);
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

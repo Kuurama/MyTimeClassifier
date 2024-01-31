@@ -3,16 +3,13 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using MyTimeClassifier.Utils;
 
-namespace MyTimeClassifier.Views;
+namespace MyTimeClassifier.UI.Views;
 
 public partial class MainWindow : Window
 {
     public MainWindow()
     {
         InitializeComponent();
-
-        var l_RadialSelector = new RadialSelector(9, null, 450);
-        Body.Children.Add(l_RadialSelector);
     }
 
     ////////////////////////////////////////////////////////////////////////////

@@ -1,16 +1,17 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:MyTimeClassifier.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:configuration="clr-namespace:MyTimeClassifier.Configuration"
         xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
+        xmlns:utils="clr-namespace:MyTimeClassifier.Utils"
+        xmlns:viewModels="clr-namespace:MyTimeClassifier.UI.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         Width="800" Height="600"
-        x:Class="MyTimeClassifier.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:Class="MyTimeClassifier.UI.Views.MainWindow"
+        x:DataType="viewModels:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="{Binding Source={x:Static configuration:Configuration.Instance}, Path=ProgramName}"
+        Title="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
@@ -20,7 +21,7 @@
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel />
+        <viewModels:MainWindowViewModel />
     </Design.DataContext>
 
     <Border BorderBrush="{StaticResource MainBorder}" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
@@ -29,7 +30,7 @@
             <Grid RowDefinitions="40,*" ColumnDefinitions="*, 260">
                 <Grid Name="Header" Row="0" Column="0" ColumnSpan="2"
                       Background="{StaticResource MainHeavy}">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:Configuration.Instance}, Path=ProgramName}"
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" FontSize="20" Foreground="{StaticResource TextColor}" />
                     <StackPanel Name="WindowControls" Orientation="Horizontal" Spacing="15"
@@ -50,8 +51,9 @@
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Settings" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 </Grid>
 
-                <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}" />
-
+                <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}">
+                    <utils:RadialSelector ButtonCount="9" Radius="450" IsMinimalistic="True" SpacingAngle="40" Colors="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs/FillColor}" />
+                </Grid>
             </Grid>
         </Border>
     </Border>

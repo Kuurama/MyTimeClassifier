@@ -9,21 +9,46 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Database\Structs\"/>
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
+        <Folder Include="UI\Models\"/>
     </ItemGroup>
 
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.6"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.6"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.6"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.6"/>
+        <PackageReference Include="Avalonia" Version="11.0.7"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.7"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.7"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6"/>
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.7"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.5.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1"/>
         <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.0.1"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Views\MainWindow.axaml"/>
+        <UpToDateCheckInput Remove="Views\SettingsWindow.axaml"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <AdditionalFiles Include="UI\Views\MainWindow.axaml"/>
+        <AdditionalFiles Include="UI\Views\SettingsWindow.axaml"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Compile Update="UI\App.axaml.cs">
+            <DependentUpon>App.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

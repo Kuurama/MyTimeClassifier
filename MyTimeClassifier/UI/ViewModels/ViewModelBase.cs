@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace MyTimeClassifier.ViewModels;
+namespace MyTimeClassifier.UI.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using MyTimeClassifier.ViewModels;
+using MyTimeClassifier.UI.ViewModels;
 using System;
 
 namespace MyTimeClassifier.Utils;

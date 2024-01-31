@@ -1,9 +1,9 @@
-﻿using MyTimeClassifier.Views;
+﻿using MyTimeClassifier.UI.Views;
 using ReactiveUI;
 using System;
 using System.Windows.Input;
 
-namespace MyTimeClassifier.ViewModels;
+namespace MyTimeClassifier.UI.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {

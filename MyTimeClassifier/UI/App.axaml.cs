@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using MyTimeClassifier.ViewModels;
-using MyTimeClassifier.Views;
+using MyTimeClassifier.UI.ViewModels;
+using MyTimeClassifier.UI.Views;
 
-namespace MyTimeClassifier;
+namespace MyTimeClassifier.UI;
 
 public class App : Application
 {
