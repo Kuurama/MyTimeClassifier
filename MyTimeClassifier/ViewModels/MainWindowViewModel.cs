@@ -1,3 +1,20 @@
-﻿namespace MyTimeClassifier.ViewModels;
+﻿using MyTimeClassifier.Views;
+using ReactiveUI;
+using System;
+using System.Windows.Input;
 
-public class MainWindowViewModel : ViewModelBase;
+namespace MyTimeClassifier.ViewModels;
+
+public class MainWindowViewModel : ViewModelBase
+{
+    public ICommand StatsCommand   { get; } = ReactiveCommand.Create(() => Console.WriteLine("StatsCommand invoked"));
+    public ICommand HistoryCommand { get; } = ReactiveCommand.Create(() => Console.WriteLine("HistoryCommand invoked"));
+    public ICommand SettingsCommand { get; } = ReactiveCommand.Create(() =>
+    {
+        var l_SettingsWindow = new SettingsWindow
+        {
+            DataContext = new SettingsWindowViewModel()
+        };
+        l_SettingsWindow.Show();
+    });
+}

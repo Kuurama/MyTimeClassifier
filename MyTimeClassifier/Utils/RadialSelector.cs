@@ -1,129 +1,103 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
+using Avalonia.Layout;
+using Avalonia.Media;
+using System;
 
 namespace MyTimeClassifier.Utils;
 
-using Avalonia.Controls;
-using Avalonia.Media;
-using System;
-using System.Collections.Generic;
-
 public class RadialSelector : Canvas
 {
-    private readonly List<Panel> m_Elements = [];
-
-    public RadialSelector(int p_ButtonCount, double p_Radius)
+    public RadialSelector(int p_ButtonCount, Action[]? p_ButtonActions, double p_Radius, bool p_IsMinimalistic = true, float p_SpacingRatio = 0)
     {
-        for (var l_I = 0; l_I < p_ButtonCount; l_I++)
+        if (p_ButtonActions is not null && p_ButtonCount != p_ButtonActions.Length)
+            throw new ArgumentException("The number of buttons must match the number of actions.");
+
+        HorizontalAlignment = HorizontalAlignment.Center;
+        VerticalAlignment   = VerticalAlignment.Center;
+        Width               = p_Radius;
+        Height              = p_Radius;
+
+        var l_AngleStep   = 360.0       / p_ButtonCount;
+        var l_AngleOffset = l_AngleStep / p_ButtonCount;
+
+        for (uint l_I = 0; l_I < p_ButtonCount; l_I++)
         {
-            // Create the Button
-            var button = new Button
+            var l_StartAngle = l_I * l_AngleStep;
+
+            if (p_ButtonCount % 2 != 0)
             {
-                Width      = 50,
-                Height     = 50,
-                Background = Brushes.LightBlue,
+                l_StartAngle += l_AngleStep / 2;
+            }
+
+            var l_Path = new IdentifiablePath
+            {
+                Id              = l_I,
+                Stroke          = Brushes.Gray,
+                StrokeThickness = 4,
+                Fill            = Brushes.WhiteSmoke,
+                Data            = CreateArcPathData(l_StartAngle, l_AngleStep - l_AngleOffset, p_Radius / 2)
             };
 
-            // Create the outer Ellipse
-            var outerEllipse = new Ellipse
-            {
-                Width           = button.Width,
-                Height          = button.Height,
-                Fill            = Brushes.Transparent,
-                StrokeThickness = 0,
-                OpacityMask = new LinearGradientBrush
-                {
-                    StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                    EndPoint   = new RelativePoint(0, 1, RelativeUnit.Relative),
-                    GradientStops =
-                    {
-                        new GradientStop(Colors.Black, 0),
-                        new GradientStop(Colors.Transparent, 1)
-                    },
-                },
-            };
-
-            // Create the inner Ellipse
-            var innerEllipse = new Ellipse
-            {
-                Width           = button.Width  * 0.8,
-                Height          = button.Height * 0.8,
-                Fill            = Brushes.Transparent,
-                StrokeThickness = 0,
-                OpacityMask = new LinearGradientBrush
-                {
-                    StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                    EndPoint   = new RelativePoint(0, 1, RelativeUnit.Relative),
-                    GradientStops =
-                    {
-                        new GradientStop(Colors.Transparent, 0),
-                        new GradientStop(Colors.Black, 1)
-                    },
-                },
-            };
-
-            // Create a Grid to hold the Button and the two Ellipses
-            var grid = new Grid();
-            grid.Children.Add(button);
-            grid.Children.Add(outerEllipse);
-            grid.Children.Add(innerEllipse);
-
-            // Create a separate Grid for the VisualBrush
-            var maskGrid = new Grid();
-            maskGrid.Children.Add(new Ellipse
-            {
-                Width           = outerEllipse.Width,
-                Height          = outerEllipse.Height,
-                Fill            = outerEllipse.Fill,
-                StrokeThickness = outerEllipse.StrokeThickness,
-                OpacityMask     = outerEllipse.OpacityMask,
-            });
-            maskGrid.Children.Add(new Ellipse
-            {
-                Width           = innerEllipse.Width,
-                Height          = innerEllipse.Height,
-                Fill            = innerEllipse.Fill,
-                StrokeThickness = innerEllipse.StrokeThickness,
-                OpacityMask     = innerEllipse.OpacityMask,
-            });
-
-            // Create a Rectangle with a VisualBrush as its Fill
-            var maskRectangle = new Rectangle
-            {
-                Width  = button.Width,
-                Height = button.Height,
-                Fill = new VisualBrush
-                {
-                    Visual = maskGrid,
-                },
-            };
-
-            // Create a Grid to hold the Button and the mask Rectangle
-            var finalGrid = new Grid();
-            finalGrid.Children.Add(button);
-            finalGrid.Children.Add(maskRectangle);
-
-            // Add the Grid to the m_Elements list
-            m_Elements.Add(finalGrid);
-            Children.Add(finalGrid);
+            l_Path.PointerPressed += (p_S, p_E) => Console.WriteLine(((IdentifiablePath)p_S!).Id);
+            Children.Add(l_Path);
         }
-
-        LayoutUpdated += (p_S, p_E) => PositionElementsInCircle(p_Radius);
     }
 
-    private void PositionElementsInCircle(double p_Radius)
+    private static Geometry CreateArcPathData(double p_StartAngle, double p_SweepAngle, double p_Radius, double p_InnerRadiusRatio = 0.5)
     {
-        var l_Center    = new Avalonia.Point(Bounds.Width / 2, Bounds.Height / 2);
-        var l_AngleStep = 360.0 / m_Elements.Count;
+        var l_StartAngleRad = Math.PI * p_StartAngle / 180.0;
+        var l_SweepAngleRad = Math.PI * p_SweepAngle / 180.0;
 
-        for (var l_I = 0; l_I < m_Elements.Count; l_I++)
+        var l_StartX = p_Radius * (1 + Math.Cos(l_StartAngleRad));
+        var l_StartY = p_Radius * (1 + Math.Sin(l_StartAngleRad));
+
+        var l_EndX = p_Radius * (1 + Math.Cos(l_StartAngleRad + l_SweepAngleRad));
+        var l_EndY = p_Radius * (1 + Math.Sin(l_StartAngleRad + l_SweepAngleRad));
+
+        var l_InnerStartX = p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad + l_SweepAngleRad));
+        var l_InnerStartY = p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad + l_SweepAngleRad));
+
+        var l_InnerEndX = p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad));
+        var l_InnerEndY = p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad));
+
+        var l_OuterArcSegment = new ArcSegment
         {
-            var l_Angle = (Math.PI              / 180) * (l_I * l_AngleStep); // Convert to radians
-            var l_X     = l_Center.X + p_Radius * Math.Cos(l_Angle) - m_Elements[l_I].Bounds.Width  / 2;
-            var l_Y     = l_Center.Y + p_Radius * Math.Sin(l_Angle) - m_Elements[l_I].Bounds.Height / 2;
+            Point          = new Point(l_EndX, l_EndY),
+            Size           = new Size(p_Radius, p_Radius),
+            SweepDirection = SweepDirection.Clockwise,
+            IsLargeArc     = p_SweepAngle > 180.0
+        };
 
-            SetLeft(m_Elements[l_I], l_X);
-            SetTop(m_Elements[l_I], l_Y);
-        }
+        var l_InnerArcSegment = new ArcSegment
+        {
+            Point          = new Point(l_InnerEndX, l_InnerEndY),
+            Size           = new Size(p_Radius * p_InnerRadiusRatio, p_Radius * p_InnerRadiusRatio),
+            SweepDirection = SweepDirection.CounterClockwise,
+            IsLargeArc     = p_SweepAngle > 180.0
+        };
+
+        var l_Figure = new PathFigure
+        {
+            StartPoint = new Point(l_StartX, l_StartY),
+            IsClosed   = true
+        };
+        l_Figure.Segments?.Add(l_OuterArcSegment);
+        l_Figure.Segments?.Add(new LineSegment { Point = new Point(l_InnerStartX, l_InnerStartY) });
+        l_Figure.Segments?.Add(l_InnerArcSegment);
+
+        var l_Geometry = new PathGeometry();
+        l_Geometry.Figures?.Add(l_Figure);
+
+        return l_Geometry;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public class IdentifiablePath : Path
+    {
+        public uint Id { get; init; }
     }
 }

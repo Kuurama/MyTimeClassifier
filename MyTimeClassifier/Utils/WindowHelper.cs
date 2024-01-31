@@ -15,6 +15,7 @@ public static class WindowHelper
 
     public static void MinimizeButton_Click(Window p_Window) => p_Window.WindowState = WindowState.Minimized;
 
+
     /*public static void MinimizeButton_Click(object p_Sender, RoutedEventArgs p_RoutedEventArgs)
     {
         if (p_Sender is not Button l_Button)

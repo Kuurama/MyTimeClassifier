@@ -15,11 +15,7 @@
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
         Background="Transparent"
-        TransparencyBackgroundFallback="Transparent"
-        UseLayoutRounding="True"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1">
+        TransparencyBackgroundFallback="Transparent">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -44,19 +40,17 @@
                 </Grid>
 
                 <Grid Name="SideGrid" ColumnDefinitions="auto,*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{StaticResource MainMedium}">
-                    <Button Grid.Row="0" Grid.Column="0" Background="Transparent" avalonia:Attached.Icon="fa-chart-simple" FontSize="50" Foreground="#EF8820" VerticalAlignment="Center" Padding="30, 0" />
+                    <Button Grid.Row="0" Grid.Column="0" Command="{Binding StatsCommand}" Background="Transparent" avalonia:Attached.Icon="fa-chart-simple" FontSize="50" Foreground="#EF8820" VerticalAlignment="Center" Padding="30, 0" />
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="Stats" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-                    <Button Grid.Row="1" Grid.Column="0" Background="Transparent" avalonia:Attached.Icon="fa-database" FontSize="50" Foreground="#197CAE" VerticalAlignment="Center" Padding="30, 0" />
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding HistoryCommand}" Background="Transparent" avalonia:Attached.Icon="fa-database" FontSize="50" Foreground="#197CAE" VerticalAlignment="Center" Padding="30, 0" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="History" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-                    <Button Grid.Row="2" Grid.Column="0" Background="Transparent" avalonia:Attached.Icon="fa-cog" FontSize="50" Foreground="#717085" VerticalAlignment="Center" Padding="30, 0" />
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding SettingsCommand}" Background="Transparent" avalonia:Attached.Icon="fa-cog" FontSize="50" Foreground="#717085" VerticalAlignment="Center" Padding="30, 0" />
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Settings" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 </Grid>
 
-                <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}">
-
-                </Grid>
+                <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}" />
 
             </Grid>
         </Border>
