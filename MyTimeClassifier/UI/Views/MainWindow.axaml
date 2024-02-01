@@ -6,6 +6,7 @@
         xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
         xmlns:utils="clr-namespace:MyTimeClassifier.Utils"
         xmlns:viewModels="clr-namespace:MyTimeClassifier.UI.ViewModels"
+        xmlns:components="clr-namespace:MyTimeClassifier.UI.Components"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         Width="800" Height="600"
         x:Class="MyTimeClassifier.UI.Views.MainWindow"
@@ -52,7 +53,7 @@
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}">
-                    <utils:RadialSelector ButtonCount="9" Radius="450" IsMinimalistic="True" SpacingAngle="40" Colors="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs/FillColor}" />
+                    <components:JobRadialSelector ButtonCount="9" Radius="450" IsMinimalistic="True" SpacingAngle="40" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" />
                 </Grid>
             </Grid>
         </Border>

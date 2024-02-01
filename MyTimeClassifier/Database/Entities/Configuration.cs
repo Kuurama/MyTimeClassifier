@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
@@ -14,7 +15,7 @@ public sealed class Configuration : INotifyPropertyChanged
 
     [Key]
     private uint m_Id;
-    private List<Job> m_Jobs = [];
+    private ObservableCollection<Job> m_Jobs = [];
 
     [MaxLength((int)MAX_PROGRAM_NAME_LENGTH)]
     private string m_ProgramName = "MyTimeClassifier";
@@ -35,7 +36,7 @@ public sealed class Configuration : INotifyPropertyChanged
         set => SetField(ref m_ProgramName, value);
     }
 
-    public List<Job> Jobs
+    public ObservableCollection<Job> Jobs
     {
         get => m_Jobs;
         set => SetField(ref m_Jobs, value);
