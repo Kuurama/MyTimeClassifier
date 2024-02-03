@@ -1,4 +1,5 @@
-﻿using MyTimeClassifier.UI.Views;
+﻿using MyTimeClassifier.Database.Entities;
+using MyTimeClassifier.UI.Views;
 using ReactiveUI;
 using System;
 using System.Windows.Input;
@@ -17,4 +18,9 @@ public class MainWindowViewModel : ViewModelBase
         };
         l_SettingsWindow.Show();
     });
+
+    public Action<Job.JobID> OnJobSelected { get; set; } = p_ID =>
+    {
+        Console.WriteLine("OnJobSelected invoked with ID: " + p_ID);
+    };
 }

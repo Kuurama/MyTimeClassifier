@@ -8,8 +8,9 @@ namespace MyTimeClassifier.Database.Entities;
 
 public class Job : INotifyPropertyChanged
 {
-    private const uint MAX_EMOJI_LENGTH = 63;
-    private const uint MAX_TEXT_LENGTH  = 12;
+    private const uint    MAX_EMOJI_LENGTH = 63;
+    private const uint    MAX_TEXT_LENGTH  = 12;
+    private       IBrush? m_ContentColor;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@ public class Job : INotifyPropertyChanged
 
     private IBrush? m_FillColor;
     [Key]
-    private int m_Id;
+    private JobID m_Id;
     private IBrush? m_StrokeColor;
 
     [MaxLength((int)MAX_TEXT_LENGTH)]
@@ -28,7 +29,7 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public int Id
+    public JobID Id
     {
         get => m_Id;
         set => SetField(ref m_Id, value);
@@ -46,6 +47,12 @@ public class Job : INotifyPropertyChanged
         set => SetField(ref m_FillColor, value);
     }
 
+    public IBrush? ContentColor
+    {
+        get => m_ContentColor;
+        set => SetField(ref m_ContentColor, value);
+    }
+
     [MaxLength((int)MAX_TEXT_LENGTH)]
     public string? Text
     {
@@ -59,6 +66,9 @@ public class Job : INotifyPropertyChanged
         get => m_Emoji;
         set => SetField(ref m_Emoji, value);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -77,4 +87,13 @@ public class Job : INotifyPropertyChanged
         OnPropertyChanged(p_PropertyName);
         return true;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    ///     A unique identifier for a <see cref="Job" />.
+    /// </summary>
+    /// <param name="Id"></param>
+    public readonly record struct JobID(int Id);
 }

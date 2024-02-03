@@ -6,10 +6,11 @@ namespace MyTimeClassifier.Database;
 
 public sealed class AppDbContext : DbContext
 {
+    public AppDbContext() => Database.EnsureCreated();
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public AppDbContext() => Database.EnsureCreated();
     public DbSet<Entities.Configuration> Configurations { get; set; } = null!;
     public DbSet<Job>                    Jobs           { get; set; } = null!;
 
@@ -27,6 +28,12 @@ public sealed class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder p_ModelBuilder)
     {
         p_ModelBuilder.Entity<Job>()
+            .Property(p_E => p_E.Id)
+            .HasConversion(
+                p_JobID => p_JobID.Id,
+                p_Id => new Job.JobID(p_Id));
+
+        p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.FillColor)
             .HasConversion(
                 p_Brush => p_Brush != null
@@ -38,6 +45,16 @@ public sealed class AppDbContext : DbContext
 
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.StrokeColor)
+            .HasConversion(
+                p_Brush => p_Brush != null
+                    ? p_Brush.ToString()
+                    : null,
+                p_StoredString => p_StoredString != null
+                    ? SolidColorBrush.Parse(p_StoredString)
+                    : null);
+
+        p_ModelBuilder.Entity<Job>()
+            .Property(p_E => p_E.ContentColor)
             .HasConversion(
                 p_Brush => p_Brush != null
                     ? p_Brush.ToString()
