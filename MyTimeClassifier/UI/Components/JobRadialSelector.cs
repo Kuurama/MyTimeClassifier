@@ -35,8 +35,8 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<float> ContentScaleProperty =
         AvaloniaProperty.Register<JobRadialSelector, float>(nameof(ContentScale), 1.0f);
 
-    public static readonly StyledProperty<Job.JobID> HoveredJobProperty =
-        AvaloniaProperty.Register<JobRadialSelector, Job.JobID>(nameof(HoveredJobID));
+    public static readonly StyledProperty<Job.JobID> SelectedJobProperty =
+        AvaloniaProperty.Register<JobRadialSelector, Job.JobID>(nameof(SelectedJobID));
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -89,10 +89,10 @@ public class JobRadialSelector : Canvas
         set => SetValue(ContentScaleProperty, value);
     }
 
-    public Job.JobID HoveredJobID
+    public Job.JobID SelectedJobID
     {
-        get => GetValue(HoveredJobProperty);
-        set => SetValue(HoveredJobProperty, value);
+        get => GetValue(SelectedJobProperty);
+        set => SetValue(SelectedJobProperty, value);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -104,11 +104,17 @@ public class JobRadialSelector : Canvas
             p_E.Property != ButtonCountProperty  && p_E.Property != ButtonActionProperty   &&
             p_E.Property != RadiusProperty       && p_E.Property != IsMinimalisticProperty &&
             p_E.Property != SpacingAngleProperty && p_E.Property != JobsProperty           &&
-            p_E.Property != ContentScaleProperty)
+            p_E.Property != ContentScaleProperty && p_E.Property != SelectedJobProperty)
             return;
 
+        ClearVisual();
         Render();
     }
+
+    /// <summary>
+    ///     Remove all the visual elements from the Canvas's children, leaving them free for the garbage collector
+    /// </summary>
+    private void ClearVisual() => Children.Clear();
 
     private void Render()
     {
@@ -174,6 +180,28 @@ public class JobRadialSelector : Canvas
             VerticalAlignment   = VerticalAlignment.Center,
             Spacing             = 5
         };
+
+        /* Make the Select circle */
+        if (Jobs.Count != 0 && SelectedJobID == Jobs[(int)p_I % Jobs.Count].Id)
+        {
+            var l_SelectCirclePos = new Point(
+                Radius / 2 * (1 + 0.4d * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
+                Radius / 2 * (1 + 0.4d * Math.Sin(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))));
+
+            var l_SelectCircle = new Ellipse
+            {
+                Width           = 20,
+                Height          = 20,
+                Fill            = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].FillColor : Brushes.White,
+                Stroke          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].StrokeColor : Brushes.AntiqueWhite,
+                StrokeThickness = 3
+            };
+
+            SetLeft(l_SelectCircle, l_SelectCirclePos.X - l_SelectCircle.Width  / 2);
+            SetTop(l_SelectCircle, l_SelectCirclePos.Y  - l_SelectCircle.Height / 2);
+
+            Children.Add(l_SelectCircle);
+        }
 
         /// FontAwesomeIcon to display the emoji
         var l_FontAwesomeIcon = new Icon

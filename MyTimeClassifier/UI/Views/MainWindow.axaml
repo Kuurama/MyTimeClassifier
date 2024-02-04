@@ -52,7 +52,7 @@
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}">
-                    <components:JobRadialSelector Margin="15" ButtonCount="9" Radius="520" IsMinimalistic="True" SpacingAngle="40" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
+                    <components:JobRadialSelector Name="JobSelector" Margin="15" ButtonCount="9" Radius="520" IsMinimalistic="True" SpacingAngle="40" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
                                                   ButtonAction="{Binding OnJobSelected}" ContentScale="1.2" />
                 </Grid>
             </Grid>
