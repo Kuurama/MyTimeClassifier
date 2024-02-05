@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using MyTimeClassifier.UI.Views;
 
 namespace MyTimeClassifier.UI;
@@ -16,4 +17,6 @@ public class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    public void ChangeTheme(ThemeVariant p_ThemeVariant) => RequestedThemeVariant = p_ThemeVariant;
 }

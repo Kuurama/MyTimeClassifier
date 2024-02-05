@@ -20,6 +20,8 @@ public sealed class Configuration : INotifyPropertyChanged
     [MaxLength((int)MAX_PROGRAM_NAME_LENGTH)]
     private string m_ProgramName = "MyTimeClassifier";
 
+    private bool m_UseLightTheme;
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -34,6 +36,12 @@ public sealed class Configuration : INotifyPropertyChanged
     {
         get => m_ProgramName;
         set => SetField(ref m_ProgramName, value);
+    }
+
+    public bool UseLightTheme
+    {
+        get => m_UseLightTheme;
+        set => SetField(ref m_UseLightTheme, value);
     }
 
     public ObservableCollection<Job> Jobs

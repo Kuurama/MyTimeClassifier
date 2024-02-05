@@ -21,4 +21,11 @@
         </ResourceDictionary>
     </Application.Resources>
 
+    <Application.Styles>
+        <StyleInclude Source="/Style/Button.axaml" />
+        <StyleInclude Source="/Style/CheckBox.axaml" />
+        <StyleInclude Source="/Style/TextBlock.axaml" />
+        <StyleInclude Source="/Style/TextBox.axaml" />
+    </Application.Styles>
+
 </Application>

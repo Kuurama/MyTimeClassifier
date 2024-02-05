@@ -2,10 +2,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels1="clr-namespace:MyTimeClassifier.UI.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:viewModels="clr-namespace:MyTimeClassifier.UI.ViewModels"
+        xmlns:configuration="clr-namespace:MyTimeClassifier.Configuration"
+        xmlns:avalonia="https://github.com/projektanker/icons.avalonia"
+        mc:Ignorable="d"
         x:Class="MyTimeClassifier.UI.Views.SettingsWindow"
-        x:DataType="viewModels1:SettingsWindowViewModel"
-        Title="SettingWindow">
-    <TextBlock Text="{Binding Greeting}" />
+        x:DataType="viewModels:SettingsWindowViewModel"
+        Title="SettingWindow"
+        SizeToContent="WidthAndHeight"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyBackgroundFallback="Transparent">
+
+    <Design.DataContext>
+        <viewModels:SettingsWindowViewModel />
+    </Design.DataContext>
+
+    <Border BorderBrush="{DynamicResource MainBorder}" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
+        <!-- It is necessary to have another border to prevent clipping -->
+        <Border CornerRadius="16" ClipToBounds="True">
+            <Grid RowDefinitions="*,*" Background="{DynamicResource MainLight}">
+                <Grid Name="Header" ColumnDefinitions="*,*,*" Background="{DynamicResource MainHeavy}">
+                    <TextBlock Grid.Column="0" Text="Settings"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
+                               FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
+                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" Foreground="{DynamicResource TextColor}" />
+                </Grid>
+
+                <Grid Name="Body" Row="1" Margin="15" Background="{DynamicResource MainLight}">
+                    <StackPanel Name="ContentStackPanel" Orientation="Vertical" Margin="0,0,0,10" Spacing="5" HorizontalAlignment="Left">
+                        <TextBlock Text="General" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" />
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <!-- Make a TextBlock that binds to the static instance of the app configuration then programName -->
+                            <TextBlock Text="Program name:" VerticalAlignment="Center" />
+                            <TextBox Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <TextBlock Text="Appearance" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0" />
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Spacing="5">
+                                <TextBlock Text="Use Light Theme:" VerticalAlignment="Center" />
+                                <CheckBox Content="Use Light Theme" IsChecked="{Binding UseLightTheme}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Border>
+
 </Window>

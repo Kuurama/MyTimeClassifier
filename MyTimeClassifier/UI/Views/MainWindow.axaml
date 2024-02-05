@@ -7,11 +7,11 @@
         xmlns:viewModels="clr-namespace:MyTimeClassifier.UI.ViewModels"
         xmlns:components="clr-namespace:MyTimeClassifier.UI.Components"
         mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
         x:Class="MyTimeClassifier.UI.Views.MainWindow"
         x:DataType="viewModels:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
+        SizeToContent="WidthAndHeight"
         CanResize="False"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
@@ -19,39 +19,37 @@
         TransparencyBackgroundFallback="Transparent">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
 
-    <Border BorderBrush="{StaticResource MainBorder}" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
+    <Border BorderBrush="{DynamicResource MainBorder}" ZIndex="0" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
         <!-- It is necessary to have another border to prevent clipping -->
-        <Border CornerRadius="20" ClipToBounds="True">
+        <Border CornerRadius="16" ZIndex="1" ClipToBounds="True">
             <Grid RowDefinitions="40,*" ColumnDefinitions="*, 260">
                 <Grid Name="Header" Row="0" Column="0" ColumnSpan="2"
-                      Background="{StaticResource MainHeavy}">
+                      Background="{DynamicResource MainHeavy}">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
-                               FontWeight="ExtraBold" FontSize="20" Foreground="{StaticResource TextColor}" />
+                               FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
                     <StackPanel Name="WindowControls" Orientation="Horizontal" Spacing="15"
                                 HorizontalAlignment="Right" Margin="0, 0, 20, 0">
-                        <Button Background="Transparent" Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-down-left-and-up-right-to-center" FontSize="20" Foreground="{StaticResource TextColor}" />
-                        <Button Background="Transparent" Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" Foreground="{StaticResource TextColor}" />
+                        <Button Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-down-left-and-up-right-to-center" FontSize="20" />
+                        <Button Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" />
                     </StackPanel>
                 </Grid>
 
-                <Grid Name="SideGrid" ColumnDefinitions="auto,*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{StaticResource MainMedium}">
-                    <Button Grid.Row="0" Grid.Column="0" Command="{Binding StatsCommand}" Background="Transparent" avalonia:Attached.Icon="fa-chart-simple" FontSize="50" Foreground="#EF8820" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Stats" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Grid Name="SideGrid" ColumnDefinitions="auto,*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{DynamicResource MainMedium}">
+                    <Button Grid.Row="0" Grid.Column="0" Command="{Binding StatsCommand}" avalonia:Attached.Icon="fa-chart-simple" FontSize="50" Foreground="#EF8820" VerticalAlignment="Center" Padding="30, 0" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Stats" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding HistoryCommand}" Background="Transparent" avalonia:Attached.Icon="fa-database" FontSize="50" Foreground="#197CAE" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="History" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding HistoryCommand}" avalonia:Attached.Icon="fa-database" FontSize="50" Foreground="#197CAE" VerticalAlignment="Center" Padding="30, 0" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="History" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding SettingsCommand}" Background="Transparent" avalonia:Attached.Icon="fa-cog" FontSize="50" Foreground="#717085" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Settings" FontSize="26" FontWeight="ExtraBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <Button Grid.Row="2" Grid.Column="0" Click="OnSettingsButton" avalonia:Attached.Icon="fa-cog" FontSize="50" Foreground="#717085" VerticalAlignment="Center" Padding="30, 0" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Settings" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 </Grid>
 
-                <Grid Name="Body" Row="1" Column="0" Background="{StaticResource MainLight}">
+                <Grid Name="Body" Row="1" Column="0" Background="{DynamicResource MainLight}">
                     <components:JobRadialSelector Name="JobSelector" Margin="15" ButtonCount="9" Radius="520" IsMinimalistic="True" SpacingAngle="40" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
                                                   ButtonAction="{Binding OnJobSelected}" ContentScale="1.2" />
                 </Grid>

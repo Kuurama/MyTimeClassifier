@@ -3,18 +3,22 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key='Light'>
+            <SolidColorBrush x:Key='TextColor'>#21262F</SolidColorBrush>
+            <SolidColorBrush x:Key='MainLight'>#FAFAFA</SolidColorBrush>
+            <SolidColorBrush x:Key='MainMedium'>#F0F0F0</SolidColorBrush>
+            <SolidColorBrush x:Key='MainHeavy'>#E6E6E6</SolidColorBrush>
+            <!-- another color for the MainBorder, not the same as dark theme -->
+            <SolidColorBrush x:Key='MainBorder'>#D9D9D9</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key='Dark'>
             <SolidColorBrush x:Key='TextColor'>#FAFAFA</SolidColorBrush>
             <SolidColorBrush x:Key='MainLight'>#21262F</SolidColorBrush>
             <SolidColorBrush x:Key='MainMedium'>#191E27</SolidColorBrush>
             <SolidColorBrush x:Key='MainHeavy'>#151A23</SolidColorBrush>
-        </ResourceDictionary>
-        <ResourceDictionary x:Key='Dark'>
-            <SolidColorBrush x:Key='MainLight'>#21262F</SolidColorBrush>
-            <SolidColorBrush x:Key='MainMedium'>#191E27</SolidColorBrush>
-            <SolidColorBrush x:Key='MainHeavy'>#151A23</SolidColorBrush>
+
+            <SolidColorBrush x:Key='MainBorder'>#0C89E3</SolidColorBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <SolidColorBrush x:Key='MainBorder'>#0C89E3</SolidColorBrush>
 
 </ResourceDictionary>
