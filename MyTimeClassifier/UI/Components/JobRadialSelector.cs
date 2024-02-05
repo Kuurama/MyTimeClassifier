@@ -18,7 +18,7 @@ public class JobRadialSelector : Canvas
         AvaloniaProperty.Register<JobRadialSelector, int>(nameof(ButtonCount));
 
     public static readonly StyledProperty<Action<Job.JobID>> ButtonActionProperty =
-        AvaloniaProperty.Register<JobRadialSelector, Action<Job.JobID>>(nameof(ButtonAction), p_ID => { });
+        AvaloniaProperty.Register<JobRadialSelector, Action<Job.JobID>>(nameof(ButtonAction), _ => { });
 
     public static readonly StyledProperty<double> RadiusProperty =
         AvaloniaProperty.Register<JobRadialSelector, double>(nameof(Radius));
@@ -41,8 +41,7 @@ public class JobRadialSelector : Canvas
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public JobRadialSelector()
-        => PropertyChanged += RadialSelector_PropertyChanged;
+    public JobRadialSelector() => PropertyChanged += RadialSelector_PropertyChanged;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -288,6 +287,7 @@ public class JobRadialSelector : Canvas
     private void SetButtonPositions((IdentifiablePath Path, StackPanel Panel) p_Button, double p_StartAngle, double p_SweepAngle)
     {
         /// Measure and arrange the StackPanel (So the DesiredSize is set)
+        //BUG: Apparently, on windows this is not working as expected..
         p_Button.Panel.Measure(Size.Infinity);
         p_Button.Panel.Arrange(new Rect(p_Button.Panel.DesiredSize));
 

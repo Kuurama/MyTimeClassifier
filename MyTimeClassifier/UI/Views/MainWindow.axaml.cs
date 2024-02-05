@@ -13,7 +13,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         /* Register the UI related events into the DataContext */
-        DataContext = new MainWindowViewModel(p_ID => JobSelector.SelectedJobID = p_ID);
+        DataContext = new MainWindowViewModel(JobSelector);
     }
 
     ////////////////////////////////////////////////////////////////////////////

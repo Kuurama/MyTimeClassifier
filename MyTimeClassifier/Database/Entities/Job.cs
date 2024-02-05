@@ -95,5 +95,8 @@ public class Job : INotifyPropertyChanged
     ///     A unique identifier for a <see cref="Job" />.
     /// </summary>
     /// <param name="Id"></param>
-    public readonly record struct JobID(int Id);
+    public readonly record struct JobID(int Id)
+    {
+        public static readonly JobID None = new(0);
+    }
 }

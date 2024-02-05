@@ -44,10 +44,9 @@
                         <StackPanel Orientation="Vertical" Spacing="5">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Spacing="5">
                                 <TextBlock Text="Use Light Theme:" VerticalAlignment="Center" />
-                                <CheckBox Content="Use Light Theme" IsChecked="{Binding UseLightTheme}" />
+                                <CheckBox IsChecked="{Binding UseLightTheme}" />
                             </StackPanel>
                         </StackPanel>
-
                     </StackPanel>
                 </Grid>
             </Grid>
