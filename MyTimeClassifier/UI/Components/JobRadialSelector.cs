@@ -9,22 +9,38 @@ using MyTimeClassifier.Utils;
 using Projektanker.Icons.Avalonia;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace MyTimeClassifier.UI.Components;
 
 public class JobRadialSelector : Canvas
 {
+    private Ellipse m_SelectCircle = new()
+    {
+        Width           = 20,
+        Height          = 20,
+        Fill            = Brushes.White,
+        Stroke          = Brushes.AntiqueWhite,
+        StrokeThickness = 3
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public static readonly StyledProperty<float> InnerRadiusRatioProperty =
+        AvaloniaProperty.Register<JobRadialSelector, float>(nameof(InnerRadiusRatio));
+
+    public static readonly StyledProperty<uint> RadiusProperty =
+        AvaloniaProperty.Register<JobRadialSelector, uint>(nameof(RadiusProperty));
+
     public static readonly StyledProperty<int> ButtonCountProperty =
         AvaloniaProperty.Register<JobRadialSelector, int>(nameof(ButtonCount));
 
     public static readonly StyledProperty<Action<Job.JobID>> ButtonActionProperty =
         AvaloniaProperty.Register<JobRadialSelector, Action<Job.JobID>>(nameof(ButtonAction), _ => { });
 
-    public static readonly StyledProperty<double> RadiusProperty =
-        AvaloniaProperty.Register<JobRadialSelector, double>(nameof(Radius));
-
     public static readonly StyledProperty<bool> IsMinimalisticProperty =
-        AvaloniaProperty.Register<JobRadialSelector, bool>(nameof(IsMinimalistic), true);
+        AvaloniaProperty.Register<JobRadialSelector, bool>(nameof(IsMinimalistic));
 
     public static readonly StyledProperty<uint> SpacingAngleProperty =
         AvaloniaProperty.Register<JobRadialSelector, uint>(nameof(SpacingAngle));
@@ -34,6 +50,9 @@ public class JobRadialSelector : Canvas
 
     public static readonly StyledProperty<float> ContentScaleProperty =
         AvaloniaProperty.Register<JobRadialSelector, float>(nameof(ContentScale), 1.0f);
+
+    public static readonly StyledProperty<float> GlobalScaleProperty =
+        AvaloniaProperty.Register<JobRadialSelector, float>(nameof(GlobalScale), 1.0f);
 
     public static readonly StyledProperty<Job.JobID> SelectedJobProperty =
         AvaloniaProperty.Register<JobRadialSelector, Job.JobID>(nameof(SelectedJobID));
@@ -46,6 +65,26 @@ public class JobRadialSelector : Canvas
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    /// <summary>
+    ///     Percentage of the inner radius of each button.
+    ///     Changes this parameter will change how big the hole in the middle of the radial selector is.
+    /// </summary>
+    public float InnerRadiusRatio
+    {
+        get => GetValue(InnerRadiusRatioProperty);
+        set => SetValue(InnerRadiusRatioProperty, value);
+    }
+
+    /// <summary>
+    ///     Percentage of the outer radius bound of each button.
+    ///     Changes this parameter will change how big the buttons are compared to the radial selector size Radius.
+    /// </summary>
+    public uint Radius
+    {
+        get => GetValue(RadiusProperty);
+        set => SetValue(RadiusProperty, value);
+    }
+
     public int ButtonCount
     {
         get => GetValue(ButtonCountProperty);
@@ -56,12 +95,6 @@ public class JobRadialSelector : Canvas
     {
         get => GetValue(ButtonActionProperty);
         set => SetValue(ButtonActionProperty, value);
-    }
-
-    public double Radius
-    {
-        get => GetValue(RadiusProperty);
-        set => SetValue(RadiusProperty, value);
     }
 
     public bool IsMinimalistic
@@ -88,6 +121,12 @@ public class JobRadialSelector : Canvas
         set => SetValue(ContentScaleProperty, value);
     }
 
+    public float GlobalScale
+    {
+        get => GetValue(GlobalScaleProperty);
+        set => SetValue(GlobalScaleProperty, value);
+    }
+
     public Job.JobID SelectedJobID
     {
         get => GetValue(SelectedJobProperty);
@@ -99,19 +138,45 @@ public class JobRadialSelector : Canvas
 
     private void RadialSelector_PropertyChanged(object? p_Sender, AvaloniaPropertyChangedEventArgs p_E)
     {
+        /* Only re-scale the component if prompted to */
+        if (p_E.Property == GlobalScaleProperty)
+        {
+            ApplyScaleTransform();
+            return;
+        }
+
+        /* Make sure it's only re-rendering when necessary */
         if (Radius == 0 || Jobs.Count == 0 ||
-            p_E.Property != ButtonCountProperty  && p_E.Property != ButtonActionProperty   &&
-            p_E.Property != RadiusProperty       && p_E.Property != IsMinimalisticProperty &&
-            p_E.Property != SpacingAngleProperty && p_E.Property != JobsProperty           &&
-            p_E.Property != ContentScaleProperty && p_E.Property != SelectedJobProperty)
+            p_E.Property != ButtonCountProperty      &&
+            p_E.Property != ButtonActionProperty     && p_E.Property != IsMinimalisticProperty &&
+            p_E.Property != SpacingAngleProperty     && p_E.Property != JobsProperty           &&
+            p_E.Property != ContentScaleProperty     && p_E.Property != SelectedJobProperty    &&
+            p_E.Property != InnerRadiusRatioProperty && p_E.Property != RadiusProperty)
             return;
 
+        /* Clear the visual elements and re-render */
         ClearVisual();
         Render();
+
+        /* Apply the transform */
+        ApplyScaleTransform();
+    }
+
+    /// <summary>
+    ///     Make the this component scales from it's center, and apply the global scale.
+    ///     Which doesn't trigger any re-render.
+    /// </summary>
+    private void ApplyScaleTransform()
+    {
+        Width                 = Radius * GlobalScale;
+        Height                = Radius * GlobalScale;
+        RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
+        RenderTransform       = new ScaleTransform(GlobalScale, GlobalScale);
     }
 
     /// <summary>
     ///     Remove all the visual elements from the Canvas's children, leaving them free for the garbage collector
+    ///     Except the select circle, which is always there.
     /// </summary>
     private void ClearVisual() => Children.Clear();
 
@@ -119,8 +184,6 @@ public class JobRadialSelector : Canvas
     {
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;
-        Width               = Radius;
-        Height              = Radius;
 
         var l_AngleStep   = 360.0 / ButtonCount;
         var l_AngleOffset = (ButtonCount & 1) == 0 ? 0 : l_AngleStep / 4;
@@ -162,12 +225,14 @@ public class JobRadialSelector : Canvas
         /* Make the Job button shape */
         var l_Path = new IdentifiablePath
         {
-            Id              = p_I,
-            Stroke          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].StrokeColor : Brushes.AntiqueWhite,
-            StrokeThickness = 4,
-            Fill            = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].FillColor : Brushes.White,
-            Data            = CreateArcPathData(p_StartAngle, p_SweepAngle, Radius / 2, 0.5d),
-            Cursor          = new Cursor(StandardCursorType.Arrow)
+            Id                  = p_I,
+            Stroke              = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].StrokeColor : Brushes.AntiqueWhite,
+            StrokeThickness     = 4,
+            Fill                = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].FillColor : Brushes.White,
+            Data                = CreateArcPathData(0, 0, p_StartAngle, p_SweepAngle, (double)Radius / 2, InnerRadiusRatio),
+            Cursor              = new Cursor(StandardCursorType.Arrow),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
         };
 
         /* Make the content of the buttons */
@@ -184,8 +249,8 @@ public class JobRadialSelector : Canvas
         if (Jobs.Count != 0 && SelectedJobID == Jobs[(int)p_I % Jobs.Count].Id)
         {
             var l_SelectCirclePos = new Point(
-                Radius / 2 * (1 + 0.4d * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
-                Radius / 2 * (1 + 0.4d * Math.Sin(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))));
+                (double)Radius / 2 * (1 + 0.4d * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
+                (double)Radius / 2 * (1 + 0.4d * Math.Sin(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))));
 
             var l_SelectCircle = new Ellipse
             {
@@ -222,7 +287,8 @@ public class JobRadialSelector : Canvas
             VerticalAlignment   = VerticalAlignment.Center,
             Foreground          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].ContentColor : Brushes.Black,
             FontSize            = 15 * ContentScale,
-            FontWeight          = FontWeight.Medium
+            FontWeight          = FontWeight.Medium,
+            IsVisible           = !IsMinimalistic
         };
 
         /* Color change effect to the content */
@@ -292,7 +358,7 @@ public class JobRadialSelector : Canvas
         p_Button.Panel.Arrange(new Rect(p_Button.Panel.DesiredSize));
 
         /// Calculate the center position of the button (So it's in the center of the arc shaped button)
-        var l_CenterPos = CalculateCenterPosition(Radius / 2, 0.5d * Radius / 2, p_StartAngle + p_SweepAngle / 2, Width, Height);
+        var l_CenterPos = CalculateCenterPosition((float)Radius / 2, InnerRadiusRatio * Radius / 2, p_StartAngle + p_SweepAngle / 2, Radius, Radius);
 
         SetLeft(p_Button.Panel, l_CenterPos.X - p_Button.Panel.DesiredSize.Width  / 2);
         SetTop(p_Button.Panel, l_CenterPos.Y  - p_Button.Panel.DesiredSize.Height / 2);
@@ -340,7 +406,7 @@ public class JobRadialSelector : Canvas
     /// <param name="p_Radius">The radius of the arc.</param>
     /// <param name="p_InnerRadiusRatio">The inner radius ratio of the arc.</param>
     /// <returns>The created path geometry.</returns>
-    private static PathGeometry CreateArcPathData(double p_StartAngle, double p_SweepAngle, double p_Radius, double p_InnerRadiusRatio)
+    private static PathGeometry CreateArcPathData(double p_OffsetX, double p_OffsetY, double p_StartAngle, double p_SweepAngle, double p_Radius, double p_InnerRadiusRatio)
     {
         var l_StartAngleRad = ToRadians(p_StartAngle);
         var l_SweepAngleRad = ToRadians(p_SweepAngle);
@@ -348,20 +414,20 @@ public class JobRadialSelector : Canvas
         var l_IsLargeArc    = p_SweepAngle > 180.0;
 
         var l_StartPoint = new Point(
-            p_Radius * (1 + Math.Cos(l_StartAngleRad)),
-            p_Radius * (1 + Math.Sin(l_StartAngleRad)));
+            p_OffsetX + p_Radius * (1 + Math.Cos(l_StartAngleRad)),
+            p_OffsetX + p_Radius * (1 + Math.Sin(l_StartAngleRad)));
 
         var l_EndPoint = new Point(
-            p_Radius * (1 + Math.Cos(l_StartAngleRad + l_SweepAngleRad)),
-            p_Radius * (1 + Math.Sin(l_StartAngleRad + l_SweepAngleRad)));
+            p_OffsetX + p_Radius * (1 + Math.Cos(l_StartAngleRad + l_SweepAngleRad)),
+            p_OffsetX + p_Radius * (1 + Math.Sin(l_StartAngleRad + l_SweepAngleRad)));
 
         var l_InnerStartPoint = new Point(
-            p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad + l_SweepAngleRad)),
-            p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad + l_SweepAngleRad)));
+            p_OffsetX + p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad + l_SweepAngleRad)),
+            p_OffsetX + p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad + l_SweepAngleRad)));
 
         var l_InnerEndPoint = new Point(
-            p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad)),
-            p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad)));
+            p_OffsetX + p_Radius * (1 + p_InnerRadiusRatio * Math.Cos(l_StartAngleRad)),
+            p_OffsetX + p_Radius * (1 + p_InnerRadiusRatio * Math.Sin(l_StartAngleRad)));
 
         var l_Figure = new PathFigure
         {

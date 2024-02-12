@@ -7,8 +7,14 @@ public static class DefaultConfiguration
 {
     public static readonly Database.Entities.Configuration s_Configuration = new()
     {
-        ProgramName   = "MyTimeClassifier",
-        UseLightTheme = false,
+        ProgramName          = "MyTimeClassifier",
+        InnerRadiusRatio     = 0.5f,
+        RadialSelectorRadius = 520,
+        UseLightTheme        = false,
+        IsMinimalistic       = false,
+        SpacingAngle         = 40,
+        RadialContentScale   = 1.2f,
+        GlobalScale          = 1.0f,
         Jobs =
         [
             new Job

@@ -12,7 +12,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
         SizeToContent="WidthAndHeight"
-        CanResize="False"
+        CanResize="True"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
         Background="Transparent"
@@ -25,7 +25,7 @@
     <Border BorderBrush="{DynamicResource MainBorder}" ZIndex="0" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
         <!-- It is necessary to have another border to prevent clipping -->
         <Border CornerRadius="16" ZIndex="1" ClipToBounds="True">
-            <Grid RowDefinitions="40,*" ColumnDefinitions="*, 260">
+            <Grid RowDefinitions="40,*" ColumnDefinitions="*, *">
                 <Grid Name="Header" Row="0" Column="0" ColumnSpan="2"
                       Background="{DynamicResource MainHeavy}">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
@@ -38,25 +38,103 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Name="SideGrid" ColumnDefinitions="auto,*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{DynamicResource MainMedium}">
-                    <Button Grid.Row="0" Grid.Column="0" Command="{Binding StatsCommand}" avalonia:Attached.Icon="fa-chart-simple" FontSize="50" Foreground="#EF8820" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Stats" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Grid Name="SideGrid" ColumnDefinitions="*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{DynamicResource MainMedium}">
 
-                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding HistoryCommand}" avalonia:Attached.Icon="fa-database" FontSize="50" Foreground="#197CAE" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="History" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
+                        <Button Command="{Binding StatsCommand}" avalonia:Attached.Icon="fa-chart-simple" Foreground="#EF8820">
+                            <Button.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="50" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </Button.FontSize>
+                        </Button>
+                        <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="26" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </TextBlock>
+                    </StackPanel>
 
-                    <Button Grid.Row="2" Grid.Column="0" Click="OnSettingsButton" avalonia:Attached.Icon="fa-cog" FontSize="50" Foreground="#717085" VerticalAlignment="Center" Padding="30, 0" />
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Settings" FontSize="26" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
+                        <Button Command="{Binding HistoryCommand}" avalonia:Attached.Icon="fa-database" Foreground="#197CAE">
+                            <Button.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="50" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </Button.FontSize>
+                        </Button>
+                        <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="26" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
+                        <Button Click="OnSettingsButton" avalonia:Attached.Icon="fa-cog" Foreground="#717085">
+                            <Button.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="50" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </Button.FontSize>
+                        </Button>
+                        <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="26" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </TextBlock>
+                    </StackPanel>
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{DynamicResource MainLight}">
-                    <components:JobRadialSelector Name="JobSelector" Margin="15" ButtonCount="9" Radius="520" IsMinimalistic="True" SpacingAngle="40" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
-                                                  ButtonAction="{Binding OnJobSelected}" ContentScale="1.2" />
+                    <components:JobRadialSelector Name="JobSelector" Margin="15" ButtonCount="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs.Count}"
+                                                  Radius="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}"
+                                                  GlobalScale="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=GlobalScale}"
+                                                  Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
+                                                  IsMinimalistic="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}"
+                                                  SpacingAngle="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=SpacingAngle}"
+                                                  ButtonAction="{Binding OnJobSelected}"
+                                                  ContentScale="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}"
+                                                  InnerRadiusRatio="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical" Spacing="5" IsVisible="{Binding JobIsSelected}">
-                        <TextBlock Text="Elapsed Time:" FontSize="16" FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" />
-                        <TextBlock Text="{Binding CurrentClock.CurrentTime}" FontWeight="ExtraBold" FontSize="19" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Elapsed Time:" FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="16" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </TextBlock>
+                        <TextBlock Text="{Binding CurrentClock.CurrentTime}" FontWeight="ExtraBold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                    <Binding Source="19" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
+                <Thumb Grid.Row="1" Grid.Column="1" ZIndex="10" Name="ResizeGrip" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" DragDelta="ResizeGrip_OnDragDelta">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <Border Background="Red" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
             </Grid>
         </Border>
     </Border>

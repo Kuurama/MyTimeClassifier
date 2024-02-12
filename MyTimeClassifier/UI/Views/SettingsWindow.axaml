@@ -32,19 +32,40 @@
                 </Grid>
 
                 <Grid Name="Body" Row="1" Margin="15" Background="{DynamicResource MainLight}">
-                    <StackPanel Name="ContentStackPanel" Orientation="Vertical" Margin="0,0,0,10" Spacing="5" HorizontalAlignment="Left">
+                    <StackPanel Name="ContentStackPanel" Orientation="Vertical" Spacing="5" HorizontalAlignment="Left">
                         <TextBlock Text="General" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" />
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <!-- Make a TextBlock that binds to the static instance of the app configuration then programName -->
                             <TextBlock Text="Program name:" VerticalAlignment="Center" />
                             <TextBox Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}" VerticalAlignment="Center" />
                         </StackPanel>
-
                         <TextBlock Text="Appearance" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0" />
                         <StackPanel Orientation="Vertical" Spacing="5">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Spacing="5">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="Use Light Theme:" VerticalAlignment="Center" />
                                 <CheckBox IsChecked="{Binding UseLightTheme}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="Radial Selector" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0" />
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Radius:" VerticalAlignment="Center" />
+                                <Slider Minimum="100" Maximum="1000" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}" Width="180" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Spacing Angle:" VerticalAlignment="Center" />
+                                <Slider Minimum="0" Maximum="360" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=SpacingAngle}" Width="180" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Inner radius ratio:" VerticalAlignment="Center" />
+                                <Slider Minimum="0" Maximum="1" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}" Width="180" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Content Scale:" VerticalAlignment="Center" />
+                                <Slider Minimum="0.1" Maximum="4" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}" Width="180" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Is Minimalistic:" VerticalAlignment="Center" />
+                                <CheckBox IsChecked="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}" />
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
