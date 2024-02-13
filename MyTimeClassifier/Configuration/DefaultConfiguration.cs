@@ -5,6 +5,8 @@ namespace MyTimeClassifier.Configuration;
 
 public static class DefaultConfiguration
 {
+    public const uint AUTO_SAVE_INTERVAL_SECONDS = 60 * 10;
+
     public static readonly float s_MinimumGlobalScale = 0.2f;
     public static readonly float s_MaximumGlobalScale = 2.0f;
 
@@ -13,6 +15,7 @@ public static class DefaultConfiguration
 
     public static readonly Database.Entities.Configuration s_Configuration = new
     (
+        default(uint),
         "MyTimeClassifier",
         450,
         0.5f,
@@ -26,7 +29,6 @@ public static class DefaultConfiguration
         [
             new Job
             (
-                new Job.JobID(1),
                 "Reading",
                 "fa-solid fa-book-open",
                 new SolidColorBrush(Color.Parse("#ffff57")),
@@ -35,7 +37,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(2),
                 "Teaching",
                 "fa-solid fa-chalkboard-teacher",
                 new SolidColorBrush(Color.Parse("#7d66d9")),
@@ -44,7 +45,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(3),
                 "Working",
                 "fa-solid fa-laptop-code",
                 new SolidColorBrush(Color.Parse("#ec6142")),
@@ -53,7 +53,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(4),
                 "Movies",
                 "fa-solid fa-photo-film",
                 new SolidColorBrush(Color.Parse("#ae8c7e")),
@@ -62,7 +61,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(5),
                 "Meeting",
                 "fa-solid fa-people-group",
                 new SolidColorBrush(Color.Parse("#b658c4")),
@@ -71,7 +69,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(6),
                 "Coffee",
                 "fa-solid fa-coffee",
                 new SolidColorBrush(Color.Parse("#717d79")),
@@ -80,7 +77,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(7),
                 "Preparing",
                 "fa-solid fa-clipboard-list",
                 new SolidColorBrush(Color.Parse("#ec5a72")),
@@ -89,7 +85,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(8),
                 "Chilling",
                 "fa-solid fa-leaf",
                 new SolidColorBrush(Color.Parse("#33b074")),
@@ -98,7 +93,6 @@ public static class DefaultConfiguration
             ),
             new Job
             (
-                new Job.JobID(9),
                 "Mailing",
                 "fa-solid fa-mail-bulk",
                 new SolidColorBrush(Color.Parse("#ee518a")),

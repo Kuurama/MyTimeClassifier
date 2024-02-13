@@ -19,15 +19,15 @@ public sealed class Configuration : INotifyPropertyChanged
     private uint m_Id;
     private float                     m_InnerRadiusRatio;
     private bool                      m_IsMinimalistic;
-    private ObservableCollection<Job> m_Jobs = [];
+    private ObservableCollection<Job> m_Jobs = new();
 
     [MaxLength((int)MAX_PROGRAM_NAME_LENGTH)]
-    private string m_ProgramName = "MyTimeClassifier";
+    private string m_ProgramName = string.Empty;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    private float m_RadialRadialContentScale;
+    private float m_RadialContentScale;
     private uint  m_RadialSelectorRadius;
     private uint  m_SpacingAngle;
     private float m_TimerScale;
@@ -38,23 +38,10 @@ public sealed class Configuration : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public Configuration()
-    {
-        m_Id                       = DefaultConfiguration.s_Configuration.Id;
-        m_ProgramName              = DefaultConfiguration.s_Configuration.ProgramName;
-        m_RadialSelectorRadius     = DefaultConfiguration.s_Configuration.RadialSelectorRadius;
-        m_InnerRadiusRatio         = DefaultConfiguration.s_Configuration.InnerRadiusRatio;
-        m_UseLightTheme            = DefaultConfiguration.s_Configuration.UseLightTheme;
-        m_IsMinimalistic           = DefaultConfiguration.s_Configuration.IsMinimalistic;
-        m_SpacingAngle             = DefaultConfiguration.s_Configuration.SpacingAngle;
-        m_RadialRadialContentScale = DefaultConfiguration.s_Configuration.RadialContentScale;
-        m_GlobalScale              = DefaultConfiguration.s_Configuration.GlobalScale;
-        m_TimerScale               = DefaultConfiguration.s_Configuration.TimerScale;
-        m_TitleBarScale            = DefaultConfiguration.s_Configuration.TitleBarScale;
-        m_Jobs                     = DefaultConfiguration.s_Configuration.Jobs;
-    }
+    public Configuration() { }
 
-    public Configuration(string                    p_ProgramName,
+    public Configuration(uint                      p_Id,
+                         string                    p_ProgramName,
                          uint                      p_RadialSelectorRadius,
                          float                     p_InnerRadiusRatio,
                          bool                      p_UseLightTheme,
@@ -66,17 +53,18 @@ public sealed class Configuration : INotifyPropertyChanged
                          float                     p_TitleBarScale,
                          ObservableCollection<Job> p_Jobs)
     {
-        ProgramName          = p_ProgramName;
-        RadialSelectorRadius = p_RadialSelectorRadius;
-        InnerRadiusRatio     = p_InnerRadiusRatio;
-        UseLightTheme        = p_UseLightTheme;
-        IsMinimalistic       = p_IsMinimalistic;
-        SpacingAngle         = p_SpacingAngle;
-        RadialContentScale   = p_RadialContentScale;
-        GlobalScale          = p_GlobalScale;
-        TimerScale           = p_TimerScale;
-        TitleBarScale        = p_TitleBarScale;
-        Jobs                 = p_Jobs;
+        m_Id                   = p_Id;
+        m_ProgramName          = p_ProgramName;
+        m_RadialSelectorRadius = p_RadialSelectorRadius;
+        m_InnerRadiusRatio     = p_InnerRadiusRatio;
+        m_UseLightTheme        = p_UseLightTheme;
+        m_IsMinimalistic       = p_IsMinimalistic;
+        m_SpacingAngle         = p_SpacingAngle;
+        m_RadialContentScale   = p_RadialContentScale;
+        m_GlobalScale          = p_GlobalScale;
+        m_TimerScale           = p_TimerScale;
+        m_TitleBarScale        = p_TitleBarScale;
+        m_Jobs                 = p_Jobs;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -121,8 +109,8 @@ public sealed class Configuration : INotifyPropertyChanged
 
     public float RadialContentScale
     {
-        get => m_RadialRadialContentScale;
-        set => SetField(ref m_RadialRadialContentScale, value);
+        get => m_RadialContentScale;
+        set => SetField(ref m_RadialContentScale, value);
     }
 
     public float GlobalScale

@@ -30,8 +30,9 @@ public sealed class AppDbContext : DbContext
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.Id)
             .HasConversion(
-                p_JobID => p_JobID.Id,
-                p_Id => new Job.JobID(p_Id));
+                p_JobID => p_JobID.Value,
+                p_Id => new Job.JobID(p_Id))
+            .ValueGeneratedOnAdd();
 
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.FillColor)

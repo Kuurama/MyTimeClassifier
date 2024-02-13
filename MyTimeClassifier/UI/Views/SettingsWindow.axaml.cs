@@ -26,7 +26,7 @@ public partial class SettingsWindow : Window
     {
         /* Save the settings */
         var l_DbContext = new AppDbContext();
-        l_DbContext.Update(AppConfiguration.StaticCache);
+        l_DbContext.Configurations.Update(AppConfiguration.StaticCache);
         l_DbContext.SaveChanges();
 
         /* Close the window */

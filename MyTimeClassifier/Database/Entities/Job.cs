@@ -1,4 +1,5 @@
 using Avalonia.Media;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,33 +9,26 @@ namespace MyTimeClassifier.Database.Entities;
 
 public class Job : INotifyPropertyChanged
 {
-    private const uint    MAX_EMOJI_LENGTH = 63;
-    private const uint    MAX_TEXT_LENGTH  = 12;
-    private       IBrush? m_ContentColor;
+    private const uint MAX_EMOJI_LENGTH = 63;
+    private const uint MAX_TEXT_LENGTH  = 12;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    [MaxLength((int)MAX_EMOJI_LENGTH)]
+    private IBrush? m_ContentColor;
     private string? m_Emoji;
-
     private IBrush? m_FillColor;
-    [Key]
-    private JobID m_Id;
+    private JobID   m_Id;
     private IBrush? m_StrokeColor;
-
-    [MaxLength((int)MAX_TEXT_LENGTH)]
     private string? m_Text;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public Job()
-        => m_Id = JobID.None;
+    public Job() { }
 
-    public Job(JobID p_Id, string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor)
+    public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor)
     {
-        m_Id           = p_Id;
         m_Text         = p_Text;
         m_Emoji        = p_Emoji;
         m_FillColor    = p_FillColor;
@@ -45,6 +39,7 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    [Key]
     public JobID Id
     {
         get => m_Id;
@@ -110,9 +105,9 @@ public class Job : INotifyPropertyChanged
     /// <summary>
     ///     A unique identifier for a <see cref="Job" />.
     /// </summary>
-    /// <param name="Id"></param>
-    public readonly record struct JobID(uint Id)
+    /// <param name="Value"></param>
+    public readonly record struct JobID(Guid Value)
     {
-        public static readonly JobID None = new(0);
+        public static readonly JobID None = new(Guid.Empty);
     }
 }

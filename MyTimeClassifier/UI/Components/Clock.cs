@@ -7,7 +7,7 @@ namespace MyTimeClassifier.UI.Components;
 public class Clock : INotifyPropertyChanged
 {
     private readonly DispatcherTimer m_DispatcherTimer = new();
-    private readonly uint            m_NextCycleSeconds;
+    private readonly uint            m_NextCycleIntervalSeconds;
 
     private DateTime               m_NextCycle = DateTime.Now.AddHours(1);
     public  EventHandler<DateTime> OnNextCycle = (_, _) => { };
@@ -15,11 +15,11 @@ public class Clock : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public Clock(uint p_NextCycleSeconds)
+    public Clock(uint p_NextCycleIntervalSeconds)
     {
         m_DispatcherTimer.Interval =  TimeSpan.FromSeconds(1);
         m_DispatcherTimer.Tick     += DispatcherTimer_Tick;
-        m_NextCycleSeconds         =  p_NextCycleSeconds;
+        m_NextCycleIntervalSeconds =  p_NextCycleIntervalSeconds;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -48,11 +48,11 @@ public class Clock : INotifyPropertyChanged
         if (l_Now >= m_NextCycle)
         {
             /* If the next cycle is 0, then it's a one-time cycle */
-            if (m_NextCycleSeconds == 0)
+            if (m_NextCycleIntervalSeconds == 0)
                 m_NextCycle = DateTime.Now.AddYears(1);
             else
             {
-                m_NextCycle = DateTime.Now.AddSeconds(m_NextCycleSeconds);
+                m_NextCycle = DateTime.Now.AddSeconds(m_NextCycleIntervalSeconds);
                 OnNextCycle(this, l_Now);
             }
         }

@@ -16,8 +16,6 @@ internal sealed class Program
     public static void Main(string[] p_Args) => BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(p_Args);
 
-    /*TODO: Redo the RadialSelector to have a custom inner radius percentage and outer radius percentage, with fixed dimensions and usage of render scaling to avoid redrawing the whole thing every time */
-
     public static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current.Register<FontAwesomeIconProvider>();
