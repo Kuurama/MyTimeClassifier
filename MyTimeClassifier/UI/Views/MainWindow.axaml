@@ -12,7 +12,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
         SizeToContent="WidthAndHeight"
-        CanResize="True"
+        CanResize="False"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="None"
         Background="Transparent"
