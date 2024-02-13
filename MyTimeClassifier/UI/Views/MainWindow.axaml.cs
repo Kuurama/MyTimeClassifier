@@ -1,8 +1,9 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI.ViewModels;
@@ -19,8 +20,9 @@ public partial class MainWindow : Window
 
         /* Register the UI related events into the DataContext */
         DataContext = new MainWindowViewModel(JobSelector);
-        AvaloniaXamlLoader.Load(this);
         this.FindControl<Thumb>("ResizeGrip")?.AddHandler(Thumb.DragDeltaEvent, ResizeGrip_OnDragDelta);
+
+        ((App?)Application.Current)?.ChangeTheme(AppConfiguration.StaticCache.UseLightTheme ? ThemeVariant.Light : ThemeVariant.Dark);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,9 @@ public partial class MainWindow : Window
     ////////////////////////////////////////////////////////////////////////////
 
     public void OnMinimizeButton(object? p_Sender, RoutedEventArgs _) => WindowHelper.MinimizeButton_Click(this);
-    public void OnCloseButton(object?    p_Sender, RoutedEventArgs _) => WindowHelper.CloseButton_Click(this);
+
+    public void OnCloseButton(object? p_Sender, RoutedEventArgs _) => WindowHelper.CloseButton_Click(this);
+
 
     public void OnSettingsButton(object? p_Sender, RoutedEventArgs _)
     {
@@ -57,7 +61,7 @@ public partial class MainWindow : Window
         /// Ensure that the steps are not too big (to avoid UI Flickering).
         var l_NewScale = l_Config.GlobalScale + Math.Sign(p_E.Vector.X) * (Math.Min(Math.Abs(p_E.Vector.X), 1) / 100);
         /// Ensure that the scale is within the bounds.
-        l_NewScale = Math.Max(0.35f, Math.Min(2.0f, l_NewScale));
+        l_NewScale = Math.Max(DefaultConfiguration.s_MinimumGlobalScale, Math.Min(DefaultConfiguration.s_MaximumGlobalScale, l_NewScale));
 
         if (Math.Abs(l_Config.GlobalScale - l_NewScale) < 0.01)
             return;

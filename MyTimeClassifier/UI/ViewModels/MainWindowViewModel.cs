@@ -1,4 +1,6 @@
-﻿using MyTimeClassifier.Database.Entities;
+﻿using MyTimeClassifier.Configuration;
+using MyTimeClassifier.Database;
+using MyTimeClassifier.Database.Entities;
 using MyTimeClassifier.UI.Components;
 using ReactiveUI;
 using System;
@@ -9,11 +11,6 @@ namespace MyTimeClassifier.UI.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     private bool m_JobIsSelected;
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    private string m_SelectedJobName = string.Empty;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -40,8 +37,17 @@ public class MainWindowViewModel : ViewModelBase
     public JobRadialSelector CurrentJobSelector { get; init; }
     public ICommand          StatsCommand       { get; } = ReactiveCommand.Create(() => Console.WriteLine("StatsCommand invoked"));
     public ICommand          HistoryCommand     { get; } = ReactiveCommand.Create(() => Console.WriteLine("HistoryCommand invoked"));
-    public Clock             CurrentClock       { get; } = new();
-    public bool              JobIsSelected      { get => m_JobIsSelected; set => this.RaiseAndSetIfChanged(ref m_JobIsSelected, value); }
+    public Clock CurrentClock { get; } = new(60 * 10)
+    {
+        /* Save every 10 minutes (60 * 10sec) */
+        OnNextCycle = (_, _) =>
+        {
+            var l_DbContext = new AppDbContext();
+            l_DbContext.Update(AppConfiguration.StaticCache);
+            l_DbContext.SaveChanges();
+        }
+    };
+    public bool JobIsSelected { get => m_JobIsSelected; set => this.RaiseAndSetIfChanged(ref m_JobIsSelected, value); }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

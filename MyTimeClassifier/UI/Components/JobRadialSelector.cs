@@ -9,21 +9,11 @@ using MyTimeClassifier.Utils;
 using Projektanker.Icons.Avalonia;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace MyTimeClassifier.UI.Components;
 
 public class JobRadialSelector : Canvas
 {
-    private Ellipse m_SelectCircle = new()
-    {
-        Width           = 20,
-        Height          = 20,
-        Fill            = Brushes.White,
-        Stroke          = Brushes.AntiqueWhite,
-        StrokeThickness = 3
-    };
-
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -56,6 +46,14 @@ public class JobRadialSelector : Canvas
 
     public static readonly StyledProperty<Job.JobID> SelectedJobProperty =
         AvaloniaProperty.Register<JobRadialSelector, Job.JobID>(nameof(SelectedJobID));
+    private Ellipse m_SelectCircle = new()
+    {
+        Width           = 20,
+        Height          = 20,
+        Fill            = Brushes.White,
+        Stroke          = Brushes.AntiqueWhite,
+        StrokeThickness = 3
+    };
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -249,8 +247,8 @@ public class JobRadialSelector : Canvas
         if (Jobs.Count != 0 && SelectedJobID == Jobs[(int)p_I % Jobs.Count].Id)
         {
             var l_SelectCirclePos = new Point(
-                (double)Radius / 2 * (1 + 0.4d * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
-                (double)Radius / 2 * (1 + 0.4d * Math.Sin(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))));
+                (double)Radius / 2 * (1 + (InnerRadiusRatio - InnerRadiusRatio / 4) * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
+                (double)Radius / 2 * (1 + (InnerRadiusRatio - InnerRadiusRatio / 4) * Math.Sin(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))));
 
             var l_SelectCircle = new Ellipse
             {

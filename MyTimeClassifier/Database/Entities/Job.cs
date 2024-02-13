@@ -29,6 +29,22 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    public Job()
+        => m_Id = JobID.None;
+
+    public Job(JobID p_Id, string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor)
+    {
+        m_Id           = p_Id;
+        m_Text         = p_Text;
+        m_Emoji        = p_Emoji;
+        m_FillColor    = p_FillColor;
+        m_StrokeColor  = p_StrokeColor;
+        m_ContentColor = p_ContentColor;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     public JobID Id
     {
         get => m_Id;

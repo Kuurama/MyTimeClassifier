@@ -1,3 +1,7 @@
+using Avalonia;
+using Avalonia.Styling;
+using MyTimeClassifier.Configuration;
+using MyTimeClassifier.UI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,8 +30,54 @@ public sealed class Configuration : INotifyPropertyChanged
     private float m_RadialRadialContentScale;
     private uint  m_RadialSelectorRadius;
     private uint  m_SpacingAngle;
+    private float m_TimerScale;
+    private float m_TitleBarScale;
 
     private bool m_UseLightTheme;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public Configuration()
+    {
+        m_Id                       = DefaultConfiguration.s_Configuration.Id;
+        m_ProgramName              = DefaultConfiguration.s_Configuration.ProgramName;
+        m_RadialSelectorRadius     = DefaultConfiguration.s_Configuration.RadialSelectorRadius;
+        m_InnerRadiusRatio         = DefaultConfiguration.s_Configuration.InnerRadiusRatio;
+        m_UseLightTheme            = DefaultConfiguration.s_Configuration.UseLightTheme;
+        m_IsMinimalistic           = DefaultConfiguration.s_Configuration.IsMinimalistic;
+        m_SpacingAngle             = DefaultConfiguration.s_Configuration.SpacingAngle;
+        m_RadialRadialContentScale = DefaultConfiguration.s_Configuration.RadialContentScale;
+        m_GlobalScale              = DefaultConfiguration.s_Configuration.GlobalScale;
+        m_TimerScale               = DefaultConfiguration.s_Configuration.TimerScale;
+        m_TitleBarScale            = DefaultConfiguration.s_Configuration.TitleBarScale;
+        m_Jobs                     = DefaultConfiguration.s_Configuration.Jobs;
+    }
+
+    public Configuration(string                    p_ProgramName,
+                         uint                      p_RadialSelectorRadius,
+                         float                     p_InnerRadiusRatio,
+                         bool                      p_UseLightTheme,
+                         bool                      p_IsMinimalistic,
+                         uint                      p_SpacingAngle,
+                         float                     p_RadialContentScale,
+                         float                     p_GlobalScale,
+                         float                     p_TimerScale,
+                         float                     p_TitleBarScale,
+                         ObservableCollection<Job> p_Jobs)
+    {
+        ProgramName          = p_ProgramName;
+        RadialSelectorRadius = p_RadialSelectorRadius;
+        InnerRadiusRatio     = p_InnerRadiusRatio;
+        UseLightTheme        = p_UseLightTheme;
+        IsMinimalistic       = p_IsMinimalistic;
+        SpacingAngle         = p_SpacingAngle;
+        RadialContentScale   = p_RadialContentScale;
+        GlobalScale          = p_GlobalScale;
+        TimerScale           = p_TimerScale;
+        TitleBarScale        = p_TitleBarScale;
+        Jobs                 = p_Jobs;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -48,7 +98,19 @@ public sealed class Configuration : INotifyPropertyChanged
     public bool UseLightTheme
     {
         get => m_UseLightTheme;
-        set => SetField(ref m_UseLightTheme, value);
+        set
+        {
+            SetField(ref m_UseLightTheme, value);
+
+            try
+            {
+                ((App?)Application.Current)?.ChangeTheme(AppConfiguration.StaticCache.UseLightTheme ? ThemeVariant.Light : ThemeVariant.Dark);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
     }
 
     public ObservableCollection<Job> Jobs
@@ -93,6 +155,18 @@ public sealed class Configuration : INotifyPropertyChanged
         set => SetField(ref m_SpacingAngle, value);
     }
 
+    public float TimerScale
+    {
+        get => m_TimerScale;
+        set => SetField(ref m_TimerScale, value);
+    }
+
+    public float TitleBarScale
+    {
+        get => m_TitleBarScale;
+        set => SetField(ref m_TitleBarScale, value);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -111,6 +185,7 @@ public sealed class Configuration : INotifyPropertyChanged
 
         p_Field = p_Value;
         OnPropertyChanged(p_PropertyName);
+
         return true;
     }
 }

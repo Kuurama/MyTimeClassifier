@@ -25,16 +25,40 @@
     <Border BorderBrush="{DynamicResource MainBorder}" ZIndex="0" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
         <!-- It is necessary to have another border to prevent clipping -->
         <Border CornerRadius="16" ZIndex="1" ClipToBounds="True">
-            <Grid RowDefinitions="40,*" ColumnDefinitions="*, *">
+            <Grid RowDefinitions="auto,*" ColumnDefinitions="*, *">
                 <Grid Name="Header" Row="0" Column="0" ColumnSpan="2"
                       Background="{DynamicResource MainHeavy}">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
-                               FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
+                               FontWeight="ExtraBold" Foreground="{DynamicResource TextColor}">
+                        <TextBlock.FontSize>
+                            <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
+                                <Binding Source="20" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                            </MultiBinding>
+                        </TextBlock.FontSize>
+                    </TextBlock>
                     <StackPanel Name="WindowControls" Orientation="Horizontal" Spacing="15"
                                 HorizontalAlignment="Right" Margin="0, 0, 20, 0">
-                        <Button Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-down-left-and-up-right-to-center" FontSize="20" />
-                        <Button Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" />
+                        <Button Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-down-left-and-up-right-to-center">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
+                                    <Binding Source="20" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </Button>
+                        <Button Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark">
+                            <TextBlock.FontSize>
+                                <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
+                                    <Binding Source="26" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                                </MultiBinding>
+                            </TextBlock.FontSize>
+                        </Button>
                     </StackPanel>
                 </Grid>
 
@@ -43,7 +67,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
                         <Button Command="{Binding StatsCommand}" avalonia:Attached.Icon="fa-chart-simple" Foreground="#EF8820">
                             <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="50" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -51,7 +75,7 @@
                         </Button>
                         <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="26" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -62,7 +86,7 @@
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
                         <Button Command="{Binding HistoryCommand}" avalonia:Attached.Icon="fa-database" Foreground="#197CAE">
                             <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="50" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -70,7 +94,7 @@
                         </Button>
                         <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="26" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -81,7 +105,7 @@
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
                         <Button Click="OnSettingsButton" avalonia:Attached.Icon="fa-cog" Foreground="#717085">
                             <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="50" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -89,7 +113,7 @@
                         </Button>
                         <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="26" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
@@ -112,16 +136,18 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical" Spacing="5" IsVisible="{Binding JobIsSelected}">
                         <TextBlock Text="Elapsed Time:" FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="16" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TimerScale" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>
                         </TextBlock>
                         <TextBlock Text="{Binding CurrentClock.CurrentTime}" FontWeight="ExtraBold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource FontSizeConverter}">
+                                <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="19" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TimerScale" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>

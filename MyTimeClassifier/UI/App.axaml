@@ -3,7 +3,7 @@
              x:Class="MyTimeClassifier.UI.App"
              xmlns:local="using:MyTimeClassifier.Utils"
              xmlns:components="clr-namespace:MyTimeClassifier.UI.Components"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -16,7 +16,8 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <components:FontSizeConverter x:Key="FontSizeConverter" />
+            <components:MultiplierTwoConverter x:Key="MultiplierTwoConverter" />
+            <components:MultiplierThreeConverter x:Key="MultiplierThreeConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="/Style/Colors.axaml" />
             </ResourceDictionary.MergedDictionaries>

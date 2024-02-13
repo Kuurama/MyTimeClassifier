@@ -7,21 +7,31 @@ namespace MyTimeClassifier.UI.Components;
 public class Clock : INotifyPropertyChanged
 {
     private readonly DispatcherTimer m_DispatcherTimer = new();
+    private readonly uint            m_NextCycleSeconds;
 
     private DateTime               m_NextCycle = DateTime.Now.AddHours(1);
-    public  EventHandler<DateTime> OnEveryHour = (p_Sender, p_E) => { };
+    public  EventHandler<DateTime> OnNextCycle = (_, _) => { };
 
-    public Clock()
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public Clock(uint p_NextCycleSeconds)
     {
         m_DispatcherTimer.Interval =  TimeSpan.FromSeconds(1);
         m_DispatcherTimer.Tick     += DispatcherTimer_Tick;
+        m_NextCycleSeconds         =  p_NextCycleSeconds;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     public DateTime StartingTime { get; set; } = DateTime.Now;
     public string   CurrentTime  { get; set; } = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
-    public string   NextCycle    { get; set; } = "New save cycle in: ";
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     public void Stop() => m_DispatcherTimer.Stop();
 
@@ -37,18 +47,17 @@ public class Clock : INotifyPropertyChanged
 
         if (l_Now >= m_NextCycle)
         {
-            m_NextCycle = DateTime.Now.AddHours(1);
-            OnEveryHour(this, l_Now);
+            /* If the next cycle is 0, then it's a one-time cycle */
+            if (m_NextCycleSeconds == 0)
+                m_NextCycle = DateTime.Now.AddYears(1);
+            else
+            {
+                m_NextCycle = DateTime.Now.AddSeconds(m_NextCycleSeconds);
+                OnNextCycle(this, l_Now);
+            }
         }
 
-        var l_TimeSpan = m_NextCycle - l_Now;
-        NextCycle = string.Format(
-            "Next saving cycle at {0:HH:mm:ss}(in {1}m{2}s)", m_NextCycle,
-            Math.Round(l_TimeSpan.TotalMinutes) - 1,
-            l_TimeSpan.Seconds
-        );
         CurrentTime = StartingTime.Subtract(l_Now).ToString(@"hh\:mm\:ss");
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTime)));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NextCycle)));
     }
 }
