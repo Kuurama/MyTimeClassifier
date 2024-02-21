@@ -13,6 +13,7 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Entities.Configuration> Configurations { get; set; } = null!;
     public DbSet<Job>                    Jobs           { get; set; } = null!;
+    public DbSet<Task>                   Tasks          { get; set; } = null!;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -21,8 +22,8 @@ public sealed class AppDbContext : DbContext
         => p_OptionsBuilder.UseSqlite("Data Source=MyTimeClassifier.db");
 
     /// <summary>
-    ///     Ensure that the <see cref="IBrush" /> properties of <see cref="Job" /> are stored as strings
-    ///     in the database (As complex types are not supported by default).
+    ///     Specifies the serializer and deserializer for the complex types in the database.
+    ///     In this case: JobID, SolidColorBrush.
     /// </summary>
     /// <param name="p_ModelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder p_ModelBuilder)
@@ -32,6 +33,19 @@ public sealed class AppDbContext : DbContext
             .HasConversion(
                 p_JobID => p_JobID.Value,
                 p_Id => new Job.JobID(p_Id))
+            .ValueGeneratedOnAdd();
+
+        p_ModelBuilder.Entity<Task>()
+            .Property(p_E => p_E.JobID)
+            .HasConversion(
+                p_JobID => p_JobID.Value,
+                p_Id => new Job.JobID(p_Id));
+
+        p_ModelBuilder.Entity<Task>()
+            .Property(p_E => p_E.Id)
+            .HasConversion(
+                p_TaskID => p_TaskID.Value,
+                p_Id => new Task.TaskID(p_Id))
             .ValueGeneratedOnAdd();
 
         p_ModelBuilder.Entity<Job>()

@@ -38,6 +38,9 @@ public sealed class Configuration : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    /// <summary>
+    ///     Constructor used by Entity Framework.
+    /// </summary>
     public Configuration() { }
 
     public Configuration(uint                      p_Id,

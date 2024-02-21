@@ -25,6 +25,9 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    /// <summary>
+    ///     Constructor used by Entity Framework.
+    /// </summary>
     public Job() { }
 
     public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor)

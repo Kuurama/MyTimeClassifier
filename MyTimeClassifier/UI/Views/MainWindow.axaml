@@ -72,6 +72,11 @@
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
                             </Button.FontSize>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </Button.Styles>
                         </Button>
                         <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
@@ -91,6 +96,11 @@
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
                             </Button.FontSize>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </Button.Styles>
                         </Button>
                         <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
@@ -110,6 +120,11 @@
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                 </MultiBinding>
                             </Button.FontSize>
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </Button.Styles>
                         </Button>
                         <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
@@ -153,11 +168,24 @@
                             </TextBlock.FontSize>
                         </TextBlock>
                     </StackPanel>
+                    <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" avalonia:Attached.Icon="fa-solid fa-circle-stop" Foreground="#D42121" Margin="0, 0,8, 8" Command="{Binding StopCommand}" IsVisible="{Binding JobIsSelected}">
+                        <Button.FontSize>
+                            <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                <Binding Source="50" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                            </MultiBinding>
+                        </Button.FontSize>
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </Button.Styles>
+                    </Button>
                 </Grid>
                 <Thumb Grid.Row="1" Grid.Column="1" ZIndex="10" Name="ResizeGrip" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" DragDelta="ResizeGrip_OnDragDelta">
                     <Thumb.Template>
                         <ControlTemplate>
-                            <Border Background="Red" />
+                            <Border Background="{DynamicResource TextColor}" CornerRadius="7, 0, 0, 0" />
                         </ControlTemplate>
                     </Thumb.Template>
                 </Thumb>
