@@ -44,7 +44,7 @@ public sealed class AppDbContext : DbContext
         p_ModelBuilder.Entity<Task>()
             .Property(p_E => p_E.Id)
             .HasConversion(
-                p_TaskID => p_TaskID.Value,
+                p_TaskID => p_TaskID,
                 p_Id => new Task.TaskID(p_Id))
             .ValueGeneratedOnAdd();
 

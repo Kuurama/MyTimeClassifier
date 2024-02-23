@@ -89,7 +89,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
-                        <Button Command="{Binding HistoryCommand}" avalonia:Attached.Icon="fa-database" Foreground="#197CAE">
+                        <Button Click="OnHistoryButton" avalonia:Attached.Icon="fa-database" Foreground="#197CAE">
                             <Button.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                     <Binding Source="50" />

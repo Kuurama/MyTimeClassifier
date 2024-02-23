@@ -12,7 +12,7 @@ using System;
 
 namespace MyTimeClassifier.UI.Views;
 
-public partial class MainWindow : Window
+public class MainWindow : Window
 {
     public MainWindow()
     {
@@ -38,10 +38,16 @@ public partial class MainWindow : Window
     public void OnCloseButton(object? p_Sender, RoutedEventArgs _) => WindowHelper.CloseButton_Click(this);
 
 
-    public void OnSettingsButton(object? p_Sender, RoutedEventArgs _)
+    private void OnSettingsButton(object? p_Sender, RoutedEventArgs _)
     {
         var l_SettingsWindow = new SettingsWindow { DataContext = new SettingsWindowViewModel() };
         l_SettingsWindow.ShowDialog(this);
+    }
+
+    private void OnHistoryButton(object? p_Sender, RoutedEventArgs _)
+    {
+        var l_HistoryWindow = new HistoryWindow { DataContext = new HistoryWindowViewModel() };
+        l_HistoryWindow.ShowDialog(this);
     }
 
     /// <summary>

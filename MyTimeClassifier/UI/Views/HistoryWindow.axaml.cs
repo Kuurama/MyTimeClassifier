@@ -1,14 +1,13 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using MyTimeClassifier.Configuration;
 using MyTimeClassifier.Utils;
 
 namespace MyTimeClassifier.UI.Views;
 
-public class SettingsWindow : Window
+public class HistoryWindow : Window
 {
-    public SettingsWindow()
+    public HistoryWindow()
     {
         InitializeComponent();
     }
@@ -23,9 +22,6 @@ public class SettingsWindow : Window
 
     public void OnCloseButton(object? p_Sender, RoutedEventArgs _)
     {
-        /* Save the settings */
-        AppConfiguration.SaveConfiguration();
-
         /* Close the window */
         WindowHelper.CloseButton_Click(this);
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +21,7 @@ public class Task : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public TaskID Id
+    public uint Id
     {
         get => m_Id;
         set => SetField(ref m_Id, value);
@@ -55,13 +56,45 @@ public class Task : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? p_PropertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p_PropertyName));
 
-    private bool SetField<T>(ref T p_Field, T p_Value, [CallerMemberName] string? p_PropertyName = null)
+    private bool SetField<T>(ref T p_Field, T p_Value, [CallerMemberName] string? p_PropertyName = null) where T : IEquatable<T>
     {
         if (EqualityComparer<T>.Default.Equals(p_Field, p_Value))
             return false;
 
+        var l_SaveToDB = p_Value switch
+        {
+            TaskID l_Value    => l_Value != TaskID.None    && !Equals(p_Value, p_Field),
+            Job.JobID l_Value => l_Value != Job.JobID.None && !Equals(p_Value, p_Field),
+            uint l_Value      => l_Value != 0              && !Equals(p_Value, p_Field),
+            _                 => true
+        };
+
         p_Field = p_Value;
-        OnPropertyChanged(p_PropertyName);
+
+        if (!l_SaveToDB)
+        {
+            OnPropertyChanged(p_PropertyName);
+            return true;
+        }
+
+        /* Update the object in the database */
+        var l_Result = SaveToDB();
+        if (l_Result) OnPropertyChanged(p_PropertyName);
+
+        return l_Result;
+    }
+
+    private bool SaveToDB()
+    {
+        /* Update the field in database */
+        var l_DBContext = new AppDbContext();
+        l_DBContext.Update(this);
+
+        try
+        {
+            if (l_DBContext.SaveChanges() != 1) return false;
+        }
+        catch { return false; }
 
         return true;
     }
@@ -82,5 +115,15 @@ public class Task : INotifyPropertyChanged
 
         /* add implicit conversion from TaskID to uint */
         public static implicit operator uint(TaskID p_Value) => p_Value.Value;
+
+        public static implicit operator TaskID(int p_Value) => new((uint)p_Value);
+
+        public static implicit operator int(TaskID p_Value) => (int)p_Value.Value;
+
+        public static implicit operator TaskID(long p_Value) => new((uint)p_Value);
+
+        public static implicit operator long(TaskID p_Value) => p_Value.Value;
+
+        public static implicit operator TaskID(ulong p_Value) => new((uint)p_Value);
     }
 }
