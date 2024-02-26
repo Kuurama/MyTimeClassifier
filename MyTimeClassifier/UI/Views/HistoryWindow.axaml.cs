@@ -5,7 +5,7 @@ using MyTimeClassifier.Utils;
 
 namespace MyTimeClassifier.UI.Views;
 
-public class HistoryWindow : Window
+public partial class HistoryWindow : Window
 {
     public HistoryWindow()
     {
@@ -24,5 +24,14 @@ public class HistoryWindow : Window
     {
         /* Close the window */
         WindowHelper.CloseButton_Click(this);
+    }
+
+
+    private void OnContextMenuButtonPressed(object? p_Sender, RoutedEventArgs _)
+    {
+        if (p_Sender is not Button { ContextMenu: not null } l_TextBox)
+            return;
+
+        l_TextBox.ContextMenu.Open(l_TextBox);
     }
 }

@@ -64,77 +64,68 @@
 
                 <Grid Name="SideGrid" ColumnDefinitions="*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{DynamicResource MainMedium}">
 
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
-                        <Button Command="{Binding StatsCommand}" avalonia:Attached.Icon="fa-chart-simple" Foreground="#EF8820">
-                            <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="50" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </Button.FontSize>
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Style>
-                            </Button.Styles>
-                        </Button>
-                        <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="26" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </TextBlock.FontSize>
-                        </TextBlock>
-                    </StackPanel>
+                    <Button Grid.Row="0" Margin="20,0" Click="OnStatsButton">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left">
+                            <avalonia:Icon Value="fa-chart-simple" Foreground="#EF8820">
+                                <avalonia:Icon.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="50" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </avalonia:Icon.FontSize>
+                            </avalonia:Icon>
+                            <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="26" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </TextBlock.FontSize>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
-                        <Button Click="OnHistoryButton" avalonia:Attached.Icon="fa-database" Foreground="#197CAE">
-                            <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="50" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </Button.FontSize>
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Style>
-                            </Button.Styles>
-                        </Button>
-                        <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="26" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </TextBlock.FontSize>
-                        </TextBlock>
-                    </StackPanel>
+                    <Button Grid.Row="1" Margin="20,0" Click="OnHistoryButton">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left">
+                            <avalonia:Icon Value="fa-database" Foreground="#197CAE">
+                                <avalonia:Icon.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="50" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </avalonia:Icon.FontSize>
+                            </avalonia:Icon>
+                            <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="26" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </TextBlock.FontSize>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left" Margin="20,0">
-                        <Button Click="OnSettingsButton" avalonia:Attached.Icon="fa-cog" Foreground="#717085">
-                            <Button.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="50" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </Button.FontSize>
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Style>
-                            </Button.Styles>
-                        </Button>
-                        <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock.FontSize>
-                                <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
-                                    <Binding Source="26" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                </MultiBinding>
-                            </TextBlock.FontSize>
-                        </TextBlock>
-                    </StackPanel>
+                    <Button Grid.Row="2" Margin="20,0" Click="OnSettingsButton">
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left">
+                            <avalonia:Icon Value="fa-cog" Foreground="#717085">
+                                <avalonia:Icon.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="50" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </avalonia:Icon.FontSize>
+                            </avalonia:Icon>
+                            <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.FontSize>
+                                    <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
+                                        <Binding Source="26" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    </MultiBinding>
+                                </TextBlock.FontSize>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{DynamicResource MainLight}">
@@ -192,5 +183,4 @@
             </Grid>
         </Border>
     </Border>
-
 </Window>

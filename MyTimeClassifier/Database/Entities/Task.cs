@@ -10,9 +10,9 @@ namespace MyTimeClassifier.Database.Entities;
 public class Task : INotifyPropertyChanged
 {
     [Key]
-    private TaskID m_Id;
+    private uint m_Id;
     [Key] [ForeignKey(nameof(Job.Id))]
-    private Job.JobID m_JobID;
+    private Guid m_JobID;
 
     /* uint32 is fine because it's enough for use until 2106 */
     private uint m_UnixEndTime;
@@ -27,7 +27,7 @@ public class Task : INotifyPropertyChanged
         set => SetField(ref m_Id, value);
     }
 
-    public Job.JobID JobID
+    public Guid JobID
     {
         get => m_JobID;
         set => SetField(ref m_JobID, value);
@@ -63,10 +63,9 @@ public class Task : INotifyPropertyChanged
 
         var l_SaveToDB = p_Value switch
         {
-            TaskID l_Value    => l_Value != TaskID.None    && !Equals(p_Value, p_Field),
-            Job.JobID l_Value => l_Value != Job.JobID.None && !Equals(p_Value, p_Field),
-            uint l_Value      => l_Value != 0              && !Equals(p_Value, p_Field),
-            _                 => true
+            Guid l_Value => l_Value != Guid.Empty && !Equals(p_Value, p_Field),
+            uint l_Value => l_Value != 0          && !Equals(p_Value, p_Field),
+            _            => true
         };
 
         p_Field = p_Value;
@@ -97,33 +96,5 @@ public class Task : INotifyPropertyChanged
         catch { return false; }
 
         return true;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    /// <summary>
-    ///     A unique identifier for a <see cref="Task" />.
-    /// </summary>
-    /// <param name="Value"></param>
-    public readonly record struct TaskID(uint Value)
-    {
-        public static readonly TaskID None = new(0);
-
-        /* add implicit conversion from uint to TaskID */
-        public static implicit operator TaskID(uint p_Value) => new(p_Value);
-
-        /* add implicit conversion from TaskID to uint */
-        public static implicit operator uint(TaskID p_Value) => p_Value.Value;
-
-        public static implicit operator TaskID(int p_Value) => new((uint)p_Value);
-
-        public static implicit operator int(TaskID p_Value) => (int)p_Value.Value;
-
-        public static implicit operator TaskID(long p_Value) => new((uint)p_Value);
-
-        public static implicit operator long(TaskID p_Value) => p_Value.Value;
-
-        public static implicit operator TaskID(ulong p_Value) => new((uint)p_Value);
     }
 }

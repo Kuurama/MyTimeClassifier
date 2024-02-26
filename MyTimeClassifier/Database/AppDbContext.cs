@@ -6,6 +6,11 @@ namespace MyTimeClassifier.Database;
 
 public sealed class AppDbContext : DbContext
 {
+    public const string DATABASE_PATH_NAME = "MyTimeClassifier.db";
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     public AppDbContext() => Database.EnsureCreated();
 
     ////////////////////////////////////////////////////////////////////////////
@@ -19,7 +24,7 @@ public sealed class AppDbContext : DbContext
     ////////////////////////////////////////////////////////////////////////////
 
     protected override void OnConfiguring(DbContextOptionsBuilder p_OptionsBuilder)
-        => p_OptionsBuilder.UseSqlite("Data Source=MyTimeClassifier.db");
+        => p_OptionsBuilder.UseSqlite($"Data Source={DATABASE_PATH_NAME}");
 
     /// <summary>
     ///     Specifies the serializer and deserializer for the complex types in the database.
@@ -30,22 +35,10 @@ public sealed class AppDbContext : DbContext
     {
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.Id)
-            .HasConversion(
-                p_JobID => p_JobID.Value,
-                p_Id => new Job.JobID(p_Id))
             .ValueGeneratedOnAdd();
 
         p_ModelBuilder.Entity<Task>()
-            .Property(p_E => p_E.JobID)
-            .HasConversion(
-                p_JobID => p_JobID.Value,
-                p_Id => new Job.JobID(p_Id));
-
-        p_ModelBuilder.Entity<Task>()
             .Property(p_E => p_E.Id)
-            .HasConversion(
-                p_TaskID => p_TaskID,
-                p_Id => new Task.TaskID(p_Id))
             .ValueGeneratedOnAdd();
 
         p_ModelBuilder.Entity<Job>()

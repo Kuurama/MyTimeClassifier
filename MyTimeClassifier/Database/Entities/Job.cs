@@ -18,7 +18,7 @@ public class Job : INotifyPropertyChanged
     private IBrush? m_ContentColor;
     private string? m_Emoji;
     private IBrush? m_FillColor;
-    private JobID   m_Id;
+    private Guid    m_Id;
     private IBrush? m_StrokeColor;
     private string? m_Text;
 
@@ -43,7 +43,7 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
 
     [Key]
-    public JobID Id
+    public Guid Id
     {
         get => m_Id;
         set => SetField(ref m_Id, value);
@@ -100,17 +100,5 @@ public class Job : INotifyPropertyChanged
         p_Field = p_Value;
         OnPropertyChanged(p_PropertyName);
         return true;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    /// <summary>
-    ///     A unique identifier for a <see cref="Job" />.
-    /// </summary>
-    /// <param name="Value"></param>
-    public readonly record struct JobID(Guid Value)
-    {
-        public static readonly JobID None = new(Guid.Empty);
     }
 }

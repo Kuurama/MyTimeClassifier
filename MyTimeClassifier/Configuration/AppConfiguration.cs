@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using MsBox.Avalonia;
 using MyTimeClassifier.Database;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace MyTimeClassifier.Configuration;
@@ -19,12 +22,41 @@ public sealed class AppConfiguration
     private static Database.Entities.Configuration LoadConfiguration()
     {
         using var l_DbContext = new AppDbContext();
+        var       l_Config    = null as Database.Entities.Configuration;
 
-        var l_Config = l_DbContext.Configurations.Include(p_X => p_X.Jobs).SingleOrDefault();
+        /* Catch issues with the database (as in program startup) */
+        try { l_Config = l_DbContext.Configurations.Include(p_X => p_X.Jobs).SingleOrDefault(); }
+        catch
+        {
+            /* Backup the database file */
+            if (File.Exists(AppDbContext.DATABASE_PATH_NAME))
+            {
+                File.Copy(AppDbContext.DATABASE_PATH_NAME, $"{AppDbContext.DATABASE_PATH_NAME}.bak", true);
+            }
+
+            /* Create an alert for the user with avalonia (Doesn't pause the process) */
+            MessageBoxManager.GetMessageBoxStandard("Database Error", "[MyTimeClassifier] The database file is corrupted. A backup has been created.").ShowWindowAsync();
+
+            /* Ensure deletion of the database file */
+            if (l_DbContext.Database.EnsureDeleted())
+            {
+                /* Create a new database file */
+                l_DbContext.Database.EnsureCreated();
+
+                // Check if jobs have improper IDs
+                if (l_DbContext.Jobs.Any(p_X => p_X.Id == Guid.Empty))
+                {
+                    l_DbContext.Jobs.RemoveRange(l_DbContext.Jobs.Where(p_X => p_X.Id == Guid.Empty));
+                    l_DbContext.SaveChanges();
+                }
+
+                MessageBoxManager.GetMessageBoxStandard("Cleaned improper database data", "[MyTimeClassifier] The database has been cleaned-up.").ShowWindowAsync();
+            }
+        }
+
         l_Config ??= l_DbContext.Configurations.Add(DefaultConfiguration.s_Configuration).Entity;
         /* Save the configuration in case a new one was created from the default configuration. */
         l_DbContext.SaveChanges();
-
         return l_Config;
     }
 

@@ -25,7 +25,7 @@
         <Border CornerRadius="16" ClipToBounds="True">
             <Grid RowDefinitions="*,*" Background="{DynamicResource MainLight}">
                 <Grid Name="Header" ColumnDefinitions="*,*,*" Background="{DynamicResource MainHeavy}">
-                    <TextBlock Grid.Column="0" Text="Settings"
+                    <TextBlock Grid.Column="0" Text="Settings (v0.2)"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
                     <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" Foreground="{DynamicResource TextColor}" />

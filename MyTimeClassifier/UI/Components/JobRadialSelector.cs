@@ -26,8 +26,8 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<int> ButtonCountProperty =
         AvaloniaProperty.Register<JobRadialSelector, int>(nameof(ButtonCount));
 
-    public static readonly StyledProperty<Action<Job.JobID>> ButtonActionProperty =
-        AvaloniaProperty.Register<JobRadialSelector, Action<Job.JobID>>(nameof(ButtonAction), _ => { });
+    public static readonly StyledProperty<Action<Guid>> ButtonActionProperty =
+        AvaloniaProperty.Register<JobRadialSelector, Action<Guid>>(nameof(ButtonAction), _ => { });
 
     public static readonly StyledProperty<bool> IsMinimalisticProperty =
         AvaloniaProperty.Register<JobRadialSelector, bool>(nameof(IsMinimalistic));
@@ -44,8 +44,8 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<float> GlobalScaleProperty =
         AvaloniaProperty.Register<JobRadialSelector, float>(nameof(GlobalScale), 1.0f);
 
-    public static readonly StyledProperty<Job.JobID> SelectedJobProperty =
-        AvaloniaProperty.Register<JobRadialSelector, Job.JobID>(nameof(SelectedJobID));
+    public static readonly StyledProperty<Guid> SelectedJobProperty =
+        AvaloniaProperty.Register<JobRadialSelector, Guid>(nameof(SelectedJobID));
     private Ellipse m_SelectCircle = new()
     {
         Width           = 20,
@@ -89,7 +89,7 @@ public class JobRadialSelector : Canvas
         set => SetValue(ButtonCountProperty, value);
     }
 
-    public Action<Job.JobID> ButtonAction
+    public Action<Guid> ButtonAction
     {
         get => GetValue(ButtonActionProperty);
         set => SetValue(ButtonActionProperty, value);
@@ -125,7 +125,7 @@ public class JobRadialSelector : Canvas
         set => SetValue(GlobalScaleProperty, value);
     }
 
-    public Job.JobID SelectedJobID
+    public Guid SelectedJobID
     {
         get => GetValue(SelectedJobProperty);
         set => SetValue(SelectedJobProperty, value);

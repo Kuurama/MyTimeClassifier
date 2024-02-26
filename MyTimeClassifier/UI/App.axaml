@@ -3,7 +3,7 @@
              x:Class="MyTimeClassifier.UI.App"
              xmlns:local="using:MyTimeClassifier.Utils"
              xmlns:components="clr-namespace:MyTimeClassifier.UI.Components"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -30,5 +30,6 @@
         <StyleInclude Source="/Style/TextBlock.axaml" />
         <StyleInclude Source="/Style/TextBox.axaml" />
     </Application.Styles>
+
 
 </Application>

@@ -6,7 +6,7 @@ using MyTimeClassifier.Utils;
 
 namespace MyTimeClassifier.UI.Views;
 
-public class SettingsWindow : Window
+public partial class SettingsWindow : Window
 {
     public SettingsWindow()
     {

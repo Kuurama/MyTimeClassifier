@@ -2,7 +2,6 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.Database;
-using MyTimeClassifier.Database.Entities;
 using MyTimeClassifier.UI.Components;
 using MyTimeClassifier.Utils;
 using ReactiveUI;
@@ -33,26 +32,29 @@ public class MainWindowViewModel : ViewModelBase
         CurrentJobSelector = p_CurrentJobSelector;
         OnJobSelected = p_JobID =>
         {
-            if (p_JobID == Job.JobID.None) throw new ArgumentException("JobID.None is not a valid job.");
+            if (p_JobID == Guid.Empty) throw new ArgumentException("JobID.None is not a valid job.");
 
             /* Make sure to stop the current job if it's the same as the one selected. */
-            if (CurrentJobSelector.SelectedJobID != Job.JobID.None)
+            if (CurrentJobSelector.SelectedJobID != Guid.Empty)
                 StopCommand.Execute(null);
 
             Console.WriteLine($"Job selected: {p_JobID}");
             CurrentJobSelector.SelectedJobID = p_JobID;
-            JobIsSelected                    = p_JobID != Job.JobID.None;
+            JobIsSelected                    = p_JobID != Guid.Empty;
             CurrentClock.Start();
         };
+        /* Save the current job and then stop the clock and unselect the job. */
         StopCommand = ReactiveCommand.Create(() =>
         {
             Console.WriteLine("StopCommand invoked");
             Console.WriteLine($"Job deselected was {CurrentJobSelector.SelectedJobID}");
-            CurrentJobSelector.SelectedJobID = Job.JobID.None;
-            CurrentClock.Stop();
 
+            CurrentClock.Stop();
             StoreCurrentTaskIfNecessary();
-            JobIsSelected = false;
+
+            /* Reset the job selector (after it's been saved if necessary) */
+            CurrentJobSelector.SelectedJobID = Guid.Empty;
+            JobIsSelected                    = false;
         });
     }
 
@@ -68,11 +70,9 @@ public class MainWindowViewModel : ViewModelBase
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public ICommand StopCommand { get; init; } = ReactiveCommand.Create(() => Console.WriteLine("StopCommand invoked"));
+    public ICommand StopCommand { get; init; }
 
     public JobRadialSelector CurrentJobSelector { get; init; }
-    public ICommand          StatsCommand       { get; } = ReactiveCommand.Create(() => Console.WriteLine("StatsCommand invoked"));
-    public ICommand          HistoryCommand     { get; } = ReactiveCommand.Create(() => Console.WriteLine("HistoryCommand invoked"));
     public Clock             CurrentClock       { get; init; }
 
     public bool JobIsSelected { get => m_JobIsSelected; set => this.RaiseAndSetIfChanged(ref m_JobIsSelected, value); }
@@ -80,7 +80,7 @@ public class MainWindowViewModel : ViewModelBase
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public Action<Job.JobID> OnJobSelected { get; init; }
+    public Action<Guid> OnJobSelected { get; init; }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
