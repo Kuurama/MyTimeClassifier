@@ -6,13 +6,15 @@ using MyTimeClassifier.UI.Components;
 using MyTimeClassifier.Utils;
 using ReactiveUI;
 using System;
+using System.Linq;
 using System.Windows.Input;
 
 namespace MyTimeClassifier.UI.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private bool m_JobIsSelected;
+    private bool   m_JobIsSelected;
+    private string m_JobText = string.Empty;
 
     public MainWindowViewModel(JobRadialSelector p_CurrentJobSelector)
     {
@@ -54,6 +56,7 @@ public class MainWindowViewModel : ViewModelBase
             Console.WriteLine($"Job selected: {p_JobID}");
             CurrentJobSelector.SelectedJobID = p_JobID;
             JobIsSelected                    = p_JobID != Guid.Empty;
+            SelectedJobText                  = AppConfiguration.StaticCache.Jobs.FirstOrDefault(p_X => p_X.Id == p_JobID)?.Text ?? "Unknown";
             CurrentClock.Start();
         };
     }
@@ -77,6 +80,8 @@ public class MainWindowViewModel : ViewModelBase
     public Clock             CurrentClock       { get; init; }
 
     public bool JobIsSelected { get => m_JobIsSelected; set => this.RaiseAndSetIfChanged(ref m_JobIsSelected, value); }
+
+    public string SelectedJobText { get => m_JobText; set => this.RaiseAndSetIfChanged(ref m_JobText, value); }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Reading",
-                "fa-solid fa-book-open",
+                "fa-book-open",
                 new SolidColorBrush(Color.Parse("#ffff57")),
                 new SolidColorBrush(Color.Parse("#b89f56")),
                 new SolidColorBrush(Color.Parse("#2D2305"))
@@ -38,7 +38,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Teaching",
-                "fa-solid fa-chalkboard-teacher",
+                "fa-chalkboard-teacher",
                 new SolidColorBrush(Color.Parse("#7d66d9")),
                 new SolidColorBrush(Color.Parse("#56468b")),
                 new SolidColorBrush(Color.Parse("#291F43"))
@@ -46,7 +46,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Working",
-                "fa-solid fa-laptop-code",
+                "fa-laptop-code",
                 new SolidColorBrush(Color.Parse("#ec6142")),
                 new SolidColorBrush(Color.Parse("#ac4d39")),
                 new SolidColorBrush(Color.Parse("#391714"))
@@ -54,7 +54,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Movies",
-                "fa-solid fa-photo-film",
+                "fa-photo-film",
                 new SolidColorBrush(Color.Parse("#ae8c7e")),
                 new SolidColorBrush(Color.Parse("#6f5f58")),
                 new SolidColorBrush(Color.Parse("#262220"))
@@ -62,7 +62,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Meeting",
-                "fa-solid fa-people-group",
+                "fa-people-group",
                 new SolidColorBrush(Color.Parse("#b658c4")),
                 new SolidColorBrush(Color.Parse("#92549c")),
                 new SolidColorBrush(Color.Parse("#351A35"))
@@ -70,7 +70,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Coffee",
-                "fa-solid fa-coffee",
+                "fa-coffee",
                 new SolidColorBrush(Color.Parse("#717d79")),
                 new SolidColorBrush(Color.Parse("#5b625f")),
                 new SolidColorBrush(Color.Parse("#202221"))
@@ -78,7 +78,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Preparing",
-                "fa-solid fa-clipboard-list",
+                "fa-clipboard-list",
                 new SolidColorBrush(Color.Parse("#ec5a72")),
                 new SolidColorBrush(Color.Parse("#b3445a")),
                 new SolidColorBrush(Color.Parse("#3A141E"))
@@ -86,7 +86,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Chilling",
-                "fa-solid fa-leaf",
+                "fa-leaf",
                 new SolidColorBrush(Color.Parse("#33b074")),
                 new SolidColorBrush(Color.Parse("#2f7c57")),
                 new SolidColorBrush(Color.Parse("#132D21"))
@@ -94,7 +94,7 @@ public static class DefaultConfiguration
             new Job
             (
                 "Mailing",
-                "fa-solid fa-mail-bulk",
+                "fa-mail-bulk",
                 new SolidColorBrush(Color.Parse("#ee518a")),
                 new SolidColorBrush(Color.Parse("#b0436e")),
                 new SolidColorBrush(Color.Parse("#381525"))

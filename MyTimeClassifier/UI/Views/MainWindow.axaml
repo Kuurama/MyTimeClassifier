@@ -140,7 +140,10 @@
                                                   ReRender="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ReRenderProp}"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical" Spacing="5" IsVisible="{Binding JobIsSelected}">
-                        <TextBlock Text="Elapsed Time:" FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                        <TextBlock FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                            <TextBlock.Text>
+                                <Binding Path="SelectedJobText" StringFormat="{}{0}:" />
+                            </TextBlock.Text>
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="16" />

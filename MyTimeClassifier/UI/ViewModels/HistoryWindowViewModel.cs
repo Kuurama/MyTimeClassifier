@@ -75,7 +75,7 @@ public class HistoryWindowViewModel : ViewModelBase
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    private void ReLoadData()
+    public void ReLoadData()
     {
         /* Ensure the memory is cleared, and we don't create a new instance of the ObservableCollection */
         TaskModels.Clear();

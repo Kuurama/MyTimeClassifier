@@ -109,6 +109,7 @@ public class TaskModel : INotifyPropertyChanged
             m_Task.UnixStartTime = (uint)new DateTime(l_DateTime.Year, l_DateTime.Month, l_DateTime.Day, value.Hours, value.Minutes, value.Seconds).ToUnixTime();
             OnPropertyChanged();
             OnPropertyChanged(nameof(StartDate));
+            OnPropertyChanged(nameof(ElapsedTime));
         }
     }
 
@@ -121,7 +122,13 @@ public class TaskModel : INotifyPropertyChanged
             m_Task.UnixEndTime = (uint)new DateTime(l_DateTime.Year, l_DateTime.Month, l_DateTime.Day, value.Hours, value.Minutes, value.Seconds).ToUnixTime();
             OnPropertyChanged();
             OnPropertyChanged(nameof(EndDate));
+            OnPropertyChanged(nameof(ElapsedTime));
         }
+    }
+
+    public TimeSpan ElapsedTime
+    {
+        get => TimeUtils.FromUnixTime(m_Task.UnixEndTime) - TimeUtils.FromUnixTime(m_Task.UnixStartTime);
     }
 
     public ICommand OnDeleteCommand { get; init; }

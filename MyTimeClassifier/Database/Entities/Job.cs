@@ -22,13 +22,13 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    private IBrush m_ContentColor = new SolidColorBrush(Colors.White);
-    private string m_Emoji        = string.Empty;
+    private IBrush m_ContentColor = new SolidColorBrush(Color.Parse("#FAFAFA"));
+    private string m_Emoji        = "fa-question";
     private bool   m_Enabled      = true;
-    private IBrush m_FillColor    = new SolidColorBrush(Colors.Black);
+    private IBrush m_FillColor    = new SolidColorBrush(Color.Parse("#191E27"));
     private Guid   m_Id;
-    private IBrush m_StrokeColor = new SolidColorBrush(Colors.White);
-    private string m_Text        = string.Empty;
+    private IBrush m_StrokeColor = new SolidColorBrush(Color.Parse("#151A23"));
+    private string m_Text        = "Unknown";
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -41,11 +41,11 @@ public class Job : INotifyPropertyChanged
 
     public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor, bool p_Enabled = true)
     {
-        m_Text         = p_Text         ?? string.Empty;
-        m_Emoji        = p_Emoji        ?? string.Empty;
-        m_FillColor    = p_FillColor    ?? new SolidColorBrush(Colors.Black);
-        m_StrokeColor  = p_StrokeColor  ?? new SolidColorBrush(Colors.White);
-        m_ContentColor = p_ContentColor ?? new SolidColorBrush(Colors.White);
+        m_Text         = p_Text         ?? "Unknown";
+        m_Emoji        = p_Emoji        ?? "fa-question";
+        m_FillColor    = p_FillColor    ?? new SolidColorBrush(Color.Parse("#191E27"));
+        m_StrokeColor  = p_StrokeColor  ?? new SolidColorBrush(Color.Parse("#151A23"));
+        m_ContentColor = p_ContentColor ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
         m_Enabled      = p_Enabled;
 
         OnDeleteCommand = GetDeleteCommand();

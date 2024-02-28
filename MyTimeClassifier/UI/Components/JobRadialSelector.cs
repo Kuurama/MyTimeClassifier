@@ -45,8 +45,9 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<float> GlobalScaleProperty =
         AvaloniaProperty.Register<JobRadialSelector, float>(nameof(GlobalScale), 1.0f);
 
-    public static readonly StyledProperty<Guid> SelectedJobProperty =
+    public static readonly StyledProperty<Guid> SelectedJobIDProperty =
         AvaloniaProperty.Register<JobRadialSelector, Guid>(nameof(SelectedJobID));
+
     private uint m_ButtonCount;
 
     ////////////////////////////////////////////////////////////////////////////
@@ -115,8 +116,8 @@ public class JobRadialSelector : Canvas
 
     public Guid SelectedJobID
     {
-        get => GetValue(SelectedJobProperty);
-        set => SetValue(SelectedJobProperty, value);
+        get => GetValue(SelectedJobIDProperty);
+        set => SetValue(SelectedJobIDProperty, value);
     }
 
     public byte ReRender
@@ -146,7 +147,7 @@ public class JobRadialSelector : Canvas
             p_E.Property != ReRenderProperty         &&
             p_E.Property != ButtonActionProperty     && p_E.Property != IsMinimalisticProperty &&
             p_E.Property != SpacingAngleProperty     && p_E.Property != JobsProperty           &&
-            p_E.Property != ContentScaleProperty     && p_E.Property != SelectedJobProperty    &&
+            p_E.Property != ContentScaleProperty     && p_E.Property != SelectedJobIDProperty  &&
             p_E.Property != InnerRadiusRatioProperty && p_E.Property != RadiusProperty)
             return;
 
