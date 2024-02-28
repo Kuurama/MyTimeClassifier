@@ -9,6 +9,7 @@ using MyTimeClassifier.Utils;
 using Projektanker.Icons.Avalonia;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace MyTimeClassifier.UI.Components;
 
@@ -23,9 +24,6 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<uint> RadiusProperty =
         AvaloniaProperty.Register<JobRadialSelector, uint>(nameof(RadiusProperty));
 
-    public static readonly StyledProperty<int> ButtonCountProperty =
-        AvaloniaProperty.Register<JobRadialSelector, int>(nameof(ButtonCount));
-
     public static readonly StyledProperty<Action<Guid>> ButtonActionProperty =
         AvaloniaProperty.Register<JobRadialSelector, Action<Guid>>(nameof(ButtonAction), _ => { });
 
@@ -35,8 +33,11 @@ public class JobRadialSelector : Canvas
     public static readonly StyledProperty<uint> SpacingAngleProperty =
         AvaloniaProperty.Register<JobRadialSelector, uint>(nameof(SpacingAngle));
 
+    public static readonly StyledProperty<byte> ReRenderProperty =
+        AvaloniaProperty.Register<JobRadialSelector, byte>(nameof(ReRenderProperty));
+
     public static readonly StyledProperty<ObservableCollection<Job>> JobsProperty =
-        AvaloniaProperty.Register<JobRadialSelector, ObservableCollection<Job>>(nameof(Jobs), new ObservableCollection<Job>());
+        AvaloniaProperty.Register<JobRadialSelector, ObservableCollection<Job>>(nameof(Jobs), []);
 
     public static readonly StyledProperty<float> ContentScaleProperty =
         AvaloniaProperty.Register<JobRadialSelector, float>(nameof(ContentScale), 1.0f);
@@ -46,14 +47,7 @@ public class JobRadialSelector : Canvas
 
     public static readonly StyledProperty<Guid> SelectedJobProperty =
         AvaloniaProperty.Register<JobRadialSelector, Guid>(nameof(SelectedJobID));
-    private Ellipse m_SelectCircle = new()
-    {
-        Width           = 20,
-        Height          = 20,
-        Fill            = Brushes.White,
-        Stroke          = Brushes.AntiqueWhite,
-        StrokeThickness = 3
-    };
+    private uint m_ButtonCount;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -81,12 +75,6 @@ public class JobRadialSelector : Canvas
     {
         get => GetValue(RadiusProperty);
         set => SetValue(RadiusProperty, value);
-    }
-
-    public int ButtonCount
-    {
-        get => GetValue(ButtonCountProperty);
-        set => SetValue(ButtonCountProperty, value);
     }
 
     public Action<Guid> ButtonAction
@@ -131,6 +119,12 @@ public class JobRadialSelector : Canvas
         set => SetValue(SelectedJobProperty, value);
     }
 
+    public byte ReRender
+    {
+        get => GetValue(ReRenderProperty);
+        set => SetValue(ReRenderProperty, value);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -143,9 +137,13 @@ public class JobRadialSelector : Canvas
             return;
         }
 
+        /* Update the button count */
+        if (p_E.Property == JobsProperty || p_E.Property == ReRenderProperty)
+            m_ButtonCount = (uint)Jobs.Count(p_X => p_X.Enabled);
+
         /* Make sure it's only re-rendering when necessary */
-        if (Radius == 0 || Jobs.Count == 0 ||
-            p_E.Property != ButtonCountProperty      &&
+        if (Radius == 0 || Jobs.Count == 0 || m_ButtonCount == 0 ||
+            p_E.Property != ReRenderProperty         &&
             p_E.Property != ButtonActionProperty     && p_E.Property != IsMinimalisticProperty &&
             p_E.Property != SpacingAngleProperty     && p_E.Property != JobsProperty           &&
             p_E.Property != ContentScaleProperty     && p_E.Property != SelectedJobProperty    &&
@@ -183,13 +181,13 @@ public class JobRadialSelector : Canvas
         HorizontalAlignment = HorizontalAlignment.Center;
         VerticalAlignment   = VerticalAlignment.Center;
 
-        var l_AngleStep   = 360.0 / ButtonCount;
-        var l_AngleOffset = (ButtonCount & 1) == 0 ? 0 : l_AngleStep / 4;
+        var l_AngleStep   = 360.0 / m_ButtonCount;
+        var l_AngleOffset = (m_ButtonCount & 1) == 0 ? 0 : l_AngleStep / 4;
 
         /// Ensure the spacing ratio is a value between 0 and 1
         var l_SpacingRatio = Math.Clamp((float)SpacingAngle / 360, 0, 1);
 
-        for (uint l_I = 0; l_I < ButtonCount; l_I++)
+        for (uint l_I = 0; l_I < m_ButtonCount; l_I++)
         {
             var l_StartAngle = l_I * l_AngleStep + l_AngleOffset + l_SpacingRatio * l_AngleStep / 2;
             var l_SweepAngle = (1 - l_SpacingRatio) * l_AngleStep;
@@ -220,13 +218,15 @@ public class JobRadialSelector : Canvas
     /// <returns>A tuple containing the path of the button and the panel of the button.</returns>
     private (IdentifiablePath Path, StackPanel Panel) CreateButton(uint p_I, double p_StartAngle, double p_SweepAngle)
     {
+        var l_Job = m_ButtonCount != 0 && Jobs.Count != 0 ? Jobs.Where(p_X => p_X.Enabled).ElementAt((int)p_I % (int)m_ButtonCount) : null;
+
         /* Make the Job button shape */
         var l_Path = new IdentifiablePath
         {
             Id                  = p_I,
-            Stroke              = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].StrokeColor : Brushes.AntiqueWhite,
+            Stroke              = l_Job?.StrokeColor ?? Brushes.AntiqueWhite,
             StrokeThickness     = 4,
-            Fill                = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].FillColor : Brushes.White,
+            Fill                = l_Job?.FillColor ?? Brushes.White,
             Data                = CreateArcPathData(0, 0, p_StartAngle, p_SweepAngle, (double)Radius / 2, InnerRadiusRatio),
             Cursor              = new Cursor(StandardCursorType.Arrow),
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -244,7 +244,7 @@ public class JobRadialSelector : Canvas
         };
 
         /* Make the Select circle */
-        if (Jobs.Count != 0 && SelectedJobID == Jobs[(int)p_I % Jobs.Count].Id)
+        if (SelectedJobID == l_Job?.Id)
         {
             var l_SelectCirclePos = new Point(
                 (double)Radius / 2 * (1 + (InnerRadiusRatio - InnerRadiusRatio / 4) * Math.Cos(ToRadians(p_StartAngle) + ToRadians(p_SweepAngle / 2))),
@@ -254,8 +254,8 @@ public class JobRadialSelector : Canvas
             {
                 Width           = 20,
                 Height          = 20,
-                Fill            = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].FillColor : Brushes.White,
-                Stroke          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].StrokeColor : Brushes.AntiqueWhite,
+                Fill            = l_Job.FillColor   ?? Brushes.White,
+                Stroke          = l_Job.StrokeColor ?? Brushes.AntiqueWhite,
                 StrokeThickness = 3
             };
 
@@ -265,25 +265,39 @@ public class JobRadialSelector : Canvas
             Children.Add(l_SelectCircle);
         }
 
-        /// FontAwesomeIcon to display the emoji
-        var l_FontAwesomeIcon = new Icon
+        var l_FontAwesomeIcon = null as Icon;
+
+        try
         {
-            Value = Jobs.Count != 0
-                ? Jobs[(int)p_I % Jobs.Count].Emoji ?? ""
-                : "",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment   = VerticalAlignment.Center,
-            Foreground          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].ContentColor : Brushes.Black,
-            FontSize            = 20 * ContentScale
-        };
+            /// FontAwesomeIcon to display the emoji
+            l_FontAwesomeIcon = new Icon
+            {
+                Value               = l_Job?.Emoji ?? "",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+                Foreground          = l_Job?.ContentColor ?? Brushes.Black,
+                FontSize            = 20 * ContentScale * (string.IsNullOrEmpty(l_Job?.Emoji) ? 0 : 1)
+            };
+        }
+        catch
+        {
+            l_FontAwesomeIcon = new Icon
+            {
+                Value               = "fa-solid fa-triangle-exclamation",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
+                Foreground          = Brushes.Red,
+                FontSize            = 20 * ContentScale
+            };
+        }
 
         /// TextBlock to display the job name
         var l_TextBlock = new TextBlock
         {
-            Text                = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].Text : "",
+            Text                = l_Job?.Text ?? "",
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment   = VerticalAlignment.Center,
-            Foreground          = Jobs.Count != 0 ? Jobs[(int)p_I % Jobs.Count].ContentColor : Brushes.Black,
+            Foreground          = l_Job?.ContentColor ?? Brushes.Black,
             FontSize            = 15 * ContentScale,
             FontWeight          = FontWeight.Medium,
             IsVisible           = !IsMinimalistic
@@ -328,7 +342,7 @@ public class JobRadialSelector : Canvas
         {
             if (!p_Args.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
 
-            ButtonAction.Invoke(Jobs[(int)p_I % Jobs.Count].Id);
+            ButtonAction.Invoke(l_Job?.Id ?? Guid.Empty);
         });
 
         l_Path.PointerPressed            += l_OnAction;

@@ -30,19 +30,6 @@ public class MainWindowViewModel : ViewModelBase
             }
         };
         CurrentJobSelector = p_CurrentJobSelector;
-        OnJobSelected = p_JobID =>
-        {
-            if (p_JobID == Guid.Empty) throw new ArgumentException("JobID.None is not a valid job.");
-
-            /* Make sure to stop the current job if it's the same as the one selected. */
-            if (CurrentJobSelector.SelectedJobID != Guid.Empty)
-                StopCommand.Execute(null);
-
-            Console.WriteLine($"Job selected: {p_JobID}");
-            CurrentJobSelector.SelectedJobID = p_JobID;
-            JobIsSelected                    = p_JobID != Guid.Empty;
-            CurrentClock.Start();
-        };
         /* Save the current job and then stop the clock and unselect the job. */
         StopCommand = ReactiveCommand.Create(() =>
         {
@@ -56,6 +43,19 @@ public class MainWindowViewModel : ViewModelBase
             CurrentJobSelector.SelectedJobID = Guid.Empty;
             JobIsSelected                    = false;
         });
+        OnJobSelected = p_JobID =>
+        {
+            if (p_JobID == Guid.Empty) throw new ArgumentException("JobID.None is not a valid job.");
+
+            /* Make sure to stop the current job if it's the same as the one selected. */
+            if (CurrentJobSelector.SelectedJobID != Guid.Empty)
+                StopCommand.Execute(null);
+
+            Console.WriteLine($"Job selected: {p_JobID}");
+            CurrentJobSelector.SelectedJobID = p_JobID;
+            JobIsSelected                    = p_JobID != Guid.Empty;
+            CurrentClock.Start();
+        };
     }
 
     [Obsolete("Only for design data context.")]
@@ -65,6 +65,7 @@ public class MainWindowViewModel : ViewModelBase
         CurrentJobSelector = new JobRadialSelector();
         JobIsSelected      = true;
         CurrentClock       = new Clock(0);
+        StopCommand        = ReactiveCommand.Create(() => { });
     }
 
     ////////////////////////////////////////////////////////////////////////////

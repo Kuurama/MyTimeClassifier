@@ -44,31 +44,22 @@ public sealed class AppDbContext : DbContext
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.FillColor)
             .HasConversion(
-                p_Brush => p_Brush != null
-                    ? p_Brush.ToString()
-                    : null,
-                p_StoredString => p_StoredString != null
-                    ? SolidColorBrush.Parse(p_StoredString)
-                    : null);
+                p_Brush => p_Brush.ToString() ?? string.Empty,
+                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+            );
 
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.StrokeColor)
             .HasConversion(
-                p_Brush => p_Brush != null
-                    ? p_Brush.ToString()
-                    : null,
-                p_StoredString => p_StoredString != null
-                    ? SolidColorBrush.Parse(p_StoredString)
-                    : null);
+                p_Brush => p_Brush.ToString() ?? string.Empty,
+                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+            );
 
         p_ModelBuilder.Entity<Job>()
             .Property(p_E => p_E.ContentColor)
             .HasConversion(
-                p_Brush => p_Brush != null
-                    ? p_Brush.ToString()
-                    : null,
-                p_StoredString => p_StoredString != null
-                    ? SolidColorBrush.Parse(p_StoredString)
-                    : null);
+                p_Brush => p_Brush.ToString() ?? string.Empty,
+                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+            );
     }
 }

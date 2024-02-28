@@ -88,6 +88,16 @@
                                     <Slider Minimum="0.1" Maximum="4" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}" Width="180" />
                                 </StackPanel>
                             </StackPanel>
+                            <!-- Jobs title and EditJob button with a fontawesome icon -->
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Spacing="2">
+                                <TextBlock Text="Jobs" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" />
+                                <Button Click="OnJobsEdit">
+                                    <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+                                        <TextBlock Text="Edit" />
+                                        <avalonia:Icon Value="fa-solid fa-edit" FontSize="16" Foreground="{DynamicResource TextColor}" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace MyTimeClassifier.Database.Entities;
@@ -29,6 +30,9 @@ public sealed class Configuration : INotifyPropertyChanged
 
     private float m_RadialContentScale;
     private uint  m_RadialSelectorRadius;
+
+    [NotMapped]
+    private byte m_ReRenderProp;
     private uint  m_SpacingAngle;
     private float m_TimerScale;
     private float m_TitleBarScale;
@@ -158,6 +162,13 @@ public sealed class Configuration : INotifyPropertyChanged
         set => SetField(ref m_TitleBarScale, value);
     }
 
+    [NotMapped]
+    public byte ReRenderProp
+    {
+        get => m_ReRenderProp;
+        set => SetField(ref m_ReRenderProp, value);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -179,4 +190,9 @@ public sealed class Configuration : INotifyPropertyChanged
 
         return true;
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    public void TriggerReRender() => ReRenderProp++;
 }

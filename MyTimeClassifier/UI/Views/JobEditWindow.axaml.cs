@@ -1,15 +1,15 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI.ViewModels;
 using MyTimeClassifier.Utils;
+using System.Diagnostics;
 
 namespace MyTimeClassifier.UI.Views;
 
-public partial class SettingsWindow : Window
+public partial class JobEditWindow : Window
 {
-    public SettingsWindow()
+    public JobEditWindow()
     {
         InitializeComponent();
     }
@@ -24,16 +24,23 @@ public partial class SettingsWindow : Window
 
     public void OnCloseButton(object? p_Sender, RoutedEventArgs _)
     {
-        /* Save the settings */
-        AppConfiguration.SaveConfiguration();
-
         /* Close the window */
         WindowHelper.CloseButton_Click(this);
     }
 
-    private void OnJobsEdit(object? p_Sender, RoutedEventArgs _)
+    private void EmojiTextBlock_PointerPressed(object? p_Sender, PointerPressedEventArgs _)
     {
-        var l_JobEditWindow = new JobEditWindow { DataContext = new JobEditWindowViewModel() };
-        l_JobEditWindow.ShowDialog(this);
+        var l_Psi = new ProcessStartInfo
+        {
+            FileName        = "https://fontawesome.com/search",
+            UseShellExecute = true
+        };
+        Process.Start(l_Psi);
+    }
+
+    private void OnNewRowButton(object? p_Sender, RoutedEventArgs _)
+    {
+        /* Add a new row to the list */
+        JobEditWindowViewModel.AddNewRow();
     }
 }

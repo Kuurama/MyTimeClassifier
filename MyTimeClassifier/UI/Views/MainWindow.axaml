@@ -129,15 +129,15 @@
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{DynamicResource MainLight}">
-                    <components:JobRadialSelector Name="JobSelector" Margin="15" ButtonCount="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs.Count}"
+                    <components:JobRadialSelector Name="JobSelector" Margin="15" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
                                                   Radius="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}"
                                                   GlobalScale="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=GlobalScale}"
-                                                  Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
                                                   IsMinimalistic="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}"
                                                   SpacingAngle="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=SpacingAngle}"
                                                   ButtonAction="{Binding OnJobSelected}"
                                                   ContentScale="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}"
                                                   InnerRadiusRatio="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}"
+                                                  ReRender="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ReRenderProp}"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical" Spacing="5" IsVisible="{Binding JobIsSelected}">
                         <TextBlock Text="Elapsed Time:" FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">

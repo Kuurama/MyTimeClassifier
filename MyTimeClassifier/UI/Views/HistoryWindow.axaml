@@ -86,7 +86,7 @@
                                                 </ContextMenu>
                                             </Button.ContextMenu>
                                         </Button>
-                                        <Button HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" avalonia:Attached.Icon="fa-solid fa-trash" Foreground="Red" Command="{Binding OnDeleteCommand}" />
+                                        <Button HorizontalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" avalonia:Attached.Icon="fa-solid fa-trash" Foreground="#ec5a72" Command="{Binding OnDeleteCommand}" />
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>

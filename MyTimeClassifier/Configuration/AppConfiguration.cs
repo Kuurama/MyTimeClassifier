@@ -43,18 +43,19 @@ public sealed class AppConfiguration
                 /* Create a new database file */
                 l_DbContext.Database.EnsureCreated();
 
-                // Check if jobs have improper IDs
-                if (l_DbContext.Jobs.Any(p_X => p_X.Id == Guid.Empty))
-                {
-                    l_DbContext.Jobs.RemoveRange(l_DbContext.Jobs.Where(p_X => p_X.Id == Guid.Empty));
-                    l_DbContext.SaveChanges();
-                }
-
                 MessageBoxManager.GetMessageBoxStandard("Cleaned improper database data", "[MyTimeClassifier] The database has been cleaned-up.").ShowWindowAsync();
             }
         }
 
         l_Config ??= l_DbContext.Configurations.Add(DefaultConfiguration.s_Configuration).Entity;
+
+        // Check if jobs have improper IDs
+        if (l_DbContext.Jobs.Any(p_X => p_X.Id == Guid.Empty))
+        {
+            l_DbContext.Jobs.RemoveRange(l_DbContext.Jobs.Where(p_X => p_X.Id == Guid.Empty));
+            l_DbContext.SaveChanges();
+        }
+
         /* Save the configuration in case a new one was created from the default configuration. */
         l_DbContext.SaveChanges();
         return l_Config;
