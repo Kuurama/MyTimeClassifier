@@ -39,7 +39,8 @@ public partial class MainWindow : Window
 
     private void OnStatsButton(object? p_Sender, RoutedEventArgs _)
     {
-        Console.WriteLine("Stats button clicked");
+        var l_StatisticsWindow = new StatisticsWindow { DataContext = new StatisticsWindowViewModel() };
+        l_StatisticsWindow.ShowDialog(this);
     }
 
     private void OnSettingsButton(object? p_Sender, RoutedEventArgs _)

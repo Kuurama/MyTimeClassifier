@@ -43,7 +43,7 @@
 
                     <!-- Separation line -->
                     <Rectangle Grid.Row="1" Height="1" Fill="{DynamicResource MainBorder}" VerticalAlignment="Bottom" Margin="0,5,0,5" />
-                    <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TaskModels}" Background="{DynamicResource MainLight}" Scroll="{Binding ScrollViewer, Mode=OneWayToSource}">
+                    <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TaskModels}" Height="{Binding ListBoxHeight}" Background="{DynamicResource MainLight}" Scroll="{Binding ScrollViewer, Mode=OneWayToSource}">
                         <ListBox.Styles>
                             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
                                 <Setter Property="Background" Value="Transparent" />

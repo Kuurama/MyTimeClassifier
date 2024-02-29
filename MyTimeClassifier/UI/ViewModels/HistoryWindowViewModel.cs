@@ -77,26 +77,34 @@ public class HistoryWindowViewModel : ViewModelBase
 
     public void ReLoadData()
     {
+        var l_PrevCount = TaskModels.Count;
         /* Ensure the memory is cleared, and we don't create a new instance of the ObservableCollection */
         TaskModels.Clear();
 
         /* Add the new items (containing their own Jobs too) */
         TaskModels.AddRange(StaticRepo.GetTaskModels(Math.Max(m_CurrentPage, 0), ITEMS_PER_PAGE, p_AddTake: ITEMS_PER_PAGE));
-        //TaskModels.AddRange(StaticRepo.GetTaskModels(0, int.MaxValue));
+
+        /* Ensure the Height of the list box is updated */
+        if (l_PrevCount != TaskModels.Count)
+            this.RaisePropertyChanged(nameof(ListBoxHeight));
+
+        /* Ensure the current page is valid */
+        if (TaskModels.Count == 0 && m_CurrentPage > 0)
+        {
+            m_CurrentPage--;
+            ReLoadData();
+        }
     }
 
-    public void OnScrollChanged(object? p_Sender, ScrollChangedEventArgs p_Event)
+    private void OnScrollChanged(object? p_Sender, ScrollChangedEventArgs p_Event)
     {
         /* Check if it's an offset delta change */
         if (p_Event.OffsetDelta == default(Vector))
-        {
             return;
-        }
 
         /* We only care about the scroll viewer */
         if (p_Sender is not ScrollViewer { IsVisible: true } l_ScrollViewer)
             return;
-
 
         var l_ScrollBarPercentageDown = l_ScrollViewer.Offset.Y                                    / l_ScrollViewer.Extent.Height;
         var l_ScrollBarPercentageUp   = (l_ScrollViewer.Offset.Y + l_ScrollViewer.Viewport.Height) / l_ScrollViewer.Extent.Height;
@@ -120,7 +128,6 @@ public class HistoryWindowViewModel : ViewModelBase
         {
             /* Reload the data */
             ReLoadData();
-            m_ScrollViewer?.InvalidateVisual();
         }
     }
 }

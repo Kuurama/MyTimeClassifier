@@ -31,6 +31,4 @@
         <StyleInclude Source="/Style/TextBlock.axaml" />
         <StyleInclude Source="/Style/TextBox.axaml" />
     </Application.Styles>
-
-
 </Application>

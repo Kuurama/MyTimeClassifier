@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
+using LiveChartsCore.SkiaSharpView.Avalonia;
 using MyTimeClassifier.UI;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
@@ -18,6 +19,8 @@ internal sealed class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
+        GC.KeepAlive(typeof(PieChart).Assembly);
+        GC.KeepAlive(typeof(CartesianChart).Assembly);
         IconProvider.Current.Register<FontAwesomeIconProvider>();
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()

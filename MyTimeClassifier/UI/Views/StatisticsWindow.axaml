@@ -1,0 +1,41 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:MyTimeClassifier.UI.ViewModels"
+        xmlns:avalonia="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+        xmlns:avalonia1="https://github.com/projektanker/icons.avalonia"
+        mc:Ignorable="d"
+        x:Class="MyTimeClassifier.UI.Views.StatisticsWindow"
+        x:DataType="viewModels:StatisticsWindowViewModel"
+        Title="StatisticsWindow"
+        SizeToContent="WidthAndHeight"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyBackgroundFallback="Transparent">
+
+    <Design.DataContext>
+        <viewModels:StatisticsWindowViewModel />
+    </Design.DataContext>
+
+    <Border BorderBrush="{DynamicResource MainBorder}" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
+        <!-- It is necessary to have another border to prevent clipping -->
+        <Border CornerRadius="16" ClipToBounds="True">
+            <Grid RowDefinitions="*,Auto" Background="{DynamicResource MainLight}">
+                <Grid Row="0" Name="Header" ColumnDefinitions="*,*,*" Background="{DynamicResource MainHeavy}">
+                    <TextBlock Grid.Column="0" Text="Statistics"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
+                               FontWeight="ExtraBold" FontSize="20" />
+                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia1:Attached.Icon="fa-solid fa-xmark" FontSize="26" />
+                </Grid>
+
+                <Grid Name="Body" Row="1" Margin="10" Width="300" Height="300" Background="{DynamicResource MainLight}">
+                    <avalonia:PieChart Name="PieChart" Grid.Row="0" Series="{Binding PieSeries}" LegendPosition="Left" LegendTextPaint="{DynamicResource TextPaint}" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Border>
+
+</Window>

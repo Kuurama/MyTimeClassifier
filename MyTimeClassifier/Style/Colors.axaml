@@ -1,21 +1,25 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:painting="clr-namespace:LiveChartsCore.SkiaSharpView.Painting;assembly=LiveChartsCore.SkiaSharpView"
+                    xmlns:skiaSharp="clr-namespace:SkiaSharp;assembly=SkiaSharp">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key='Light'>
             <SolidColorBrush x:Key='TextColor'>#21262F</SolidColorBrush>
+            <skiaSharp:SKColor x:Key="TextSKColor">#21262F</skiaSharp:SKColor>
+            <painting:SolidColorPaint x:Key="TextPaint" Color="{StaticResource TextSKColor}" />
             <SolidColorBrush x:Key='MainLight'>#FAFAFA</SolidColorBrush>
             <SolidColorBrush x:Key='MainMedium'>#F0F0F0</SolidColorBrush>
             <SolidColorBrush x:Key='MainHeavy'>#E6E6E6</SolidColorBrush>
-            <!-- another color for the MainBorder, not the same as dark theme -->
             <SolidColorBrush x:Key='MainBorder'>#D9D9D9</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key='Dark'>
             <SolidColorBrush x:Key='TextColor'>#FAFAFA</SolidColorBrush>
+            <skiaSharp:SKColor x:Key="TextSKColor">#FAFAFA</skiaSharp:SKColor>
+            <painting:SolidColorPaint x:Key="TextPaint" Color="{StaticResource TextSKColor}" />
             <SolidColorBrush x:Key='MainLight'>#21262F</SolidColorBrush>
             <SolidColorBrush x:Key='MainMedium'>#191E27</SolidColorBrush>
             <SolidColorBrush x:Key='MainHeavy'>#151A23</SolidColorBrush>
-
             <SolidColorBrush x:Key='MainBorder'>#0C89E3</SolidColorBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
