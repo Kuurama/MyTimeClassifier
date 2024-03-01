@@ -74,6 +74,23 @@ public sealed class Configuration : INotifyPropertyChanged
         m_Jobs                 = p_Jobs;
     }
 
+    public Configuration(Configuration p_Configuration, bool p_ReferenceJobs)
+    {
+        m_Id                   = p_Configuration.Id;
+        m_ProgramName          = p_Configuration.ProgramName;
+        m_RadialSelectorRadius = p_Configuration.RadialSelectorRadius;
+        m_InnerRadiusRatio     = p_Configuration.InnerRadiusRatio;
+        m_UseLightTheme        = p_Configuration.UseLightTheme;
+        m_IsMinimalistic       = p_Configuration.IsMinimalistic;
+        m_SpacingAngle         = p_Configuration.SpacingAngle;
+        m_RadialContentScale   = p_Configuration.RadialContentScale;
+        m_GlobalScale          = p_Configuration.GlobalScale;
+        m_TimerScale           = p_Configuration.TimerScale;
+        m_TitleBarScale        = p_Configuration.TitleBarScale;
+        if (p_ReferenceJobs)
+            m_Jobs = p_Configuration.Jobs;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 

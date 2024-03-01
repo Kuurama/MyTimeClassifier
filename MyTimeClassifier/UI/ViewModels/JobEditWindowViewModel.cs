@@ -8,8 +8,8 @@ public class JobEditWindowViewModel : ViewModelBase
 {
     public static void AddNewRow()
     {
-        var l_DbContext     = new AppDbContext();
-        var l_CurrentConfig = AppConfiguration.StaticCache;
+        using var l_DbContext     = new AppDbContext();
+        var       l_CurrentConfig = AppConfiguration.StaticCache;
 
         l_DbContext.Attach(l_CurrentConfig);
         l_CurrentConfig.Jobs.Add(new Job());

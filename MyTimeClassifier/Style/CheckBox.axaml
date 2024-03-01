@@ -9,7 +9,7 @@
     <!-- Add Styles Here -->
     <Style Selector="CheckBox">
         <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
-        <Setter Property="Background" Value="{DynamicResource MainMedium}" />
+
         <Setter Property="BorderBrush" Value="{DynamicResource MainBorder}" />
     </Style>
 </Styles>

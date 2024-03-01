@@ -33,14 +33,8 @@
                 </Grid>
 
                 <Grid Name="Body" RowDefinitions="Auto,Auto,Auto,Auto" Row="1" Margin="10" Background="{DynamicResource MainLight}">
-                    <!--<TextBlock Grid.Column="0" Grid.Row="0" Text="Name" FontWeight="Bold" Margin="25,0,0,0" />
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Emoji" FontWeight="Bold" Foreground="{DynamicResource MainBorder}" TextDecorations="Underline" PointerPressed="EmojiTextBlock_PointerPressed" Margin="10,0,0,0" />
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="FillColor" FontWeight="Bold" Margin="10,0,0,0" />
-                    <TextBlock Grid.Column="3" Grid.Row="0" Text="StrokeColor" FontWeight="Bold" />
-                    <TextBlock Grid.Column="4" Grid.Row="0" Text="ContentColor" FontWeight="Bold" />
-                    <TextBlock Grid.Column="5" Grid.Row="0" Text="Enabled" FontWeight="Bold" />-->
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Name" Width="115" FontWeight="Bold" Margin="35,0,0,0" />
+                        <TextBlock Text="Name" Width="145" FontWeight="Bold" Margin="65,0,0,0" />
                         <TextBlock Text="Emoji" Width="105" FontWeight="Bold" Foreground="{DynamicResource MainBorder}" TextDecorations="Underline" PointerPressed="EmojiTextBlock_PointerPressed" />
                         <TextBlock Text="FillColor" Width="90" FontWeight="Bold" />
                         <TextBlock Text="StrokeColor" Width="100" FontWeight="Bold" />
@@ -51,7 +45,7 @@
                     <Rectangle Grid.Row="1" Height="1" Fill="{DynamicResource MainBorder}" VerticalAlignment="Bottom" Margin="0,5,0,5" />
                     <!-- New row button -->
                     <Button Grid.Row="2" avalonia:Attached.Icon="fa-solid fa-plus" FontWeight="Bold" FontSize="15" Height="25" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="OnNewRowButton" />
-                    <ListBox Grid.Row="3" ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" Background="{DynamicResource MainLight}">
+                    <ListBox Grid.Row="3" ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" Height="420" Background="{DynamicResource MainLight}">
                         <ListBox.Styles>
                             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
                                 <Setter Property="Background" Value="Transparent" />
@@ -64,7 +58,7 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="entities:Job">
                                 <StackPanel Orientation="Horizontal" Spacing="5" Margin="-8,0,0,0">
-                                    <TextBox Text="{Binding Text}" Width="100" HorizontalAlignment="Left" />
+                                    <TextBox Text="{Binding Text}" Width="160" HorizontalAlignment="Left" />
                                     <TextBox Text="{Binding Emoji}" Width="120" />
                                     <ColorPicker Color="{Binding FillColorAsColor}" Width="100" />
                                     <ColorPicker Color="{Binding StrokeColorAsColor}" Width="100" />

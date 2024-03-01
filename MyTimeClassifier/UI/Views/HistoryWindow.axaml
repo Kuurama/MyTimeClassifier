@@ -38,7 +38,7 @@
                         <TextBlock Text="Start Time" FontWeight="Bold" Margin="50,0,0,0" HorizontalAlignment="Left" />
                         <TextBlock Text="End Time" FontWeight="Bold" Margin="95,0,0,0" HorizontalAlignment="Left" />
                         <TextBlock Text="Elapsed Time" FontWeight="Bold" Margin="60,0,0,0" HorizontalAlignment="Left" />
-                        <TextBlock Text="Job" FontWeight="Bold" Margin="68,0,0,0" HorizontalAlignment="Left" />
+                        <TextBlock Text="Job" FontWeight="Bold" Margin="90,0,0,0" HorizontalAlignment="Left" />
                     </StackPanel>
 
                     <!-- Separation line -->
@@ -81,7 +81,7 @@
                                         </Button.ContextMenu>
                                     </Button>
                                     <TextBlock Text="{Binding ElapsedTime}" VerticalAlignment="Center" FontWeight="Bold" Width="100" Margin="20, 0, 0, 0" />
-                                    <ComboBox ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" SelectedItem="{Binding Job}" Width="120">
+                                    <ComboBox ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" SelectedItem="{Binding Job}" Width="160">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate DataType="entities:Job">
                                                 <TextBlock Text="{Binding Text}" />

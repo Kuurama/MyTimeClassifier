@@ -1,10 +1,18 @@
 using Avalonia.Media;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using System;
 
 namespace MyTimeClassifier.Utils;
 
 public static class ColorExtensions
 {
+    public static SKColor ToSKColor(this ISolidColorBrush? p_Brush)
+        => p_Brush is null ? new SKColor(0, 0, 0, 255) : new SKColor(p_Brush.Color.R, p_Brush.Color.G, p_Brush.Color.B, p_Brush.Color.A);
+
+    public static Color ToColor(this Paint p_Color)
+        => new(p_Color.Color.Alpha, p_Color.Color.Red, p_Color.Color.Green, p_Color.Color.Blue);
+
     public static Color Lighten(this Color p_Color, float p_Factor)
     {
         RGBToHSL(p_Color.R, p_Color.G, p_Color.B, out var l_H, out var l_S, out var l_L);

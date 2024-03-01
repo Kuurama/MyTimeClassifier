@@ -17,7 +17,7 @@ namespace MyTimeClassifier.Database.Entities;
 public class Job : INotifyPropertyChanged
 {
     private const uint MAX_EMOJI_LENGTH = 63;
-    private const uint MAX_TEXT_LENGTH  = 12;
+    private const uint MAX_TEXT_LENGTH  = 48;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

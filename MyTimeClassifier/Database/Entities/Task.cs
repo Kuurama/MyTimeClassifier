@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,11 +8,10 @@ using System.Runtime.CompilerServices;
 
 namespace MyTimeClassifier.Database.Entities;
 
+[PrimaryKey(nameof(Id), nameof(JobID))]
 public class Task : INotifyPropertyChanged
 {
-    [Key]
     private uint m_Id;
-    [Key] [ForeignKey(nameof(Job.Id))]
     private Guid m_JobID;
 
     /* uint32 is fine because it's enough for use until 2106 */
@@ -21,12 +21,30 @@ public class Task : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    /// <summary>
+    ///     Constructor used by Entity Framework.
+    /// </summary>
+    public Task() { }
+
+    public Task(uint p_Id, Guid p_JobID, uint p_UnixStartTime, uint p_UnixEndTime)
+    {
+        m_Id            = p_Id;
+        m_JobID         = p_JobID;
+        m_UnixStartTime = p_UnixStartTime;
+        m_UnixEndTime   = p_UnixEndTime;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    [Key]
     public uint Id
     {
         get => m_Id;
         set => SetField(ref m_Id, value);
     }
 
+    [ForeignKey(nameof(Job.Id))]
     public Guid JobID
     {
         get => m_JobID;
@@ -86,7 +104,7 @@ public class Task : INotifyPropertyChanged
     private bool SaveToDB()
     {
         /* Update the field in database */
-        var l_DBContext = new AppDbContext();
+        using var l_DBContext = new AppDbContext();
         l_DBContext.Update(this);
 
         try

@@ -24,7 +24,7 @@ public static class DefaultConfiguration
         30,
         1.0f,
         0.7f,
-        1.35f,
+        1.25f,
         1.0f,
         [
             new Job

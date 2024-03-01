@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
-using LiveChartsCore.SkiaSharpView.Avalonia;
 using MyTimeClassifier.UI;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
@@ -14,13 +13,14 @@ internal sealed class Program
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
     [STAThread]
-    public static void Main(string[] p_Args) => BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(p_Args);
+    public static void Main(string[] p_Args)
+    {
+        BuildAvaloniaApp()
+            .StartWithClassicDesktopLifetime(p_Args);
+    }
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        GC.KeepAlive(typeof(PieChart).Assembly);
-        GC.KeepAlive(typeof(CartesianChart).Assembly);
         IconProvider.Current.Register<FontAwesomeIconProvider>();
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()

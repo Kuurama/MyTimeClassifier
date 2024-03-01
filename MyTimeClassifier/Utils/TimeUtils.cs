@@ -54,4 +54,33 @@ public static class TimeUtils
     /// <param name="p_Result"></param>
     /// <returns></returns>
     public static bool TryParseInternational(this string p_Input, out DateTime p_Result) => DateTime.TryParse(p_Input, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out p_Result);
+
+    public static string ToVeryLargeTimeString(this UInt64 p_UnixTimeSec)
+    {
+        const UInt64 SECONDS_IN_MINUTE       = 60;
+        const UInt64 SECONDS_IN_HOUR         = 60  * SECONDS_IN_MINUTE;
+        const UInt64 SECONDS_IN_DAY          = 24  * SECONDS_IN_HOUR;
+        const UInt64 SECONDS_IN_30_DAY_MONTH = 30  * SECONDS_IN_DAY;
+        const UInt64 SECONDS_IN_365_DAY_YEAR = 365 * SECONDS_IN_DAY;
+
+        var l_Years   = p_UnixTimeSec                           / SECONDS_IN_365_DAY_YEAR;
+        var l_Months  = p_UnixTimeSec % SECONDS_IN_365_DAY_YEAR / SECONDS_IN_30_DAY_MONTH;
+        var l_Days    = p_UnixTimeSec % SECONDS_IN_30_DAY_MONTH / SECONDS_IN_DAY;
+        var l_Hours   = p_UnixTimeSec % SECONDS_IN_DAY          / SECONDS_IN_HOUR;
+        var l_Minutes = p_UnixTimeSec % SECONDS_IN_HOUR         / SECONDS_IN_MINUTE;
+        var l_Seconds = p_UnixTimeSec                           % SECONDS_IN_MINUTE;
+
+        var l_Tuple = (l_Years, l_Months, l_Days, l_Hours, l_Minutes, l_Seconds);
+
+        return l_Tuple switch
+        {
+            (0, 0, 0, 0, 0, 0) => "0s",
+            (0, 0, 0, 0, 0, _) => $"{l_Seconds}s",
+            (0, 0, 0, 0, _, _) => $"{l_Minutes}m {l_Seconds}s",
+            (0, 0, 0, _, _, _) => $"{l_Hours}h {l_Minutes}m {l_Seconds}s",
+            (0, 0, _, _, _, _) => $"{l_Days}d {l_Hours}h {l_Minutes}m {l_Seconds}s",
+            (0, _, _, _, _, _) => $"{l_Months}m {l_Days}d {l_Hours}h {l_Minutes}m {l_Seconds}s",
+            (_, _, _, _, _, _) => $"{l_Years}y {l_Months}m {l_Days}d {l_Hours}h {l_Minutes}m {l_Seconds}s"
+        };
+    }
 }

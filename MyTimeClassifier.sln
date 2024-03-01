@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTimeClassifier", "MyTimeClassifier\MyTimeClassifier.csproj", "{F3C5EC88-DE55-4A44-A5C2-E11FA6E1EA0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConverter", "DBConverter\DBConverter.csproj", "{F04465B1-9864-497E-B7C0-0E826CE4D175}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{F3C5EC88-DE55-4A44-A5C2-E11FA6E1EA0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3C5EC88-DE55-4A44-A5C2-E11FA6E1EA0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3C5EC88-DE55-4A44-A5C2-E11FA6E1EA0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F04465B1-9864-497E-B7C0-0E826CE4D175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F04465B1-9864-497E-B7C0-0E826CE4D175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F04465B1-9864-497E-B7C0-0E826CE4D175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F04465B1-9864-497E-B7C0-0E826CE4D175}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

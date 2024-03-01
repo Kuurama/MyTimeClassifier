@@ -14,13 +14,7 @@ public static class StaticRepo
 
         /* Get the next (auto-increment) TaskID */
         var l_NextTaskID = l_DbContext.Tasks.OrderBy(p_X => p_X.Id).Select(p_X => p_X.Id).LastOrDefault() + 1;
-        l_DbContext.Tasks.Add(new Task
-        {
-            Id            = l_NextTaskID,
-            JobID         = p_JobID,
-            UnixStartTime = p_StartingUnixTime,
-            UnixEndTime   = p_EndingUnixTime
-        });
+        l_DbContext.Tasks.Add(new Task(l_NextTaskID, p_JobID, p_StartingUnixTime, p_EndingUnixTime));
 
         l_DbContext.SaveChanges();
     }
@@ -45,7 +39,7 @@ public static class StaticRepo
     public static IEnumerable<TaskModel> GetTaskModels(int p_Page, int p_ItemsPerPage, int p_AddSkip = 0, int p_AddTake = 0)
     {
         using var l_DbContext = new AppDbContext();
-        return l_DbContext.Tasks.OrderBy(p_X => p_X.UnixStartTime)
+        return l_DbContext.Tasks.OrderByDescending(p_X => p_X.UnixStartTime)
             .Skip(p_Page * p_ItemsPerPage + p_AddSkip)
             .Take(p_ItemsPerPage          + p_AddTake)
             .Select(p_X => new TaskModel(p_X)).ToArray();
