@@ -25,7 +25,7 @@ public sealed class AppConfiguration
         var       l_Config    = null as Database.Entities.Configuration;
 
         /* Catch issues with the database (as in program startup) */
-        try { l_Config = l_DbContext.Configurations.Include(p_X => p_X.Jobs).SingleOrDefault(); }
+        try { l_Config = l_DbContext.Configurations.Include(p_X => p_X.Jobs.OrderBy(p_Job => p_Job.Priority)).SingleOrDefault(); }
         catch
         {
             /* Backup the database file */
@@ -54,6 +54,17 @@ public sealed class AppConfiguration
         {
             l_DbContext.Jobs.RemoveRange(l_DbContext.Jobs.Where(p_X => p_X.Id == Guid.Empty));
             l_DbContext.SaveChanges();
+        }
+
+        // Check if the priority of the jobs is correct
+        var l_Priority = 0u;
+
+        foreach (var l_Job in l_Config.Jobs.OrderBy(p_X => p_X.Priority))
+        {
+            if (l_Job.SafePriority != ++l_Priority)
+            {
+                l_Job.SafePriority = l_Priority;
+            }
         }
 
         /* Save the configuration in case a new one was created from the default configuration. */

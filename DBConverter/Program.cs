@@ -79,9 +79,11 @@ internal class Program
                 l_AllJobName.RemoveWhere(p_X => l_SimilarDuplicates.Contains(p_X) && p_X != l_LongestDuplicate);
             }
 
+            var l_Priority = 0u;
+
             /* Adding the Jobs to the configuration */
             foreach (var l_OldJobName in l_AllJobName)
-                l_Configuration.Jobs.Add(new Job(l_OldJobName ?? string.Empty, null, null, null, null));
+                l_Configuration.Jobs.Add(new Job(l_OldJobName ?? string.Empty, null, null, null, null, l_Priority++, true));
 
             /* Adding the Jobs to the DB (so we can then use their IDs to link the tasks to them) */
             l_MyTimeClassifierDbContext.SaveChanges();

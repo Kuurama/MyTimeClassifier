@@ -2,11 +2,13 @@ using Avalonia;
 using Avalonia.Styling;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace MyTimeClassifier.Database.Entities;
@@ -128,7 +130,11 @@ public sealed class Configuration : INotifyPropertyChanged
     public ObservableCollection<Job> Jobs
     {
         get => m_Jobs;
-        set => SetField(ref m_Jobs, value);
+        set
+        {
+            SetField(ref m_Jobs, value);
+            OnPropertyChanged(nameof(Priorities));
+        }
     }
 
     public float RadialContentScale
@@ -186,6 +192,12 @@ public sealed class Configuration : INotifyPropertyChanged
         set => SetField(ref m_ReRenderProp, value);
     }
 
+    [NotMapped]
+    public uint[] Priorities
+    {
+        get => m_Jobs.Select(p_X => p_X.Priority).ToArray();
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
@@ -212,4 +224,27 @@ public sealed class Configuration : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
 
     public void TriggerReRender() => ReRenderProp++;
+
+
+    public void ReOrderJobs((Guid JobID, uint NewValue, uint OldValue)? p_JobChange)
+    {
+        Job[]? l_Jobs;
+
+        if (p_JobChange is not null && p_JobChange.Value.NewValue != p_JobChange.Value.OldValue)
+        {
+            /* Find the jobs in between the new and old priority */
+            l_Jobs = m_Jobs.Where(p_X => p_X.Priority >= Math.Min(p_JobChange.Value.OldValue, p_JobChange.Value.NewValue) && p_X.Priority <= Math.Max(p_JobChange.Value.OldValue, p_JobChange.Value.NewValue) && p_X.Id != p_JobChange.Value.JobID)
+                .OrderBy(p_X => p_X.Priority).ToArray();
+
+            /* Move the jobs in between down */
+            foreach (var l_T in l_Jobs)
+                l_T.Priority = p_JobChange.Value.NewValue > p_JobChange.Value.OldValue ? l_T.Priority - 1 : l_T.Priority + 1;
+        }
+
+        /* Reorder the jobs */
+        l_Jobs = m_Jobs.OrderBy(p_X => p_X.Priority).ToArray();
+
+        for (var l_I = 0; l_I < l_Jobs.Length; l_I++)
+            m_Jobs.Move(m_Jobs.IndexOf(l_Jobs[l_I]), l_I);
+    }
 }

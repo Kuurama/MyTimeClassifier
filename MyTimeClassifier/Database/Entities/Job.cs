@@ -27,6 +27,8 @@ public class Job : INotifyPropertyChanged
     private bool   m_Enabled      = true;
     private IBrush m_FillColor    = new SolidColorBrush(Color.Parse("#191E27"));
     private Guid   m_Id;
+    private bool   m_IsRadial = true;
+    private uint   m_Priority;
     private IBrush m_StrokeColor = new SolidColorBrush(Color.Parse("#151A23"));
     private string m_Text        = "Unknown";
 
@@ -36,16 +38,23 @@ public class Job : INotifyPropertyChanged
     /// <summary>
     ///     Constructor used by Entity Framework.
     /// </summary>
-    public Job()
-        => OnDeleteCommand = GetDeleteCommand();
+    public Job() => OnDeleteCommand = GetDeleteCommand();
 
-    public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor, bool p_Enabled = true)
+    public Job(uint p_Priority)
+    {
+        m_Priority      = p_Priority;
+        OnDeleteCommand = GetDeleteCommand();
+    }
+
+    public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor, uint p_Priority, bool p_IsRadial, bool p_Enabled = true)
     {
         m_Text         = p_Text         ?? "Unknown";
         m_Emoji        = p_Emoji        ?? "fa-question";
         m_FillColor    = p_FillColor    ?? new SolidColorBrush(Color.Parse("#191E27"));
         m_StrokeColor  = p_StrokeColor  ?? new SolidColorBrush(Color.Parse("#151A23"));
         m_ContentColor = p_ContentColor ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
+        m_Priority     = p_Priority;
+        m_IsRadial     = p_IsRadial;
         m_Enabled      = p_Enabled;
 
         OnDeleteCommand = GetDeleteCommand();
@@ -77,6 +86,45 @@ public class Job : INotifyPropertyChanged
     {
         get => m_ContentColor;
         set => SetField(ref m_ContentColor, value);
+    }
+
+    public uint SafePriority
+    {
+        get => m_Priority;
+        set => SetField(ref m_Priority, value);
+    }
+
+    public uint Priority
+    {
+        get => m_Priority;
+        set
+        {
+            SetField(ref m_Priority, value);
+            AppConfiguration.StaticCache.TriggerReRender();
+        }
+    }
+
+    public bool IsRadial
+    {
+        get => m_IsRadial;
+        set
+        {
+            SetField(ref m_IsRadial, value);
+            AppConfiguration.StaticCache.TriggerReRender();
+        }
+    }
+
+    [NotMapped]
+    public uint PriorityReordering
+    {
+        get => m_Priority;
+        set
+        {
+            var l_OldPriority = m_Priority;
+            SetField(ref m_Priority, value);
+            AppConfiguration.StaticCache.ReOrderJobs((JobID: Id, NewValue: m_Priority, OldValue: l_OldPriority));
+            AppConfiguration.StaticCache.TriggerReRender();
+        }
     }
 
     public bool Enabled
