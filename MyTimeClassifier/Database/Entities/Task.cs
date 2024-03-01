@@ -54,13 +54,27 @@ public class Task : INotifyPropertyChanged
     public uint UnixStartTime
     {
         get => m_UnixStartTime;
-        set => SetField(ref m_UnixStartTime, value);
+        set
+        {
+            /* Throw if the value is higher than the end time */
+            if (value > UnixEndTime)
+                throw new ArgumentOutOfRangeException(nameof(UnixStartTime), "The start time cannot be higher than the end time.");
+
+            SetField(ref m_UnixStartTime, value);
+        }
     }
 
     public uint UnixEndTime
     {
         get => m_UnixEndTime;
-        set => SetField(ref m_UnixEndTime, value);
+        set
+        {
+            /* Throw if the value is lower than the start time */
+            if (value < UnixStartTime)
+                throw new ArgumentOutOfRangeException(nameof(UnixEndTime), "The end time cannot be lower than the start time.");
+
+            SetField(ref m_UnixEndTime, value);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
