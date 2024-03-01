@@ -31,4 +31,17 @@
         <StyleInclude Source="/Style/TextBlock.axaml" />
         <StyleInclude Source="/Style/TextBox.axaml" />
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="avares://MyTimeClassifier/Assets/Icon.ico" Clicked="NativeMenuItem_Show_OnClick">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Show" Click="NativeMenuItem_Show_OnClick" />
+                        <NativeMenuItem Header="Exit" Click="NativeMenuItem_Exit_OnClick" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>

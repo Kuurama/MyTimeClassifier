@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI.Views;
+using System;
 
 namespace MyTimeClassifier.UI;
 
@@ -30,4 +31,21 @@ public class App : Application
     }
 
     public void ChangeTheme(ThemeVariant p_ThemeVariant) => RequestedThemeVariant = p_ThemeVariant;
+
+    private void NativeMenuItem_Show_OnClick(object? p_Sender, EventArgs _)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime l_Desktop)
+            return;
+
+        l_Desktop.MainWindow ??= new MainWindow();
+        l_Desktop.MainWindow.Show();
+    }
+
+    private void NativeMenuItem_Exit_OnClick(object? p_Sender, EventArgs _)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime l_Desktop)
+            return;
+
+        l_Desktop.MainWindow?.Close();
+    }
 }

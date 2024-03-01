@@ -14,5 +14,5 @@ public static class WindowHelper
 
     public static void CloseButton_Click(Window p_Window) => p_Window.Close();
 
-    public static void MinimizeButton_Click(Window p_Window) => p_Window.WindowState = WindowState.Minimized;
+    public static void MinimizeButton_Click(Window p_Window) => p_Window.Hide();
 }

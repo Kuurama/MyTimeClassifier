@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         x:Class="MyTimeClassifier.UI.Views.MainWindow"
         x:DataType="viewModels:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/Icon.ico"
         Title="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
         SizeToContent="WidthAndHeight"
         CanResize="False"
@@ -41,10 +41,10 @@
                     </TextBlock>
                     <StackPanel Name="WindowControls" Orientation="Horizontal" Spacing="15"
                                 HorizontalAlignment="Right" Margin="0, 0, 20, 0">
-                        <Button Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-down-left-and-up-right-to-center">
+                        <Button Click="OnMinimizeButton" avalonia:Attached.Icon="fa-solid fa-minus">
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
-                                    <Binding Source="20" />
+                                    <Binding Source="30" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
                                     <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
                                 </MultiBinding>
