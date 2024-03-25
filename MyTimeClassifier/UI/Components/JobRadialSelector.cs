@@ -293,9 +293,10 @@ public class JobRadialSelector : Canvas
         }
 
         /// TextBlock to display the job name
+        // add every '\letter' to their respective format equivalent
         var l_TextBlock = new TextBlock
         {
-            Text                = l_Job?.Text ?? "",
+            Text                = (l_Job?.Text ?? "").Replace("\\n", "\n"),
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment   = VerticalAlignment.Center,
             Foreground          = l_Job?.ContentColor ?? Brushes.Black,

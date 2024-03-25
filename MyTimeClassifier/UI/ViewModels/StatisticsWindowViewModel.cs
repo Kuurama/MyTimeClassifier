@@ -110,17 +110,6 @@ public class StatisticsWindowViewModel : ViewModelBase
                 (p_JobIDTimeSpan, p_Job) => (p_Job.Id, p_Job.Text, Paint: new SolidColorPaint((p_Job.FillColor as SolidColorBrush).ToSKColor()), p_JobIDTimeSpan.TotalSeconds)).ToArray();
 
         PieChartSeries = ToPiChartSeries(l_JobValueAndCountTuples);
-
-        /*XAxis          = ToAxis();
-
-        var l_StackedColumnSeries = new StackedColumnSeries<long>[1];
-        l_StackedColumnSeries[0] = new StackedColumnSeries<long>
-        {
-            Values     = l_JobValueAndCountTuples.Select(p_X => (long)p_X.TotalSeconds).ToArray(),
-            StackGroup = 1
-        };
-
-        StackedColumnSeries = l_StackedColumnSeries;*/
     }
 
     private PieSeries<long>[] ToPiChartSeries(IEnumerable<(Guid Id, string Text, SolidColorPaint Paint, uint TotalSeconds)> p_JobNamesAndCountTuples)
