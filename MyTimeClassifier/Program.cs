@@ -19,7 +19,7 @@ internal sealed class Program
             .StartWithClassicDesktopLifetime(p_Args);
     }
 
-    public static AppBuilder BuildAvaloniaApp()
+    private static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current.Register<FontAwesomeIconProvider>();
         return AppBuilder.Configure<App>()

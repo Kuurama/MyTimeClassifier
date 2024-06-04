@@ -8,13 +8,13 @@ namespace MyTimeClassifier.Database;
 
 public static class StaticRepo
 {
-    public static void StoreTask(Guid p_JobID, uint p_StartingUnixTime, uint p_EndingUnixTime)
+    public static void StoreTask(Guid p_JobID, uint p_StartingUnixTime, uint p_EndingUnixTime, out uint p_NewTaskID)
     {
         AppDbContext l_DbContext = new();
 
         /* Get the next (auto-increment) TaskID */
-        var l_NextTaskID = l_DbContext.Tasks.OrderBy(p_X => p_X.Id).Select(p_X => p_X.Id).LastOrDefault() + 1;
-        l_DbContext.Tasks.Add(new Task(l_NextTaskID, p_JobID, p_StartingUnixTime, p_EndingUnixTime));
+        p_NewTaskID = l_DbContext.Tasks.OrderBy(p_X => p_X.Id).Select(p_X => p_X.Id).LastOrDefault() + 1;
+        l_DbContext.Tasks.Add(new Task(p_NewTaskID, p_JobID, p_StartingUnixTime, p_EndingUnixTime));
 
         l_DbContext.SaveChanges();
     }

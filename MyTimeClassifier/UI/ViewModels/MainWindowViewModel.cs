@@ -110,6 +110,6 @@ public class MainWindowViewModel : ViewModelBase
 
         Console.WriteLine($"Storing task from {l_StartingTimeUnix} to {l_CurrentUnixTime}");
         /* Store the task in the database. */
-        StaticRepo.StoreTask(CurrentJobSelector.SelectedJobID, (uint)l_StartingTimeUnix, (uint)l_CurrentUnixTime);
+        StaticRepo.StoreTask(CurrentJobSelector.SelectedJobID, (uint)l_StartingTimeUnix, (uint)l_CurrentUnixTime, out _);
     }
 }

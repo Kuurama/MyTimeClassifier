@@ -56,6 +56,7 @@ public class TaskModel : INotifyPropertyChanged
         {
             m_Task.JobID = value.Id;
             m_Job        = value;
+            OnPropertyChanged();
         }
     }
 
@@ -140,10 +141,6 @@ public class TaskModel : INotifyPropertyChanged
 
     private ReactiveCommand<Unit, Unit> GetDeleteCommand() => ReactiveCommand.Create(() =>
     {
-        using var l_DBContext = new AppDbContext();
-        l_DBContext.Tasks.Remove(l_DBContext.Tasks.First(p_X => p_X.Id == TaskID));
-        l_DBContext.SaveChanges();
-
         TaskID = 0;
     });
 
