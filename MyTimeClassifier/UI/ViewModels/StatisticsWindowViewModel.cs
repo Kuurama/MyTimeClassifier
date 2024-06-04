@@ -116,7 +116,7 @@ public class StatisticsWindowViewModel : ViewModelBase
     {
         return p_JobNamesAndCountTuples.Select(p_X => new PieSeries<long>
         {
-            Name                  = p_X.Text,
+            Name                  = p_X.Text.Replace("\\n", " "),
             Values                = new[] { (long)p_X.TotalSeconds },
             Fill                  = p_X.Paint,
             ToolTipLabelFormatter = p_Value => ((UInt64)p_Value.Model).ToVeryLargeTimeString()

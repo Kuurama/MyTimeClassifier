@@ -189,6 +189,9 @@ public class Job : INotifyPropertyChanged
             AppConfiguration.StaticCache.TriggerReRender();
         }
     }
+    
+    [NotMapped]
+    public string NormalizedText => Text.Replace("\\n", " ");
 
     [MaxLength((int)MAX_EMOJI_LENGTH)]
     public string Emoji

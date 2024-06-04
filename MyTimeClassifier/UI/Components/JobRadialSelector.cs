@@ -292,7 +292,7 @@ public class JobRadialSelector : Canvas
             };
         }
 
-        /// TextBlock to display the job name
+        // TextBlock to display the job name
         // add every '\letter' to their respective format equivalent
         var l_TextBlock = new TextBlock
         {

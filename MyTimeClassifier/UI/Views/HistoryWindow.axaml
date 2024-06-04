@@ -86,7 +86,7 @@
                                     <ComboBox ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" SelectedItem="{Binding Job}" Width="160">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate DataType="entities:Job">
-                                                <TextBlock Text="{Binding Text}" />
+                                                <TextBlock Text="{Binding NormalizedText}" />
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>

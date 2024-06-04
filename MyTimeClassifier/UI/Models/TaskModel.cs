@@ -127,10 +127,7 @@ public class TaskModel : INotifyPropertyChanged
         }
     }
 
-    public TimeSpan ElapsedTime
-    {
-        get => TimeUtils.FromUnixTime(m_Task.UnixEndTime) - TimeUtils.FromUnixTime(m_Task.UnixStartTime);
-    }
+    public TimeSpan ElapsedTime => TimeUtils.FromUnixTime(m_Task.UnixEndTime) - TimeUtils.FromUnixTime(m_Task.UnixStartTime);
 
     public ICommand OnDeleteCommand { get; init; }
 

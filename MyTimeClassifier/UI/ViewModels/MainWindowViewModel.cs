@@ -81,7 +81,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public bool JobIsSelected { get => m_JobIsSelected; set => this.RaiseAndSetIfChanged(ref m_JobIsSelected, value); }
 
-    public string SelectedJobText { get => m_JobText; set => this.RaiseAndSetIfChanged(ref m_JobText, value); }
+    public string SelectedJobText { get => m_JobText.Replace("\\n", "\n"); set => this.RaiseAndSetIfChanged(ref m_JobText, value); }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
