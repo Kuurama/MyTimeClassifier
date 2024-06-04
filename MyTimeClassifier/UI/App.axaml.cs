@@ -24,6 +24,9 @@ public class App : Application
             l_Desktop.ShutdownRequested += (_, _) =>
             {
                 AppConfiguration.SaveConfiguration();
+                
+                Program._mutex.ReleaseMutex();
+                Program._mutex.Dispose();
             };
         }
 

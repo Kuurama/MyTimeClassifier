@@ -11,7 +11,7 @@ namespace MyTimeClassifier;
 internal sealed class Program
 {
     private const string MutexName = "MyTimeClassifierMutex";
-    private static Mutex? _mutex; 
+    public static Mutex _mutex = null!;
     
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
