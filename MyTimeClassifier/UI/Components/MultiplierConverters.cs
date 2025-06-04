@@ -12,6 +12,9 @@ public class MultiplierTwoConverter : IMultiValueConverter
         var l_Value1 = p_Values[0] is string l_Str1 ? float.Parse(l_Str1) : (float?)p_Values[0] ?? 0f;
         var l_Value2 = p_Values[1] is string l_Str2 ? float.Parse(l_Str2) : (float?)p_Values[1] ?? 0f;
 
+        if (p_TargetType == typeof(double))
+            return (double)l_Value1 * l_Value2;
+
         return l_Value1 * l_Value2;
     }
 }
@@ -23,6 +26,9 @@ public class MultiplierThreeConverter : IMultiValueConverter
         var l_Value1 = p_Values[0] is string l_Str1 ? float.Parse(l_Str1) : (float?)p_Values[0] ?? 0f;
         var l_Value2 = p_Values[1] is string l_Str2 ? float.Parse(l_Str2) : (float?)p_Values[1] ?? 0f;
         var l_Value3 = p_Values[2] is string l_Str3 ? float.Parse(l_Str3) : (float?)p_Values[2] ?? 0f;
+
+        if (p_TargetType == typeof(double))
+            return (double)l_Value1 * l_Value2 * l_Value3;
 
         return l_Value1 * l_Value2 * l_Value3;
     }

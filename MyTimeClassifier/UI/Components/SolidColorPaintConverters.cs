@@ -16,6 +16,6 @@ public class SolidPainBrushToSolidColorPaintConverter : IValueConverter
 
     public object? ConvertBack(object? p_Value, Type p_TargetType, object? p_Parameter, CultureInfo p_Culture)
         => p_Value is SolidColorPaint l_Paint
-            ? new SolidColorBrush(l_Paint.ToColor())
+            ? new SolidColorBrush(l_Paint.Color.ToColor())
             : null;
 }
