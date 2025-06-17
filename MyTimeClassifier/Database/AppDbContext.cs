@@ -6,60 +6,49 @@ namespace MyTimeClassifier.Database;
 
 public sealed class AppDbContext : DbContext
 {
-    public const string DATABASE_PATH_NAME = "MyTimeClassifier.db";
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public AppDbContext() => Database.EnsureCreated();
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    public const string DatabasePathName = "MyTimeClassifier.db";
 
     public DbSet<Entities.Configuration> Configurations { get; set; } = null!;
-    public DbSet<Job>                    Jobs           { get; set; } = null!;
-    public DbSet<Task>                   Tasks          { get; set; } = null!;
+    public DbSet<Job> Jobs { get; set; } = null!;
+    public DbSet<Task> Tasks { get; set; } = null!;
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    protected override void OnConfiguring(DbContextOptionsBuilder p_OptionsBuilder)
-        => p_OptionsBuilder.UseSqlite($"Data Source={DATABASE_PATH_NAME}");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlite($"Data Source={DatabasePathName}");
 
     /// <summary>
-    ///     Specifies the serializer and deserializer for the complex types in the database.
-    ///     In this case: JobID, SolidColorBrush.
+    /// Specifies the mapping of the database entities, including the serializer and deserializer for the complex types
+    /// in the database. In this case: SolidColorBrush.
     /// </summary>
-    /// <param name="p_ModelBuilder"></param>
-    protected override void OnModelCreating(ModelBuilder p_ModelBuilder)
+    /// <param name="modelBuilder"></param>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        p_ModelBuilder.Entity<Job>()
-            .Property(p_E => p_E.Id)
+        modelBuilder.Entity<Job>()
+            .Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-        p_ModelBuilder.Entity<Task>()
-            .Property(p_E => p_E.Id)
+        modelBuilder.Entity<Task>()
+            .Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-        p_ModelBuilder.Entity<Job>()
-            .Property(p_E => p_E.FillColor)
+        modelBuilder.Entity<Job>()
+            .Property(x => x.FillColor)
             .HasConversion(
-                p_Brush => p_Brush.ToString() ?? string.Empty,
-                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+                brush => brush.ToString() ?? string.Empty,
+                storedString => SolidColorBrush.Parse(storedString)
             );
 
-        p_ModelBuilder.Entity<Job>()
-            .Property(p_E => p_E.StrokeColor)
+        modelBuilder.Entity<Job>()
+            .Property(x => x.StrokeColor)
             .HasConversion(
-                p_Brush => p_Brush.ToString() ?? string.Empty,
-                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+                brush => brush.ToString() ?? string.Empty,
+                x => SolidColorBrush.Parse(x)
             );
 
-        p_ModelBuilder.Entity<Job>()
-            .Property(p_E => p_E.ContentColor)
+        modelBuilder.Entity<Job>()
+            .Property(x => x.ContentColor)
             .HasConversion(
-                p_Brush => p_Brush.ToString() ?? string.Empty,
-                p_StoredString => SolidColorBrush.Parse(p_StoredString)
+                brush => brush.ToString() ?? string.Empty,
+                storedString => SolidColorBrush.Parse(storedString)
             );
     }
 }

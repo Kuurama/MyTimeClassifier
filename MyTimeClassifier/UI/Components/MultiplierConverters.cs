@@ -1,35 +1,35 @@
-﻿using Avalonia.Data.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Avalonia.Data.Converters;
 
 namespace MyTimeClassifier.UI.Components;
 
 public class MultiplierTwoConverter : IMultiValueConverter
 {
-    public object Convert(IList<object?> p_Values, Type p_TargetType, object? p_Parameter, CultureInfo p_Culture)
+    public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        var l_Value1 = p_Values[0] is string l_Str1 ? float.Parse(l_Str1) : (float?)p_Values[0] ?? 0f;
-        var l_Value2 = p_Values[1] is string l_Str2 ? float.Parse(l_Str2) : (float?)p_Values[1] ?? 0f;
+        var value1 = values[0] is string str1 ? float.Parse(str1) : (float?)values[0] ?? 0f;
+        var value2 = values[1] is string str2 ? float.Parse(str2) : (float?)values[1] ?? 0f;
 
-        if (p_TargetType == typeof(double))
-            return (double)l_Value1 * l_Value2;
+        if (targetType == typeof(double))
+            return (double)value1 * value2;
 
-        return l_Value1 * l_Value2;
+        return value1 * value2;
     }
 }
 
 public class MultiplierThreeConverter : IMultiValueConverter
 {
-    public object Convert(IList<object?> p_Values, Type p_TargetType, object? p_Parameter, CultureInfo p_Culture)
+    public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        var l_Value1 = p_Values[0] is string l_Str1 ? float.Parse(l_Str1) : (float?)p_Values[0] ?? 0f;
-        var l_Value2 = p_Values[1] is string l_Str2 ? float.Parse(l_Str2) : (float?)p_Values[1] ?? 0f;
-        var l_Value3 = p_Values[2] is string l_Str3 ? float.Parse(l_Str3) : (float?)p_Values[2] ?? 0f;
+        var value1 = values[0] is string str1 ? float.Parse(str1) : (float?)values[0] ?? 0f;
+        var value2 = values[1] is string str2 ? float.Parse(str2) : (float?)values[1] ?? 0f;
+        var value3 = values[2] is string str3 ? float.Parse(str3) : (float?)values[2] ?? 0f;
 
-        if (p_TargetType == typeof(double))
-            return (double)l_Value1 * l_Value2 * l_Value3;
+        if (targetType == typeof(double))
+            return (double)value1 * value2 * value3;
 
-        return l_Value1 * l_Value2 * l_Value3;
+        return value1 * value2 * value3;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -5,7 +6,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI.Views;
-using System;
 
 namespace MyTimeClassifier.UI;
 
@@ -15,16 +15,16 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime l_Desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            l_Desktop.MainWindow   = new MainWindow();
-            l_Desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+            desktop.MainWindow = new MainWindow();
+            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
             /* Ensure that the settings are saved when the application is closed (even when force closed with alt+F4) */
-            l_Desktop.ShutdownRequested += (_, _) =>
+            desktop.ShutdownRequested += (_, _) =>
             {
                 AppConfiguration.SaveConfiguration();
-                
+
                 Program._mutex.ReleaseMutex();
                 Program._mutex.Dispose();
             };
@@ -33,22 +33,22 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    public void ChangeTheme(ThemeVariant p_ThemeVariant) => RequestedThemeVariant = p_ThemeVariant;
+    public void ChangeTheme(ThemeVariant themeVariant) => RequestedThemeVariant = themeVariant;
 
-    private void NativeMenuItem_Show_OnClick(object? p_Sender, EventArgs _)
+    private void NativeMenuItem_Show_OnClick(object? sender, EventArgs _)
     {
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime l_Desktop)
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
 
-        l_Desktop.MainWindow ??= new MainWindow();
-        l_Desktop.MainWindow.Show();
+        desktop.MainWindow ??= new MainWindow();
+        desktop.MainWindow.Show();
     }
 
-    private void NativeMenuItem_Exit_OnClick(object? p_Sender, EventArgs _)
+    private void NativeMenuItem_Exit_OnClick(object? sender, EventArgs _)
     {
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime l_Desktop)
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
 
-        l_Desktop.MainWindow?.Close();
+        desktop.MainWindow?.Close();
     }
 }

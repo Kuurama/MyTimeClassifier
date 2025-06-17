@@ -1,113 +1,90 @@
-﻿using MyTimeClassifier.Configuration;
-using MyTimeClassifier.Database;
-using MyTimeClassifier.Database.Entities;
-using MyTimeClassifier.Utils;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using MyTimeClassifier.Configuration;
+using MyTimeClassifier.Database.Entities;
+using MyTimeClassifier.Utils;
+using ReactiveUI;
 
 namespace MyTimeClassifier.UI.Models;
 
 public class TaskModel : INotifyPropertyChanged
 {
-    private readonly Task m_Task;
-    private          Job  m_Job;
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    private readonly Task _task;
 
     /// <summary>
-    ///     Constructor that takes a job as a reference (unlike the other constructor that fetches it's own job)
+    /// Constructor that fetches it's own job from the static cache
     /// </summary>
-    /// <param name="p_Task"></param>
-    /// <param name="p_Job"></param>
-    public TaskModel(Task p_Task, ref Job p_Job)
+    /// <param name="task"></param>
+    public TaskModel(Task task)
     {
-        m_Job  = p_Job;
-        m_Task = p_Task;
+        _task = task;
+        Job = AppConfiguration.StaticCache.Jobs.FirstOrDefault(x => x.Id == task.JobID)
+              ?? new Job { Id = Guid.Empty, Text = "Unknown" };
 
         OnDeleteCommand = GetDeleteCommand();
     }
-
-    /// <summary>
-    ///     Constructor that fetches it's own job from the static cache
-    /// </summary>
-    /// <param name="p_Task"></param>
-    public TaskModel(Task p_Task)
-    {
-        m_Task = p_Task;
-        m_Job = AppConfiguration.StaticCache.Jobs.FirstOrDefault(p_Job => p_Job.Id == p_Task.JobID)
-            ?? new Job { Id = Guid.Empty, Text = "Unknown" };
-
-        OnDeleteCommand = GetDeleteCommand();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
 
     public Job Job
     {
-        get => m_Job;
+        get;
         set
         {
-            m_Task.JobID = value.Id;
-            m_Job        = value;
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            // Because the SelectedJob reference might still trigger the event here
+            if (value is null)
+                return;
+
+            _task.JobID = value.Id;
+            field = value;
             OnPropertyChanged();
         }
     }
 
-    public uint TaskID
+    public bool TaskExists => _task.Id != 0;
+
+    public DateTime EndDate
     {
-        get => m_Task.Id;
+        get => TimeUtils.FromUnixTime(_task.UnixEndTime);
         set
         {
-            m_Task.Id = value;
-            OnPropertyChanged(nameof(TaskExists));
-        }
-    }
-
-    public bool TaskExists
-    {
-        get => m_Task.Id != 0;
-    }
-
-    public DateTime? EndDate
-    {
-        get => TimeUtils.FromUnixTime(m_Task.UnixEndTime);
-        set
-        {
-            if (value is null) return;
-
-            var l_DateTime = TimeUtils.FromUnixTime(m_Task.UnixEndTime);
-            m_Task.UnixEndTime = (uint)new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, l_DateTime.Hour, l_DateTime.Minute, l_DateTime.Second).ToUnixTime();
+            var dateTime = TimeUtils.FromUnixTime(_task.UnixEndTime);
+            _task.UnixEndTime = (uint)new DateTime(
+                    value.Year, value.Month, value.Day,
+                    dateTime.Hour, dateTime.Minute, dateTime.Second)
+                .ToUnixTime();
             OnPropertyChanged();
         }
     }
 
-    public DateTime? StartDate
+    public DateTime StartDate
     {
-        get => TimeUtils.FromUnixTime(m_Task.UnixStartTime);
+        get => TimeUtils.FromUnixTime(_task.UnixStartTime);
         set
         {
-            if (value is null) return;
+            var dateTime = TimeUtils.FromUnixTime(_task.UnixStartTime);
+            _task.UnixStartTime = (uint)new DateTime(
+                    value.Year, value.Month, value.Day,
+                    dateTime.Hour, dateTime.Minute, dateTime.Second)
+                .ToUnixTime();
 
-            var l_DateTime = TimeUtils.FromUnixTime(m_Task.UnixStartTime);
-            m_Task.UnixStartTime = (uint)new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, l_DateTime.Hour, l_DateTime.Minute, l_DateTime.Second).ToUnixTime();
             OnPropertyChanged();
         }
     }
 
     public TimeSpan StartTime
     {
-        get => TimeUtils.FromUnixTime(m_Task.UnixStartTime).TimeOfDay;
+        get => TimeUtils.FromUnixTime(_task.UnixStartTime).TimeOfDay;
         set
         {
-            var l_DateTime = TimeUtils.FromUnixTime(m_Task.UnixStartTime);
-            m_Task.UnixStartTime = (uint)new DateTime(l_DateTime.Year, l_DateTime.Month, l_DateTime.Day, value.Hours, value.Minutes, value.Seconds).ToUnixTime();
+            var dateTime = TimeUtils.FromUnixTime(_task.UnixStartTime);
+            _task.UnixStartTime = (uint)new DateTime(
+                    dateTime.Year, dateTime.Month, dateTime.Day,
+                    value.Hours, value.Minutes, value.Seconds)
+                .ToUnixTime();
             OnPropertyChanged();
             OnPropertyChanged(nameof(StartDate));
             OnPropertyChanged(nameof(ElapsedTime));
@@ -116,34 +93,34 @@ public class TaskModel : INotifyPropertyChanged
 
     public TimeSpan EndTime
     {
-        get => TimeUtils.FromUnixTime(m_Task.UnixEndTime).TimeOfDay;
+        get => TimeUtils.FromUnixTime(_task.UnixEndTime).TimeOfDay;
         set
         {
-            var l_DateTime = TimeUtils.FromUnixTime(m_Task.UnixEndTime);
-            m_Task.UnixEndTime = (uint)new DateTime(l_DateTime.Year, l_DateTime.Month, l_DateTime.Day, value.Hours, value.Minutes, value.Seconds).ToUnixTime();
+            var dateTime = TimeUtils.FromUnixTime(_task.UnixEndTime);
+            _task.UnixEndTime = (uint)new DateTime(
+                    dateTime.Year, dateTime.Month, dateTime.Day,
+                    value.Hours, value.Minutes, value.Seconds)
+                .ToUnixTime();
+
             OnPropertyChanged();
             OnPropertyChanged(nameof(EndDate));
             OnPropertyChanged(nameof(ElapsedTime));
         }
     }
 
-    public TimeSpan ElapsedTime => TimeUtils.FromUnixTime(m_Task.UnixEndTime) - TimeUtils.FromUnixTime(m_Task.UnixStartTime);
+    public TimeSpan ElapsedTime
+        => TimeUtils.FromUnixTime(_task.UnixEndTime) - TimeUtils.FromUnixTime(_task.UnixStartTime);
 
     public ICommand OnDeleteCommand { get; init; }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private ReactiveCommand<Unit, Unit> GetDeleteCommand() => ReactiveCommand.Create(() =>
     {
-        TaskID = 0;
+        _task.Id = 0;
+        OnPropertyChanged(nameof(TaskExists));
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    private void OnPropertyChanged([CallerMemberName] string? p_PropertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p_PropertyName));
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

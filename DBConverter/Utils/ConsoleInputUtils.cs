@@ -4,37 +4,35 @@ using System.Numerics;
 namespace DBConverter.Utils;
 
 /// <summary>
-///     Example Usage:
-///     ConsoleInputUtils.GetFromConsole
-///     <string>
-///         ("Please provide the path of the file to read (or simply close this program and drag and drop the file on
-///         it):", "Incorrect input", ConsoleInputUtils.EParseVerificationScheme.FilePath |
-///         ConsoleInputUtils.EParseVerificationScheme.MinValue, 2);
-///         ConsoleInputUtils.GetFromConsole
-///         <int, int>
-///             ("Enter the number of parallel tasks to run (please use 12 by default, 1 min, 40 max):", "Incorrect
-///             input", ConsoleInputUtils.EParseVerificationScheme.Integer |
-///             ConsoleInputUtils.EParseVerificationScheme.Positive | ConsoleInputUtils.EParseVerificationScheme.MaxValue,
-///             default(int), 40);
+/// Example Usage:
+/// ConsoleInputUtils.GetFromConsole{string}
+/// ("Please provide the path of the file to read (or simply close this program and drag and drop the file on it):",
+/// "Incorrect input", ConsoleInputUtils.EParseVerificationScheme.FilePath |
+/// ConsoleInputUtils.EParseVerificationScheme.MinValue, 2);
+/// ConsoleInputUtils.GetFromConsole{int, int}
+/// ("Enter the number of parallel tasks to run (please use 12 by default, 1 min, 40 max):", "Incorrect
+/// input", ConsoleInputUtils.EParseVerificationScheme.Integer |
+/// ConsoleInputUtils.EParseVerificationScheme.Positive | ConsoleInputUtils.EParseVerificationScheme.MaxValue,
+/// default(int), 40);
 /// </summary>
 public static class ConsoleInputUtils
 {
     [Flags]
     public enum EParseVerificationScheme
     {
-        String        = 0,
-        FilePath      = 1 << 0,
-        Integer       = 1 << 1,
-        Long          = 1 << 2,
-        Double        = 1 << 3,
-        Float         = 1 << 4,
-        NumberTypes   = Integer | Long | Double | Float,
-        Negative      = 1 << 5,
-        Positive      = 1 << 6,
-        MinValue      = 1 << 7,
-        MaxValue      = 1 << 8,
+        String = 0,
+        FilePath = 1 << 0,
+        Integer = 1 << 1,
+        Long = 1 << 2,
+        Double = 1 << 3,
+        Float = 1 << 4,
+        NumberTypes = Integer | Long | Double | Float,
+        Negative = 1 << 5,
+        Positive = 1 << 6,
+        MinValue = 1 << 7,
+        MaxValue = 1 << 8,
         DirectoryPath = 1 << 9,
-        Constraints   = Negative | Positive | MinValue | MaxValue
+        Constraints = Negative | Positive | MinValue | MaxValue
     }
 
     public static void PressAnyKeyToExit()
@@ -49,61 +47,68 @@ public static class ConsoleInputUtils
         Console.ReadKey();
     }
 
-    public static bool BoolFromConsole(string p_AskMessage)
+    public static bool BoolFromConsole(string askMessage)
     {
-        Console.WriteLine(p_AskMessage);
+        Console.WriteLine(askMessage);
         Console.WriteLine("Please enter 'y' for yes or 'n' for no: ");
-        var l_InputString = Console.ReadLine();
+        var inputString = Console.ReadLine();
 
-        while (string.IsNullOrEmpty(l_InputString) || l_InputString != "y" && l_InputString != "n")
+        while (string.IsNullOrEmpty(inputString) || inputString != "y" && inputString != "n")
         {
             Console.WriteLine("The provided value is null or invalid, please type something correct");
-            l_InputString = Console.ReadLine();
+            inputString = Console.ReadLine();
         }
 
         Console.WriteLine('\n');
-        return l_InputString == "y";
+        return inputString == "y";
     }
 
-    public static string AskFromConsole(string p_AskMessage)
+    public static string AskFromConsole(string askMessage)
     {
-        Console.WriteLine(p_AskMessage);
+        Console.WriteLine(askMessage);
 
-        var l_InputString = Console.ReadLine();
+        var inputString = Console.ReadLine();
 
-        while (string.IsNullOrEmpty(l_InputString))
+        while (string.IsNullOrEmpty(inputString))
         {
             Console.WriteLine("The provided string is null, please type something correct");
-            l_InputString = Console.ReadLine();
+            inputString = Console.ReadLine();
         }
 
-        return l_InputString;
+        return inputString;
     }
 
-    public static T GetFromConsole<T>(string? p_AskMessage, string? p_FallbackMessage, EParseVerificationScheme p_ParseVerificationType, int p_MinValue = default(int), int p_MaxValue = default(int))
-        => GetFromConsole<T, int>(p_AskMessage, p_FallbackMessage, p_ParseVerificationType, p_MinValue, p_MaxValue);
+    public static T GetFromConsole<T>(
+        string? askMessage, string? fallbackMessage,
+        EParseVerificationScheme parseVerificationType, int minValue = default,
+        int maxValue = 0)
+        => GetFromConsole<T, int>(askMessage, fallbackMessage, parseVerificationType, minValue, maxValue);
 
-    public static T GetFromConsole<T, U>(string? p_AskMessage, string? p_FallbackMessage, EParseVerificationScheme p_ParseVerificationType, U? p_MinValue = default(U), U? p_MaxValue = default(U)) where U : INumber<U>
+    public static T GetFromConsole<T, U>(
+        string? askMessage, string? fallbackMessage,
+        EParseVerificationScheme parseVerificationType, U? minValue = default,
+        U? maxValue = default) where U : INumber<U>
     {
-        Console.WriteLine(p_AskMessage);
+        Console.WriteLine(askMessage);
     GoInputString:
-        var l_InputString = Console.ReadLine();
+        var inputString = Console.ReadLine();
 
-        while (l_InputString == null)
+        while (inputString == null)
         {
-            Console.WriteLine(p_FallbackMessage);
-            l_InputString = Console.ReadLine();
+            Console.WriteLine(fallbackMessage);
+            inputString = Console.ReadLine();
         }
 
-        if (VerifyParse(l_InputString, p_ParseVerificationType, out var l_ParsedObject, out var l_SucceededConstraint, p_MinValue, p_MaxValue) == false) goto GoParseFailed;
+        if (VerifyParse(inputString, parseVerificationType, out var parsedObject, out var succeededConstraint,
+                minValue, maxValue) == false) goto GoParseFailed;
 
-        if (l_SucceededConstraint == false)
+        if (succeededConstraint == false)
         {
             Console.WriteLine("The constraint was not respected, please try again with other values.");
             goto GoInputString;
         }
 
-        if (l_ParsedObject is T l_ParsedObjectAsT) return l_ParsedObjectAsT;
+        if (parsedObject is T parsedObjectAsT) return parsedObjectAsT;
 
     GoParseFailed:
         Console.WriteLine("Parse failed, make sure you entered the requested data type correctly.");
@@ -113,21 +118,22 @@ public static class ConsoleInputUtils
     public static T GetFromConsole<T>() where T : struct, Enum
     {
         Console.WriteLine("Type one of the following values:");
-        var l_Enums = Enum.GetValues<T>();
-        foreach (var l_T in l_Enums) Console.WriteLine($"{l_T.GetHashCode()} - {l_T}");
+        var enums = Enum.GetValues<T>();
+        foreach (var t in enums) Console.WriteLine($"{t.GetHashCode()} - {t}");
 
     GoInputString:
-        var l_InputString = Console.ReadLine();
+        var inputString = Console.ReadLine();
 
-        while (l_InputString == null)
+        while (inputString == null)
         {
             Console.WriteLine("Incorrect input, please try again.");
-            l_InputString = Console.ReadLine();
+            inputString = Console.ReadLine();
         }
 
-        if (Enum.TryParse(l_InputString, out T l_Value) == false || Enum.IsDefined(l_Value) == false) goto GoParseFailed;
+        if (Enum.TryParse(inputString, out T value) == false || Enum.IsDefined(value) == false)
+            goto GoParseFailed;
 
-        return l_Value;
+        return value;
 
     GoParseFailed:
         Console.WriteLine("Parse failed, make sure you entered the requested data type correctly.");
@@ -135,84 +141,100 @@ public static class ConsoleInputUtils
     }
 
     /// <summary>
-    ///     Returns false when the parse fails, true when it succeeds. (Except FilePath => Returns false when the file doesn't
-    ///     exist)
+    /// Returns false when the parse fails, true when it succeeds. (Except FilePath => Returns false when the file doesn't
+    /// exist)
     /// </summary>
-    /// <param name="p_Input"></param>
-    /// <param name="p_ParseVerification"></param>
-    /// <param name="p_ParsedInput"></param>
-    /// <param name="p_SucceededConstraint"></param>
-    /// <param name="p_MinValue"></param>
-    /// <param name="p_MaxValue"></param>
+    /// <param name="input"></param>
+    /// <param name="parseVerification"></param>
+    /// <param name="parsedInput"></param>
+    /// <param name="succeededConstraint"></param>
+    /// <param name="minValue"></param>
+    /// <param name="maxValue"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    private static bool VerifyParse<T>(string? p_Input, EParseVerificationScheme p_ParseVerification, out object? p_ParsedInput, out bool p_SucceededConstraint, T? p_MinValue = default(T), T? p_MaxValue = default(T)) where T : INumber<T>
+    private static bool VerifyParse<T>(string? input, EParseVerificationScheme parseVerification,
+                                       out object? parsedInput, out bool succeededConstraint,
+                                       T? minValue = default, T? maxValue = default) where T : INumber<T>
     {
-        p_ParsedInput         = null;
-        p_SucceededConstraint = true;
-        if (p_Input is null) return false;
+        parsedInput = null;
+        succeededConstraint = true;
+        if (input is null) return false;
 
-        if (p_ParseVerification.HasAnyFlag(EParseVerificationScheme.String | EParseVerificationScheme.FilePath | EParseVerificationScheme.DirectoryPath))
+        if (parseVerification.HasAnyFlag(EParseVerificationScheme.String | EParseVerificationScheme.FilePath |
+                                         EParseVerificationScheme.DirectoryPath))
         {
-            p_ParsedInput = p_Input;
+            parsedInput = input;
 
-            if (p_ParseVerification.HasAnyFlag(EParseVerificationScheme.Constraints))
+            if (parseVerification.HasAnyFlag(EParseVerificationScheme.Constraints))
             {
-                int.TryParse(p_MinValue?.ToString(), NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out var l_MinParsed);
-                int.TryParse(p_MaxValue?.ToString(), NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out var l_MaxParsed);
-                p_SucceededConstraint = CheckStringConstrains(p_Input, p_ParseVerification, l_MinParsed, l_MaxParsed);
+                int.TryParse(minValue?.ToString(), NumberStyles.Integer, NumberFormatInfo.InvariantInfo,
+                    out var minParsed);
+                int.TryParse(maxValue?.ToString(), NumberStyles.Integer, NumberFormatInfo.InvariantInfo,
+                    out var maxParsed);
+                succeededConstraint = CheckStringConstrains(input, parseVerification, minParsed, maxParsed);
             }
 
-            if (p_ParseVerification.HasAnyFlag(EParseVerificationScheme.DirectoryPath)) return Directory.Exists(p_Input);
+            if (parseVerification.HasAnyFlag(EParseVerificationScheme.DirectoryPath))
+                return Directory.Exists(input);
 
-            return !p_ParseVerification.HasAnyFlag(EParseVerificationScheme.FilePath) || File.Exists(p_Input);
+            return !parseVerification.HasAnyFlag(EParseVerificationScheme.FilePath) || File.Exists(input);
         }
 
-        /// Returns true if it's not a number, and indeed not a string or file path.
-        if (p_ParseVerification.HasAnyFlag(EParseVerificationScheme.NumberTypes) == false) return true;
+        // Returns true if it's not a number, and indeed not a string or file path.
+        if (parseVerification.HasAnyFlag(EParseVerificationScheme.NumberTypes) == false) return true;
 
-        if (!T.TryParse(p_Input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var l_ParsedValue)) return false;
+        if (!T.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var parsedValue))
+            return false;
 
-        p_ParsedInput = l_ParsedValue;
+        parsedInput = parsedValue;
 
-        if (p_ParseVerification.HasAnyFlag(EParseVerificationScheme.Constraints)) p_SucceededConstraint = CheckNumberConstrains(l_ParsedValue, p_ParseVerification, p_MinValue, p_MaxValue);
+        if (parseVerification.HasAnyFlag(EParseVerificationScheme.Constraints))
+            succeededConstraint = CheckNumberConstrains(parsedValue, parseVerification, minValue, maxValue);
         return true;
     }
 
-    private static bool CheckStringConstrains<T>(string p_Input, EParseVerificationScheme p_ParseVerificationScheme, T? p_MinValue = default(T), T? p_MaxValue = default(T)) where T : INumber<T>
+    private static bool CheckStringConstrains<T>(string input, EParseVerificationScheme parseVerificationScheme,
+                                                 T? minValue = default, T? maxValue = default) where T : INumber<T>
     {
-        if (p_MinValue is null && p_MaxValue is null) return !p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue | EParseVerificationScheme.MaxValue);
+        if (minValue is null && maxValue is null)
+            return !parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue |
+                                                       EParseVerificationScheme.MaxValue);
 
-        if (p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue))
+        if (parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue))
         {
-            if (p_MinValue is null) return false;
+            if (minValue is null) return false;
 
-            if (!T.TryParse(p_Input.Length.ToString(), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var l_ParsedValue)) return false;
+            if (!T.TryParse(input.Length.ToString(), NumberStyles.Number, NumberFormatInfo.InvariantInfo,
+                    out var parsedValue)) return false;
 
-            if (l_ParsedValue < p_MinValue) return false;
+            if (parsedValue < minValue) return false;
         }
 
-        if (p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MaxValue))
+        if (parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MaxValue))
         {
-            if (p_MaxValue is null) return false;
+            if (maxValue is null) return false;
 
-            if (!T.TryParse(p_Input.Length.ToString(), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var l_ParsedValue)) return false;
+            if (!T.TryParse(input.Length.ToString(), NumberStyles.Number, NumberFormatInfo.InvariantInfo,
+                    out var parsedValue)) return false;
 
-            if (l_ParsedValue > p_MaxValue) return false;
+            if (parsedValue > maxValue) return false;
         }
 
         return true;
     }
 
-    private static bool CheckNumberConstrains<T>(T p_Number, EParseVerificationScheme p_ParseVerificationScheme, T? p_NumberMin = default(T), T? p_NumberMax = default(T)) where T : INumber<T>
+    private static bool CheckNumberConstrains<T>(
+        T number, EParseVerificationScheme parseVerificationScheme,
+        T? numberMin = default, T? numberMax = default)
+        where T : INumber<T>
     {
-        if (p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.Negative) && p_Number >= T.Zero) return false;
-        if (p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.Positive) && p_Number <= T.Zero) return false;
+        if (parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.Negative) && number >= T.Zero) return false;
+        if (parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.Positive) && number <= T.Zero) return false;
 
-        var l_CheckMaxValue = p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MaxValue);
-        if (p_NumberMax is null && l_CheckMaxValue || l_CheckMaxValue && p_Number > p_NumberMax!) return false;
+        var checkMaxValue = parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MaxValue);
+        if (numberMax is null && checkMaxValue || checkMaxValue && number > numberMax!) return false;
 
-        var l_CheckMinValue = p_ParseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue);
-        return (p_NumberMin is not null || !l_CheckMinValue) && (!l_CheckMinValue || p_Number >= p_NumberMin!);
+        var checkMinValue = parseVerificationScheme.HasAnyFlag(EParseVerificationScheme.MinValue);
+        return (numberMin is not null || !checkMinValue) && (!checkMinValue || number >= numberMin!);
     }
 }

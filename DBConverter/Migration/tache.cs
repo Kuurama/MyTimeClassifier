@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DBConverter.Migration;
 
 [Table("tache")]
-public class tache
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public class Tache
 {
     [Key]
     public int empId { get; set; }

@@ -28,22 +28,33 @@
                     <TextBlock Grid.Column="0" Text="Statistics"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" FontSize="20" />
-                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia1:Attached.Icon="fa-solid fa-xmark" FontSize="26" />
+                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton"
+                            avalonia1:Attached.Icon="fa-solid fa-xmark" FontSize="26" />
                 </Grid>
 
-                <Grid Name="Body" ColumnDefinitions="*,3*" RowDefinitions="3*,*" Width="700" Height="500" Row="1" Margin="10" Background="{DynamicResource MainLight}">
+                <Grid Name="Body" ColumnDefinitions="*,3*" RowDefinitions="3*,*" Width="700" Height="500" Row="1"
+                      Margin="10" Background="{DynamicResource MainLight}">
                     <!--<avalonia:CartesianChart Grid.Row="0" Grid.Column="0" Series="{Binding StackedColumnSeries}" XAxes="{Binding XAxis}" />-->
-                    <avalonia:PieChart Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Series="{Binding PieChartSeries}" LegendPosition="Bottom" LegendTextPaint="{DynamicResource TextPaint}" />
-                    <Grid Name="FiltersGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="Auto,*" Margin="-10,0,-10,0">
+                    <avalonia:PieChart Name="Pie" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                       Series="{Binding PieChartSeries}" LegendPosition="Bottom"
+                                       LegendTextPaint="{DynamicResource TextPaint}" AutoUpdateEnabled="False" />
+                    <Grid Name="FiltersGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="Auto,*"
+                          Margin="-10,0,-10,0">
                         <Grid Height="50">
-                            <TextBlock Text="Filters" HorizontalAlignment="Center" FontWeight="ExtraBold" TextDecorations="Underline" FontSize="20" Margin="10" />
+                            <TextBlock Text="Filters" HorizontalAlignment="Center" FontWeight="ExtraBold"
+                                       TextDecorations="Underline" FontSize="20" Margin="10" />
                         </Grid>
-                        <StackPanel Grid.Row="1" Name="FiltersPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Margin="15,0,0,0">
+                        <StackPanel Grid.Row="1" Name="FiltersPanel" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20"
+                                    Margin="15,0,0,0">
                             <TextBlock Text="From" VerticalAlignment="Center" />
-                            <CalendarDatePicker VerticalAlignment="Center" SelectedDate="{Binding StartDate, Mode=TwoWay}" />
+                            <CalendarDatePicker VerticalAlignment="Center"
+                                                SelectedDate="{Binding StartDate, Mode=TwoWay}" />
                             <TextBlock Text="To" VerticalAlignment="Center" />
-                            <CalendarDatePicker VerticalAlignment="Center" SelectedDate="{Binding EndDate, Mode=TwoWay}" />
-                            <CheckBox Content="Apply date filter" VerticalAlignment="Center" IsChecked="{Binding ApplyDateFilter}" />
+                            <CalendarDatePicker VerticalAlignment="Center"
+                                                SelectedDate="{Binding EndDate, Mode=TwoWay}" />
+                            <CheckBox Content="Apply date filter" VerticalAlignment="Center"
+                                      IsChecked="{Binding ApplyDateFilter}" />
                         </StackPanel>
                     </Grid>
                 </Grid>

@@ -5,14 +5,14 @@ namespace MyTimeClassifier.Utils;
 
 public static class WindowHelper
 {
-    public static void Drag(Window p_Sender, PointerPressedEventArgs p_Args)
+    public static void Drag(Window sender, PointerPressedEventArgs args)
     {
-        if (!p_Args.GetCurrentPoint(p_Sender).Properties.IsLeftButtonPressed) return;
+        if (!args.GetCurrentPoint(sender).Properties.IsLeftButtonPressed) return;
 
-        p_Sender.BeginMoveDrag(p_Args);
+        sender.BeginMoveDrag(args);
     }
 
-    public static void CloseButton_Click(Window p_Window) => p_Window.Close();
+    public static void CloseButton_Click(Window window) => window.Close();
 
-    public static void MinimizeButton_Click(Window p_Window) => p_Window.Hide();
+    public static void MinimizeButton_Click(Window window) => window.Hide();
 }

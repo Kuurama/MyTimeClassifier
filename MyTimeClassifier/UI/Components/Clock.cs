@@ -1,86 +1,74 @@
-﻿using Avalonia.Threading;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia.Threading;
 
 namespace MyTimeClassifier.UI.Components;
 
 public class Clock : INotifyPropertyChanged
 {
-    private readonly DispatcherTimer m_DispatcherTimer = new();
-    private readonly uint            m_NextCycleIntervalSeconds;
-    private          string          m_CurrentTime = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
+    private readonly DispatcherTimer _dispatcherTimer = new();
+    private readonly uint _nextCycleIntervalSeconds;
 
-    private DateTime               m_NextCycle = DateTime.Now.AddHours(1);
-    public  EventHandler<DateTime> OnNextCycle = (_, _) => { };
+    private DateTime _nextCycle = DateTime.Now.AddHours(1);
+    public EventHandler<DateTime> OnNextCycle = (_, _) => { };
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public Clock(uint p_NextCycleIntervalSeconds)
+    public Clock(uint nextCycleIntervalSeconds)
     {
-        m_DispatcherTimer.Interval =  TimeSpan.FromSeconds(1);
-        m_DispatcherTimer.Tick     += DispatcherTimer_Tick;
-        m_NextCycleIntervalSeconds =  p_NextCycleIntervalSeconds;
+        _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
+        _dispatcherTimer.Tick += DispatcherTimer_Tick;
+        _nextCycleIntervalSeconds = nextCycleIntervalSeconds;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    public DateTime StartingTime { get; set; } = DateTime.Now;
 
-    public DateTime StartingTime { get;                  set; } = DateTime.Now;
-    public string   CurrentTime  { get => m_CurrentTime; private set => SetField(ref m_CurrentTime, value); }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    public string CurrentTime { get; private set => SetField(ref field, value); }
+        = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public void Stop() => m_DispatcherTimer.Stop();
+    public void Stop() => _dispatcherTimer.Stop();
 
 
     public void Start()
     {
-        CurrentTime  = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
+        CurrentTime = TimeSpan.Zero.ToString(@"hh\:mm\:ss");
         StartingTime = DateTime.Now;
-        m_DispatcherTimer.Start();
+        _dispatcherTimer.Start();
     }
 
-    private void DispatcherTimer_Tick(object? p_Sender, EventArgs p_E)
+    private void DispatcherTimer_Tick(object? sender, EventArgs e)
     {
-        var l_Now = DateTime.Now;
+        var now = DateTime.Now;
 
-        if (l_Now >= m_NextCycle)
+        if (now >= _nextCycle)
         {
             /* If the next cycle is 0, then it's a one-time cycle */
-            if (m_NextCycleIntervalSeconds == 0)
-                m_NextCycle = DateTime.Now.AddYears(1);
+            if (_nextCycleIntervalSeconds == 0)
+            {
+                _nextCycle = DateTime.Now.AddYears(1);
+            }
             else
             {
-                m_NextCycle = DateTime.Now.AddSeconds(m_NextCycleIntervalSeconds);
-                OnNextCycle(this, l_Now);
+                _nextCycle = DateTime.Now.AddSeconds(_nextCycleIntervalSeconds);
+                OnNextCycle(this, now);
             }
         }
 
-        CurrentTime = StartingTime.Subtract(l_Now).ToString(@"hh\:mm\:ss");
+        CurrentTime = StartingTime.Subtract(now).ToString(@"hh\:mm\:ss");
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    private void OnPropertyChanged([CallerMemberName] string? p_PropertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p_PropertyName));
-
-    private bool SetField<T>(ref T p_Field, T p_Value, [CallerMemberName] string? p_PropertyName = null)
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(p_Field, p_Value))
+        if (EqualityComparer<T>.Default.Equals(field, value))
             return false;
 
-        p_Field = p_Value;
-        OnPropertyChanged(p_PropertyName);
+        field = value;
+        OnPropertyChanged(propertyName);
 
         return true;
     }

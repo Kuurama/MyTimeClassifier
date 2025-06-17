@@ -1,128 +1,100 @@
-﻿using Avalonia.Media;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Avalonia.Media;
+using LiveChartsCore.Kernel;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Avalonia;
 using LiveChartsCore.SkiaSharpView.Painting;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.Database;
 using MyTimeClassifier.Utils;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MyTimeClassifier.UI.ViewModels;
 
-/// <summary>
-///     This class will be in charge of updating the Configuration singleton and updating the UI accordingly
-/// </summary>
-public class StatisticsWindowViewModel : ViewModelBase
+public class StatisticsWindowViewModel : ViewModelBase, IDisposable
 {
-    /*private const */
+    private static PieChart _pie = null!;
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    /*private */
-    private bool              m_ApplyDateFilter;
-    private DateTime?         m_EndDate        = DateTime.Today;
-    private PieSeries<long>[] m_PieChartSeries = [];
-    /*private StackedColumnSeries<long>[] m_StackedColumnSeries = [];*/
-    private DateTime? m_StartDate;
-    private Axis[]    m_XAxis = [];
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public StatisticsWindowViewModel() => UpdateData();
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public bool ApplyDateFilter
+    public StatisticsWindowViewModel(PieChart pie)
     {
-        get => m_ApplyDateFilter;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref m_ApplyDateFilter, value);
-            UpdateData();
-        }
+        UpdateData();
+        _pie = pie;
+        PropertyChanged += UpdatePieGraphIfSeriesChanged;
     }
 
-    public DateTime? StartDate
-    {
-        get => m_StartDate;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref m_StartDate, value);
-            UpdateData();
-        }
-    }
+    public bool ApplyDateFilter { get; set => this.RaiseAndSetIfChanged(ref field, value); }
 
-    public DateTime? EndDate
-    {
-        get => m_EndDate;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref m_EndDate, value);
-            UpdateData();
-        }
-    }
+    public DateTime? StartDate { get; set => this.RaiseAndSetIfChanged(ref field, value); }
+
+    public DateTime? EndDate { get; set => this.RaiseAndSetIfChanged(ref field, value); } = DateTime.Today;
 
     public PieSeries<long>[] PieChartSeries
     {
-        get => m_PieChartSeries;
-        set => this.RaiseAndSetIfChanged(ref m_PieChartSeries, value);
+        get;
+        set
+        {
+            field = value;
+            this.RaisePropertyChanged();
+        }
+    } = [];
+
+    public void Dispose()
+    {
+        PropertyChanged -= UpdatePieGraphIfSeriesChanged;
+        GC.SuppressFinalize(this);
     }
 
-    /*public StackedColumnSeries<long>[] StackedColumnSeries
+    private void UpdatePieGraphIfSeriesChanged(object? _, PropertyChangedEventArgs args)
     {
-        get => m_StackedColumnSeries;
-        set => this.RaiseAndSetIfChanged(ref m_StackedColumnSeries, value);
+        if (args.PropertyName == nameof(PieChartSeries)) return;
+
+        UpdateData();
+        // Force rerendering the Pie chart (because it doesn't update unless we over it, even if AutoUpdate is enabled)
+        _pie.CoreChart.Update(new ChartUpdateParams { IsAutomaticUpdate = false, Throttling = false });
     }
-
-    public Axis[] XAxis
-    {
-        get => m_XAxis;
-        set => this.RaiseAndSetIfChanged(ref m_XAxis, value);
-    }*/
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
 
     private void UpdateData()
     {
-        using var l_DbContext = new AppDbContext();
+        using var dbContext = new AppDbContext();
 
-        var l_StartDate = m_ApplyDateFilter
-            ? (uint)(m_StartDate?.ToUnixTime() ?? 0)
+        var startDate = ApplyDateFilter
+            ? (uint)(StartDate?.ToUnixTime() ?? 0)
             : 0;
-        var l_EndDate = m_ApplyDateFilter
-            ? (uint)(m_EndDate?.ToUnixTime() ?? uint.MaxValue)
+        var endDate = ApplyDateFilter
+            ? (uint)(EndDate?.ToUnixTime() ?? uint.MaxValue)
             : uint.MaxValue;
 
-        var l_TaskPerJobGrouping = l_DbContext.Tasks
-            .Where(p_X => p_X.UnixStartTime >= l_StartDate && p_X.UnixEndTime <= l_EndDate)
-            .GroupBy(p_X => p_X.JobID)
-            .Select(p_X => new { JobID = p_X.Key, TotalSeconds = (uint)p_X.Sum(p_Y => p_Y.UnixEndTime - p_Y.UnixStartTime) }).ToArray();
+        var taskPerJobGrouping = dbContext.Tasks
+            .Where(x => x.UnixStartTime >= startDate && x.UnixEndTime <= endDate)
+            .GroupBy(x => x.JobID)
+            .Select(x => new
+                { JobID = x.Key, TotalSeconds = (uint)x.Sum(y => y.UnixEndTime - y.UnixStartTime) })
+            .ToArray();
 
-        var l_CurrentJobs = AppConfiguration.StaticCache.Jobs;
-        var l_JobValueAndCountTuples = l_TaskPerJobGrouping
-            .Join(l_CurrentJobs, p_X => p_X.JobID, p_Y => p_Y.Id,
-                (p_JobIDTimeSpan, p_Job) => (p_Job.Id, p_Job.Text, Paint: new SolidColorPaint((p_Job.FillColor as SolidColorBrush).ToSKColor()), p_JobIDTimeSpan.TotalSeconds)).ToArray();
+        var currentJobs = AppConfiguration.StaticCache.Jobs;
+        var jobValueAndCountTuples = taskPerJobGrouping
+            .Join(currentJobs, x => x.JobID, y => y.Id,
+                (jobIDTimeSpan, job) => (job.Id, job.Text,
+                    Paint: new SolidColorPaint((job.FillColor as SolidColorBrush).ToSKColor()),
+                    jobIDTimeSpan.TotalSeconds))
+            .ToArray();
 
-        PieChartSeries = ToPiChartSeries(l_JobValueAndCountTuples);
+        PieChartSeries = ToPiChartSeries(jobValueAndCountTuples);
     }
 
-    private PieSeries<long>[] ToPiChartSeries(IEnumerable<(Guid Id, string Text, SolidColorPaint Paint, uint TotalSeconds)> p_JobNamesAndCountTuples)
-    {
-        return p_JobNamesAndCountTuples.Select(p_X => new PieSeries<long>
+    private PieSeries<long>[] ToPiChartSeries(
+        IEnumerable<(Guid Id, string Text, SolidColorPaint Paint, uint TotalSeconds)> jobNamesAndCountTuples)
+        => jobNamesAndCountTuples.Select(x => new PieSeries<long>
         {
-            Name                  = p_X.Text.Replace("\\n", " "),
-            Values                = new[] { (long)p_X.TotalSeconds },
-            Fill                  = p_X.Paint,
-            ToolTipLabelFormatter = p_Value => ((UInt64)p_Value.Model).ToVeryLargeTimeString()
+            Name = x.Text.Replace("\\n", " "),
+            Values = [x.TotalSeconds],
+            Fill = x.Paint,
+            ToolTipLabelFormatter = value => ((ulong)value.Model).ToVeryLargeTimeString()
         }).ToArray();
-    }
 
     private Axis[] ToAxis()
-        => [new Axis { Labels = Enum.GetNames(typeof(DayOfWeek)) }];
+        => [new() { Labels = Enum.GetNames(typeof(DayOfWeek)) }];
 }

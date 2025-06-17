@@ -22,20 +22,24 @@
         <viewModels:MainWindowViewModel />
     </Design.DataContext>
 
-    <Border BorderBrush="{DynamicResource MainBorder}" ZIndex="0" BorderThickness="4" CornerRadius="20" ClipToBounds="True">
+    <Border BorderBrush="{DynamicResource MainBorder}" ZIndex="0" BorderThickness="4" CornerRadius="20"
+            ClipToBounds="True">
         <!-- It is necessary to have another border to prevent clipping -->
         <Border CornerRadius="16" ZIndex="1" ClipToBounds="True">
             <Grid RowDefinitions="auto,*" ColumnDefinitions="*, *">
                 <Grid Name="Header" Row="0" Column="0" ColumnSpan="2"
                       Background="{DynamicResource MainHeavy}">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" Foreground="{DynamicResource TextColor}">
                         <TextBlock.FontSize>
                             <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                 <Binding Source="20" />
-                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                         Path="GlobalScale" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                         Path="TitleBarScale" />
                             </MultiBinding>
                         </TextBlock.FontSize>
                     </TextBlock>
@@ -45,8 +49,10 @@
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="30" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="TitleBarScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>
                         </Button>
@@ -54,15 +60,18 @@
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="26" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TitleBarScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="TitleBarScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>
                         </Button>
                     </StackPanel>
                 </Grid>
 
-                <Grid Name="SideGrid" ColumnDefinitions="*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1" Background="{DynamicResource MainMedium}">
+                <Grid Name="SideGrid" ColumnDefinitions="*" RowDefinitions="*,*,*" Grid.Row="1" Grid.Column="1"
+                      Background="{DynamicResource MainMedium}">
 
                     <Button Grid.Row="0" Margin="20,0" Click="OnStatsButton">
                         <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left">
@@ -70,15 +79,18 @@
                                 <avalonia:Icon.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="50" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </avalonia:Icon.FontSize>
                             </avalonia:Icon>
-                            <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="Stats" FontWeight="ExtraBold" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
                                 <TextBlock.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="26" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </TextBlock.FontSize>
                             </TextBlock>
@@ -91,15 +103,18 @@
                                 <avalonia:Icon.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="50" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </avalonia:Icon.FontSize>
                             </avalonia:Icon>
-                            <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="History" FontWeight="ExtraBold" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
                                 <TextBlock.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="26" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </TextBlock.FontSize>
                             </TextBlock>
@@ -112,15 +127,18 @@
                                 <avalonia:Icon.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="50" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </avalonia:Icon.FontSize>
                             </avalonia:Icon>
-                            <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="Settings" FontWeight="ExtraBold" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
                                 <TextBlock.FontSize>
                                     <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                         <Binding Source="26" />
-                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                        <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                                 Path="GlobalScale" />
                                     </MultiBinding>
                                 </TextBlock.FontSize>
                             </TextBlock>
@@ -129,7 +147,8 @@
                 </Grid>
 
                 <Grid Name="Body" Row="1" Column="0" Background="{DynamicResource MainLight}">
-                    <components:JobRadialSelector Name="JobSelector" Margin="15" Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
+                    <components:JobRadialSelector Name="JobSelector" Margin="15"
+                                                  Jobs="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
                                                   Radius="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}"
                                                   GlobalScale="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=GlobalScale}"
                                                   IsMinimalistic="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}"
@@ -139,34 +158,44 @@
                                                   InnerRadiusRatio="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}"
                                                   ReRender="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ReRenderProp}"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical" Spacing="5" IsVisible="{Binding JobIsSelected}">
-                        <TextBlock FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Vertical"
+                                Spacing="5" IsVisible="{Binding JobIsSelected}">
+                        <TextBlock FontWeight="Medium" FontStyle="Italic" Foreground="{DynamicResource TextColor}"
+                                   HorizontalAlignment="Center">
                             <TextBlock.Text>
                                 <Binding Path="SelectedJobText" StringFormat="{}{0}:" />
                             </TextBlock.Text>
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="16" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TimerScale" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="TimerScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="GlobalScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>
                         </TextBlock>
-                        <TextBlock Text="{Binding CurrentClock.CurrentTime}" FontWeight="ExtraBold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding CurrentClock.CurrentTime}" FontWeight="ExtraBold"
+                                   Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center">
                             <TextBlock.FontSize>
                                 <MultiBinding Converter="{StaticResource MultiplierThreeConverter}">
                                     <Binding Source="19" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="TimerScale" />
-                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="TimerScale" />
+                                    <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                             Path="GlobalScale" />
                                 </MultiBinding>
                             </TextBlock.FontSize>
                         </TextBlock>
                     </StackPanel>
-                    <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" avalonia:Attached.Icon="fa-solid fa-circle-stop" Foreground="#D42121" Margin="0, 0,8, 8" Command="{Binding StopCommand}" IsVisible="{Binding JobIsSelected}">
+                    <Button VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                            avalonia:Attached.Icon="fa-solid fa-circle-stop" Foreground="#D42121" Margin="0, 0,8, 8"
+                            Command="{Binding StopCommand}" IsVisible="{Binding JobIsSelected}">
                         <Button.FontSize>
                             <MultiBinding Converter="{StaticResource MultiplierTwoConverter}">
                                 <Binding Source="50" />
-                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}" Path="GlobalScale" />
+                                <Binding Source="{x:Static configuration:AppConfiguration.StaticCache}"
+                                         Path="GlobalScale" />
                             </MultiBinding>
                         </Button.FontSize>
                         <Button.Styles>
@@ -176,7 +205,8 @@
                         </Button.Styles>
                     </Button>
                 </Grid>
-                <Thumb Grid.Row="1" Grid.Column="1" ZIndex="10" Name="ResizeGrip" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" DragDelta="ResizeGrip_OnDragDelta">
+                <Thumb Grid.Row="1" Grid.Column="1" ZIndex="10" Name="ResizeGrip" Width="16" Height="16"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom" DragDelta="ResizeGrip_OnDragDelta">
                     <Thumb.Template>
                         <ControlTemplate>
                             <Border Background="{DynamicResource TextColor}" CornerRadius="7, 0, 0, 0" />

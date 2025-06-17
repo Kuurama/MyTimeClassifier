@@ -9,10 +9,12 @@ namespace DBConverter;
 
 internal class Program
 {
-    private static void Main(string[] p_Args)
+    private static void Main(string[] args)
     {
     Begin:
-        var l_OldDbFilePath = ConsoleInputUtils.GetFromConsole<string>("Please provide the path of the old database file:", "Incorrect input, or couldn't locate the file", ConsoleInputUtils.EParseVerificationScheme.FilePath);
+        var oldDbFilePath = ConsoleInputUtils.GetFromConsole<string>(
+            "Please provide the path of the old database file:", "Incorrect input, or couldn't locate the file",
+            ConsoleInputUtils.EParseVerificationScheme.FilePath);
 
         if (!ConsoleInputUtils.BoolFromConsole("Do you want to convert the old database to the new one?"))
         {
@@ -22,11 +24,12 @@ internal class Program
 
         Console.WriteLine("Trying to convert the old database to the new one...");
 
-        var l_OldDbContext = new OldDbContext(l_OldDbFilePath);
+        var odlDbContext = new OldDbContext(oldDbFilePath);
 
-        if (l_OldDbContext.Database.EnsureCreated())
+        if (odlDbContext.Database.EnsureCreated())
         {
-            Console.WriteLine("The file has been removed between the time it was checked and the time it was used, therefore, it created a new db, please try again with a fresh path");
+            Console.WriteLine(
+                "The file has been removed between the time it was checked and the time it was used, therefore, it created a new db, please try again with a fresh path");
             if (ConsoleInputUtils.BoolFromConsole("Do you want to try again?"))
                 goto Begin;
 
@@ -35,117 +38,145 @@ internal class Program
 
         try
         {
-            var l_MyTimeClassifierDbContext = new AppDbContext();
+            var myTimeClassifierDbContext = new AppDbContext();
 
             Console.WriteLine("Making sure the new database is completely freshly created...");
-            l_MyTimeClassifierDbContext.Database.EnsureDeleted();
-            l_MyTimeClassifierDbContext.Database.EnsureCreated();
+            myTimeClassifierDbContext.Database.EnsureDeleted();
+            myTimeClassifierDbContext.Database.EnsureCreated();
 
             Console.WriteLine("Converting the old database to the new one...");
-            var l_Configuration = new Configuration(DefaultConfiguration.s_Configuration, false);
+            var configuration = DefaultConfiguration.Configuration;
+            // It doesn't matter if we edit the static configuration in this program.
+            configuration.Jobs = [];
 
             /* Adding the default configuration to the new database */
-            l_MyTimeClassifierDbContext.Configurations.Add(l_Configuration);
-            l_MyTimeClassifierDbContext.SaveChanges();
+            myTimeClassifierDbContext.Configurations.Add(configuration);
+            myTimeClassifierDbContext.SaveChanges();
 
             /* We make sure to get the attached configuration from the database now */
-            l_Configuration = l_MyTimeClassifierDbContext.Configurations.First();
+            configuration = myTimeClassifierDbContext.Configurations.First();
 
             /* We make sure to get all the task's job names from the task list, instead of the job list, because the job list might not be complete */
-            var l_AllJobName = l_OldDbContext.Tasks.Select(p_X => p_X.JobName)
+            var allJobName = odlDbContext.Tasks.Select(x => x.JobName)
                 .Distinct()
                 .ToHashSet();
 
             /* We make sure to get the currently used jobs that might not have been used yet in the old database */
-            foreach (var l_OldJob in l_OldDbContext.JobList)
-                l_AllJobName.Add(l_OldJob.nameTache);
+            foreach (var oldJob in odlDbContext.JobList)
+                allJobName.Add(oldJob.nameTache);
 
             /* Custom check for actual duplicated jobs */
-            // Check if l_AllJobName has any duplicates, which mean -> 8 first characters are the same
-            var l_DuplicatedGroup = l_AllJobName.Where(p_X => p_X?.Length > 7).GroupBy(p_X => p_X?.Substring(0, 8) ?? string.Empty)
-                .Where(p_X => p_X.Count()                                 > 1)
-                .Select(p_X => p_X.Key)
+            // Check if allJobName has any duplicates, which mean -> 8 first characters are the same
+            var duplicatedGroup = allJobName
+                .Where(x => x?.Length > 7)
+                .GroupBy(x => x?.Substring(0, 8) ?? string.Empty)
+                .Where(x => x.Count() > 1)
+                .Select(x => x.Key)
                 .ToList();
 
-            List<string?> l_AllJobNameFull = [..l_AllJobName];
+            List<string?> allJobNameFull = [..allJobName];
 
             /* Remove all but the longest duplicate of each group from the AllJobName list */
-            foreach (var l_DuplicateStart in l_DuplicatedGroup)
+            foreach (var duplicateStart in duplicatedGroup)
             {
-                var l_SimilarDuplicates = l_AllJobName.Where(p_X => p_X?.StartsWith(l_DuplicateStart) ?? false)
-                    .OrderByDescending(p_X => p_X?.Length).ToArray();
-                var l_LongestDuplicate = l_SimilarDuplicates.First();
+                var similarDuplicates = allJobName
+                    .Where(x => x?.StartsWith(duplicateStart) ?? false)
+                    .OrderByDescending(x => x?.Length)
+                    .ToArray();
 
-                l_AllJobName.RemoveWhere(p_X => l_SimilarDuplicates.Contains(p_X) && p_X != l_LongestDuplicate);
+                var longestDuplicate = similarDuplicates.First();
+
+                allJobName.RemoveWhere(x => similarDuplicates.Contains(x) && x != longestDuplicate);
             }
 
-            var l_Priority = 0u;
+            var priority = 0u;
 
             /* Adding the Jobs to the configuration */
-            foreach (var l_OldJobName in l_AllJobName)
-                l_Configuration.Jobs.Add(new Job(l_OldJobName ?? string.Empty, null, null, null, null, l_Priority++, true));
+            foreach (var oldJobName in allJobName)
+                configuration.Jobs.Add(new Job
+                {
+                    Text = oldJobName ?? string.Empty,
+                    Priority = priority++,
+                    Enabled = true
+                });
 
             /* Adding the Jobs to the DB (so we can then use their IDs to link the tasks to them) */
-            l_MyTimeClassifierDbContext.SaveChanges();
+            myTimeClassifierDbContext.SaveChanges();
             Console.WriteLine("Jobs imported, now importing tasks...");
 
             /* For performance reasons, we will use a dictionary to link the job names to their IDs */
-            var l_NameToJobID = l_MyTimeClassifierDbContext.Jobs.ToDictionary(p_X => p_X.Text, p_X => p_X.Id);
+            var nameToJobID = myTimeClassifierDbContext.Jobs.ToDictionary(x => x.Text, x => x.Id);
 
             /* Adding back the duplicated jobs to put to their homologue longer duplicate */
-            foreach (var l_DuplicateStart in l_DuplicatedGroup)
+            foreach (var duplicateStart in duplicatedGroup)
             {
-                var l_SimilarDuplicates = l_AllJobNameFull.Where(p_X => p_X?.StartsWith(l_DuplicateStart) ?? false)
-                    .OrderByDescending(p_X => p_X?.Length).ToArray();
-                var l_LongestDuplicate = l_SimilarDuplicates.First();
+                var similarDuplicates = allJobNameFull
+                    .Where(x => x?.StartsWith(duplicateStart) ?? false)
+                    .OrderByDescending(x => x?.Length)
+                    .ToArray();
 
-                if (l_LongestDuplicate is null) continue;
+                var longestDuplicate = similarDuplicates.First();
 
-                l_SimilarDuplicates.Where(p_X => p_X != l_LongestDuplicate).ToList().ForEach(p_X =>
+                if (longestDuplicate is null) continue;
+
+                similarDuplicates
+                    .Where(x => x != longestDuplicate).ToList()
+                    .ForEach(x =>
+                    {
+                        if (x is null) return;
+
+                        nameToJobID.Add(x, nameToJobID[longestDuplicate]);
+                    });
+            }
+
+            uint autoIncrement = 1;
+
+            foreach (var oldTask in odlDbContext.Tasks)
+            {
+                if (oldTask.JobName == null)
+                    continue;
+
+                var currentJobID = nameToJobID[oldTask.JobName];
+                /* We divide by 1000 to convert the UnixTime from milliseconds to seconds */
+                myTimeClassifierDbContext.Tasks.Add(new Task
                 {
-                    if (p_X is null) return;
-
-                    l_NameToJobID.Add(p_X, l_NameToJobID[l_LongestDuplicate]);
+                    Id = autoIncrement++,
+                    JobID = currentJobID,
+                    UnixStartTime = (uint?)(oldTask.dateD / 1000) ?? 0,
+                    UnixEndTime = (uint?)(oldTask.dateF / 1000) ?? 0
                 });
             }
 
-            uint l_AutoIncrement = 1;
-
-            foreach (var l_OldTask in l_OldDbContext.Tasks)
-            {
-                if (l_OldTask.JobName == null)
-                    continue;
-
-                var l_CurrentJobID = l_NameToJobID[l_OldTask.JobName];
-                /* We divide by 1000 to convert the UnixTime from milliseconds to seconds */
-                l_MyTimeClassifierDbContext.Tasks.Add(new Task(l_AutoIncrement++, l_CurrentJobID, (uint?)(l_OldTask.dateD / 1000) ?? 0, (uint?)(l_OldTask.dateF / 1000) ?? 0));
-            }
-
-            l_MyTimeClassifierDbContext.SaveChanges();
+            myTimeClassifierDbContext.SaveChanges();
 
             /* Adding default colors to the jobs that were in the old database but selected */
-            var l_OldSelectedJobs = l_OldDbContext.SelectedJobs.ToArray();
+            var oldSelectedJobs = odlDbContext.SelectedJobs.ToArray();
 
-            for (var l_Index = 0; l_Index < l_OldSelectedJobs.Length; l_Index++)
+            for (var i = 0; i < oldSelectedJobs.Length; i++)
             {
-                var l_OldSelectedJob = l_OldSelectedJobs[l_Index];
-                var l_CurrentJob     = l_Configuration.Jobs.FirstOrDefault(p_X => p_X.Id == l_NameToJobID[l_OldSelectedJob.nameTache ?? string.Empty]);
-                if (l_CurrentJob is null) continue;
+                var oldSelectedJob = oldSelectedJobs[i];
+                var currentJob = configuration.Jobs.FirstOrDefault(x
+                    => x.Id == nameToJobID[oldSelectedJob.nameTache ?? string.Empty]);
+                if (currentJob is null) continue;
 
-                l_CurrentJob.FillColor    = DefaultConfiguration.s_Configuration.Jobs[l_Index % DefaultConfiguration.s_Configuration.Jobs.Count].FillColor;
-                l_CurrentJob.StrokeColor  = DefaultConfiguration.s_Configuration.Jobs[l_Index % DefaultConfiguration.s_Configuration.Jobs.Count].StrokeColor;
-                l_CurrentJob.ContentColor = DefaultConfiguration.s_Configuration.Jobs[l_Index % DefaultConfiguration.s_Configuration.Jobs.Count].ContentColor;
+                currentJob.FillColor = DefaultConfiguration.Configuration
+                    .Jobs[i % DefaultConfiguration.Configuration.Jobs.Count].FillColor;
+                currentJob.StrokeColor = DefaultConfiguration.Configuration
+                    .Jobs[i % DefaultConfiguration.Configuration.Jobs.Count].StrokeColor;
+                currentJob.ContentColor = DefaultConfiguration.Configuration
+                    .Jobs[i % DefaultConfiguration.Configuration.Jobs.Count].ContentColor;
             }
 
-            l_MyTimeClassifierDbContext.SaveChanges();
+            myTimeClassifierDbContext.SaveChanges();
 
             Console.WriteLine("Tasks imported successfully!");
-            Console.WriteLine($"The new database has been placed in the directory of this application, under the name '{AppDbContext.DATABASE_PATH_NAME}'");
+            Console.WriteLine(
+                $"The new database has been placed in the directory of this application, under the name '{AppDbContext.DatabasePathName}'");
             ConsoleInputUtils.PressAnyKeyToExit();
         }
-        catch (Exception l_Exception)
+        catch (Exception exception)
         {
-            Console.WriteLine("Something went wrong: {0}", l_Exception);
+            Console.WriteLine("Something went wrong: {0}", exception);
             ConsoleInputUtils.PressAnyKeyToExit();
         }
     }

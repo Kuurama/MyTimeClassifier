@@ -28,73 +28,100 @@
                     <TextBlock Grid.Column="0" Text="Settings (v0.2)"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
-                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" Foreground="{DynamicResource TextColor}" />
+                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton"
+                            avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26"
+                            Foreground="{DynamicResource TextColor}" />
                 </Grid>
 
                 <Grid Name="Body" Row="1" Margin="10" Background="{DynamicResource MainLight}">
                     <StackPanel Name="ContentStackPanel" Orientation="Horizontal" Spacing="20">
                         <StackPanel Name="LeftContentPart" Orientation="Vertical" HorizontalAlignment="Left">
-                            <TextBlock Text="General" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,5,0,5" />
+                            <TextBlock Text="General" FontWeight="ExtraBold" FontSize="16"
+                                       Foreground="{DynamicResource TextColor}" Margin="0,5,0,5" />
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="Program name:" VerticalAlignment="Center" />
-                                <TextBox Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}" VerticalAlignment="Center" />
+                                <TextBox
+                                    Text="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=ProgramName}"
+                                    VerticalAlignment="Center" />
                             </StackPanel>
-                            <TextBlock Text="Appearance" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,15,0,5" />
+                            <TextBlock Text="Appearance" FontWeight="ExtraBold" FontSize="16"
+                                       Foreground="{DynamicResource TextColor}" Margin="0,15,0,5" />
                             <StackPanel Orientation="Vertical" Spacing="5">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Use Light Theme:" VerticalAlignment="Center" />
-                                    <CheckBox IsChecked="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=UseLightTheme}" />
+                                    <CheckBox
+                                        IsChecked="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=UseLightTheme}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Title bar scale:" VerticalAlignment="Center" />
-                                    <Slider Minimum="0.4" Maximum="3" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=TitleBarScale}" Width="180" />
+                                    <Slider Minimum="0.4" Maximum="3"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=TitleBarScale}"
+                                            Width="180" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Global scale:" VerticalAlignment="Center" />
 
-                                    <Slider Minimum="{Binding Source={x:Static configuration:DefaultConfiguration.s_MinimumGlobalScale}}" Maximum="{Binding Source={x:Static configuration:DefaultConfiguration.s_MaximumGlobalScale}}"
-                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=GlobalScale}" Width="180" />
+                                    <Slider
+                                        Minimum="{Binding Source={x:Static configuration:DefaultConfiguration.MinimumGlobalScale}}"
+                                        Maximum="{Binding Source={x:Static configuration:DefaultConfiguration.MaximumGlobalScale}}"
+                                        Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=GlobalScale}"
+                                        Width="180" />
                                 </StackPanel>
                             </StackPanel>
-                            <TextBlock Text="Timer" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,15,0,0" />
+                            <TextBlock Text="Timer" FontWeight="ExtraBold" FontSize="16"
+                                       Foreground="{DynamicResource TextColor}" Margin="0,15,0,0" />
                             <StackPanel Orientation="Vertical" Spacing="5">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Timer scale:" VerticalAlignment="Center" />
-                                    <Slider Minimum="0.1" Maximum="4" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=TimerScale}" Width="180" />
+                                    <Slider Minimum="0.1" Maximum="4"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=TimerScale}"
+                                            Width="180" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Name="RightContentPart" Orientation="Vertical" HorizontalAlignment="Left">
-                            <TextBlock Text="Radial Selector" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" Margin="0,5,0,5" />
+                            <TextBlock Text="Radial Selector" FontWeight="ExtraBold" FontSize="16"
+                                       Foreground="{DynamicResource TextColor}" Margin="0,5,0,5" />
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="Is Minimalistic:" VerticalAlignment="Center" />
-                                <CheckBox IsChecked="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}" />
+                                <CheckBox
+                                    IsChecked="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=IsMinimalistic}" />
                             </StackPanel>
                             <StackPanel Orientation="Vertical" Spacing="5">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Radius:" VerticalAlignment="Center" />
-                                    <Slider Minimum="265" Maximum="1000" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}" Width="180" />
+                                    <Slider Minimum="265" Maximum="1000"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialSelectorRadius}"
+                                            Width="180" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Spacing Angle:" VerticalAlignment="Center" />
-                                    <Slider Minimum="0" Maximum="360" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=SpacingAngle}" Width="180" />
+                                    <Slider Minimum="0" Maximum="360"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=SpacingAngle}"
+                                            Width="180" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Inner radius ratio:" VerticalAlignment="Center" />
-                                    <Slider Minimum="0.375" Maximum="1" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}" Width="180" />
+                                    <Slider Minimum="0.375" Maximum="1"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=InnerRadiusRatio}"
+                                            Width="180" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <TextBlock Text="Content Scale:" VerticalAlignment="Center" />
-                                    <Slider Minimum="0.1" Maximum="4" Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}" Width="180" />
+                                    <Slider Minimum="0.1" Maximum="4"
+                                            Value="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=RadialContentScale}"
+                                            Width="180" />
                                 </StackPanel>
                             </StackPanel>
                             <!-- Jobs title and EditJob button with a fontawesome icon -->
                             <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Spacing="2">
-                                <TextBlock Text="Jobs" FontWeight="ExtraBold" FontSize="16" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" />
+                                <TextBlock Text="Jobs" FontWeight="ExtraBold" FontSize="16"
+                                           Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" />
                                 <Button Click="OnJobsEdit">
                                     <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
                                         <TextBlock Text="Edit" />
-                                        <avalonia:Icon Value="fa-solid fa-edit" FontSize="16" Foreground="{DynamicResource TextColor}" />
+                                        <avalonia:Icon Value="fa-solid fa-edit" FontSize="16"
+                                                       Foreground="{DynamicResource TextColor}" />
                                     </StackPanel>
                                 </Button>
                             </StackPanel>

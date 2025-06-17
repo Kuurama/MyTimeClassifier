@@ -1,7 +1,7 @@
-﻿using MyTimeClassifier.Configuration;
+﻿using System.Linq;
+using MyTimeClassifier.Configuration;
 using MyTimeClassifier.Database;
 using MyTimeClassifier.Database.Entities;
-using System.Linq;
 
 namespace MyTimeClassifier.UI.ViewModels;
 
@@ -9,17 +9,20 @@ public class JobEditWindowViewModel : ViewModelBase
 {
     public static void AddNewRow()
     {
-        using var l_DbContext     = new AppDbContext();
-        var       l_CurrentConfig = AppConfiguration.StaticCache;
+        using var dbContext = new AppDbContext();
+        var currentConfig = AppConfiguration.StaticCache;
 
-        l_DbContext.Attach(l_CurrentConfig);
+        dbContext.Attach(currentConfig);
 
-        var l_TaskPriorities = l_CurrentConfig.Jobs.Select(p_X => p_X.Priority).ToArray();
-        var l_FirstAvailablePriority = l_TaskPriorities.Aggregate(1,
-            (p_Current, p_NextPriority) => p_NextPriority > p_Current ? p_Current : p_Current + 1);
+        var taskPriorities = currentConfig.Jobs
+            .Select(x => x.Priority)
+            .ToArray();
 
-        l_CurrentConfig.Jobs.Add(new Job((uint)l_FirstAvailablePriority));
-        l_DbContext.SaveChanges();
+        var firstAvailablePriority = taskPriorities
+            .Aggregate(1, (current, nextPriority) => nextPriority > current ? current : current + 1);
+
+        currentConfig.Jobs.Add(new Job { Priority = (uint)firstAvailablePriority });
+        dbContext.SaveChanges();
 
         AppConfiguration.StaticCache.TriggerReRender();
     }

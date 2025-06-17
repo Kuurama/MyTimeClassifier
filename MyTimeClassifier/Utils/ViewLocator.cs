@@ -1,26 +1,26 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using MyTimeClassifier.UI.ViewModels;
-using System;
 
 namespace MyTimeClassifier.Utils;
 
 public class ViewLocator : IDataTemplate
 {
-    public Control? Build(object? p_Data)
+    public Control? Build(object? data)
     {
-        if (p_Data is null)
+        if (data is null)
             return null;
 
-        var l_Name = p_Data.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-        var l_Type = Type.GetType(l_Name);
+        var name = data.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
+        var type = Type.GetType(name);
 
-        if (l_Type == null) return new TextBlock { Text = "Not Found: " + l_Name };
+        if (type == null) return new TextBlock { Text = "Not Found: " + name };
 
-        var l_Control = (Control)Activator.CreateInstance(l_Type)!;
-        l_Control.DataContext = p_Data;
-        return l_Control;
+        var control = (Control)Activator.CreateInstance(type)!;
+        control.DataContext = data;
+        return control;
     }
 
-    public bool Match(object? p_Data) => p_Data is ViewModelBase;
+    public bool Match(object? data) => data is ViewModelBase;
 }

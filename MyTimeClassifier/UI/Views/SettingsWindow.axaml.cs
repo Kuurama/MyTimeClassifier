@@ -9,31 +9,16 @@ namespace MyTimeClassifier.UI.Views;
 
 public partial class SettingsWindow : Window
 {
-    public SettingsWindow()
+    public SettingsWindow() => InitializeComponent();
+
+    protected override void OnPointerPressed(PointerPressedEventArgs args) => WindowHelper.Drag(this, args);
+
+    public void OnCloseButton(object? sender, RoutedEventArgs _)
     {
-        InitializeComponent();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    protected override void OnPointerPressed(PointerPressedEventArgs p_Args) => WindowHelper.Drag(this, p_Args);
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    public void OnCloseButton(object? p_Sender, RoutedEventArgs _)
-    {
-        /* Save the settings */
         AppConfiguration.SaveConfiguration();
-
-        /* Close the window */
         WindowHelper.CloseButton_Click(this);
     }
 
-    private void OnJobsEdit(object? p_Sender, RoutedEventArgs _)
-    {
-        var l_JobEditWindow = new JobEditWindow { DataContext = new JobEditWindowViewModel() };
-        l_JobEditWindow.ShowDialog(this);
-    }
+    private void OnJobsEdit(object? sender, RoutedEventArgs _)
+        => new JobEditWindow { DataContext = new JobEditWindowViewModel() }.ShowDialog(this);
 }

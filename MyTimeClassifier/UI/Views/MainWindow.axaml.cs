@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,7 +9,6 @@ using Avalonia.Threading;
 using MyTimeClassifier.Configuration;
 using MyTimeClassifier.UI.ViewModels;
 using MyTimeClassifier.Utils;
-using System;
 
 namespace MyTimeClassifier.UI.Views;
 
@@ -22,65 +22,51 @@ public partial class MainWindow : Window
         DataContext = new MainWindowViewModel(JobSelector);
         this.FindControl<Thumb>("ResizeGrip")?.AddHandler(Thumb.DragDeltaEvent, ResizeGrip_OnDragDelta);
 
-        ((App?)Application.Current)?.ChangeTheme(AppConfiguration.StaticCache.UseLightTheme ? ThemeVariant.Light : ThemeVariant.Dark);
+        ((App?)Application.Current)?.ChangeTheme(AppConfiguration.StaticCache.UseLightTheme
+            ? ThemeVariant.Light
+            : ThemeVariant.Dark);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    protected override void OnPointerPressed(PointerPressedEventArgs args) => WindowHelper.Drag(this, args);
 
-    protected override void OnPointerPressed(PointerPressedEventArgs p_Args) => WindowHelper.Drag(this, p_Args);
+    public void OnMinimizeButton(object? sender, RoutedEventArgs _) => WindowHelper.MinimizeButton_Click(this);
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    public void OnCloseButton(object? sender, RoutedEventArgs _) => WindowHelper.CloseButton_Click(this);
 
-    public void OnMinimizeButton(object? p_Sender, RoutedEventArgs _) => WindowHelper.MinimizeButton_Click(this);
+    private void OnStatsButton(object? sender, RoutedEventArgs _)
+        => new StatisticsWindow().ShowDialog(this);
 
-    public void OnCloseButton(object? p_Sender, RoutedEventArgs _) => WindowHelper.CloseButton_Click(this);
+    private void OnSettingsButton(object? sender, RoutedEventArgs _)
+        => new SettingsWindow { DataContext = new SettingsWindowViewModel() }.ShowDialog(this);
 
-    private void OnStatsButton(object? p_Sender, RoutedEventArgs _)
-    {
-        var l_StatisticsWindow = new StatisticsWindow { DataContext = new StatisticsWindowViewModel() };
-        l_StatisticsWindow.ShowDialog(this);
-    }
+    private void OnHistoryButton(object? pSender, RoutedEventArgs _)
+        => new HistoryWindow { DataContext = new HistoryWindowViewModel() }.ShowDialog(this);
 
-    private void OnSettingsButton(object? p_Sender, RoutedEventArgs _)
-    {
-        var l_SettingsWindow = new SettingsWindow { DataContext = new SettingsWindowViewModel() };
-        l_SettingsWindow.ShowDialog(this);
-    }
-
-    private void OnHistoryButton(object? p_Sender, RoutedEventArgs _)
-    {
-        var l_HistoryWindow = new HistoryWindow { DataContext = new HistoryWindowViewModel() };
-        l_HistoryWindow.ShowDialog(this);
-    }
 
     /// <summary>
-    ///     Event handler for the resize grip.
-    ///     Changes the GlobalScore of the application.
-    ///     Makes sure that the scale is within the bounds.
+    /// Event handler for the resize grip.
+    /// Changes the GlobalScore of the application.
+    /// Makes sure that the scale is within the bounds.
     /// </summary>
     /// <param name="_"></param>
-    /// <param name="p_E"></param>
-    private void ResizeGrip_OnDragDelta(object? _, VectorEventArgs p_E)
+    /// <param name="e"></param>
+    private void ResizeGrip_OnDragDelta(object? _, VectorEventArgs e)
     {
         if (WindowState != WindowState.Normal)
             return;
 
-        var l_Config = AppConfiguration.StaticCache;
+        var config = AppConfiguration.StaticCache;
 
-        /// Ensure that the steps are not too big (to avoid UI Flickering).
-        var l_NewScale = l_Config.GlobalScale + Math.Sign(p_E.Vector.X) * (Math.Min(Math.Abs(p_E.Vector.X), 1) / 100);
-        /// Ensure that the scale is within the bounds.
-        l_NewScale = Math.Max(DefaultConfiguration.s_MinimumGlobalScale, Math.Min(DefaultConfiguration.s_MaximumGlobalScale, l_NewScale));
+        // Ensure that the steps are not too big (to avoid UI Flickering).
+        var newScale = config.GlobalScale + Math.Sign(e.Vector.X) * (Math.Min(Math.Abs(e.Vector.X), 1) / 100);
 
-        if (Math.Abs(l_Config.GlobalScale - l_NewScale) < 0.01)
+        // Ensure that the scale is within the bounds.
+        newScale = Math.Max(DefaultConfiguration.MinimumGlobalScale,
+            Math.Min(DefaultConfiguration.MaximumGlobalScale, newScale));
+
+        if (Math.Abs(config.GlobalScale - newScale) < 0.01)
             return;
 
-        /// Update the scale.
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            l_Config.GlobalScale = (float)l_NewScale;
-        });
+        Dispatcher.UIThread.InvokeAsync(() => { config.GlobalScale = (float)newScale; });
     }
 }

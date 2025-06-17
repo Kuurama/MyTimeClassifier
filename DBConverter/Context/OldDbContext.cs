@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DBConverter.Context;
 
-public partial class OldDbContext : DbContext
+public class OldDbContext : DbContext
 {
     public readonly string m_DatabasePathName = "dbTache.db";
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    public OldDbContext(string p_DatabasePathName) => m_DatabasePathName = p_DatabasePathName;
+    public OldDbContext(string databasePathName) => m_DatabasePathName = databasePathName;
 
-    public OldDbContext(DbContextOptions<OldDbContext> p_Options) : base(p_Options) { }
+    public OldDbContext(DbContextOptions<OldDbContext> options) : base(options) { }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -21,16 +21,11 @@ public partial class OldDbContext : DbContext
 
     public virtual DbSet<TacheSelectionnee> SelectedJobs { get; set; }
 
-    public virtual DbSet<tache> Tasks { get; set; }
+    public virtual DbSet<Tache> Tasks { get; set; }
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    protected override void OnConfiguring(DbContextOptionsBuilder p_OptionsBuilder)
-        => p_OptionsBuilder.UseSqlite($"Data Source={m_DatabasePathName}");
-
-    protected override void OnModelCreating(ModelBuilder p_ModelBuilder)
-        => OnModelCreatingPartial(p_ModelBuilder);
-
-    partial void OnModelCreatingPartial(ModelBuilder p_ModelBuilder);
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlite($"Data Source={m_DatabasePathName}");
 }

@@ -1,7 +1,3 @@
-using Avalonia.Media;
-using MsBox.Avalonia;
-using MyTimeClassifier.Configuration;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,142 +7,78 @@ using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Avalonia.Media;
+using MsBox.Avalonia;
+using MyTimeClassifier.Configuration;
+using ReactiveUI;
 
 namespace MyTimeClassifier.Database.Entities;
 
 public class Job : INotifyPropertyChanged
 {
-    private const uint MAX_EMOJI_LENGTH = 63;
-    private const uint MAX_TEXT_LENGTH  = 48;
+    private const uint MaxEmojiLength = 63;
+    private const uint MaxTextLength = 48;
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    private IBrush m_ContentColor = new SolidColorBrush(Color.Parse("#FAFAFA"));
-    private string m_Emoji        = "fa-question";
-    private bool   m_Enabled      = true;
-    private IBrush m_FillColor    = new SolidColorBrush(Color.Parse("#191E27"));
-    private Guid   m_Id;
-    private bool   m_IsRadial = true;
-    private uint   m_Priority;
-    private IBrush m_StrokeColor = new SolidColorBrush(Color.Parse("#151A23"));
-    private string m_Text        = "Unknown";
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
-    /// <summary>
-    ///     Constructor used by Entity Framework.
-    /// </summary>
     public Job() => OnDeleteCommand = GetDeleteCommand();
 
-    public Job(uint p_Priority)
-    {
-        m_Priority      = p_Priority;
-        OnDeleteCommand = GetDeleteCommand();
-    }
-
-    public Job(string? p_Text, string? p_Emoji, IBrush? p_FillColor, IBrush? p_StrokeColor, IBrush? p_ContentColor, uint p_Priority, bool p_IsRadial, bool p_Enabled = true)
-    {
-        m_Text         = p_Text         ?? "Unknown";
-        m_Emoji        = p_Emoji        ?? "fa-question";
-        m_FillColor    = p_FillColor    ?? new SolidColorBrush(Color.Parse("#191E27"));
-        m_StrokeColor  = p_StrokeColor  ?? new SolidColorBrush(Color.Parse("#151A23"));
-        m_ContentColor = p_ContentColor ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
-        m_Priority     = p_Priority;
-        m_IsRadial     = p_IsRadial;
-        m_Enabled      = p_Enabled;
-
-        OnDeleteCommand = GetDeleteCommand();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
 
     [Key]
-    public Guid Id
-    {
-        get => m_Id;
-        set => SetField(ref m_Id, value);
-    }
+    public Guid Id { get; set => SetField(ref field, value); }
 
-    public IBrush StrokeColor
-    {
-        get => m_StrokeColor;
-        set => SetField(ref m_StrokeColor, value);
-    }
+    public IBrush StrokeColor { get; set => SetField(ref field, value); }
+        = new SolidColorBrush(Color.Parse("#151A23"));
 
-    public IBrush FillColor
-    {
-        get => m_FillColor;
-        set => SetField(ref m_FillColor, value);
-    }
+    public IBrush FillColor { get; set => SetField(ref field, value); }
+        = new SolidColorBrush(Color.Parse("#191E27"));
 
-    public IBrush ContentColor
-    {
-        get => m_ContentColor;
-        set => SetField(ref m_ContentColor, value);
-    }
+    public IBrush ContentColor { get; set => SetField(ref field, value); }
+        = new SolidColorBrush(Color.Parse("#FAFAFA"));
 
-    public uint SafePriority
-    {
-        get => m_Priority;
-        set => SetField(ref m_Priority, value);
-    }
-
-    public uint Priority
-    {
-        get => m_Priority;
-        set
-        {
-            SetField(ref m_Priority, value);
-            AppConfiguration.StaticCache.TriggerReRender();
-        }
-    }
+    public uint Priority { get; set => SetField(ref field, value); }
 
     public bool IsRadial
     {
-        get => m_IsRadial;
+        get;
         set
         {
-            SetField(ref m_IsRadial, value);
+            SetField(ref field, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
     }
 
     [NotMapped]
-    public uint PriorityReordering
+    public uint PriorityWithReordering
     {
-        get => m_Priority;
+        get => Priority;
         set
         {
-            var l_OldPriority = m_Priority;
-            SetField(ref m_Priority, value);
-            AppConfiguration.StaticCache.ReOrderJobs((JobID: Id, NewValue: m_Priority, OldValue: l_OldPriority));
+            var oldPriority = Priority;
+            Priority = value;
+            AppConfiguration.StaticCache.ReOrderJobs((JobID: Id, NewValue: value, OldValue: oldPriority));
             AppConfiguration.StaticCache.TriggerReRender();
         }
     }
 
     public bool Enabled
     {
-        get => m_Enabled;
+        get;
         set
         {
-            SetField(ref m_Enabled, value);
+            SetField(ref field, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    }
+    } = true;
 
     [NotMapped]
     public Color FillColorAsColor
     {
-        get => m_FillColor is SolidColorBrush l_Brush ? l_Brush.Color : Colors.Black;
+        get => FillColor is SolidColorBrush brush ? brush.Color : Colors.Black;
         set
         {
-            if (m_FillColor is not SolidColorBrush l_Brush)
+            if (FillColor is not SolidColorBrush brush)
                 return;
 
-            l_Brush.Color = value;
+            brush.Color = value;
             OnPropertyChanged();
         }
     }
@@ -154,13 +86,13 @@ public class Job : INotifyPropertyChanged
     [NotMapped]
     public Color StrokeColorAsColor
     {
-        get => m_StrokeColor is SolidColorBrush l_Brush ? l_Brush.Color : Colors.White;
+        get => StrokeColor is SolidColorBrush brush ? brush.Color : Colors.White;
         set
         {
-            if (m_StrokeColor is not SolidColorBrush l_Brush)
+            if (StrokeColor is not SolidColorBrush brush)
                 return;
 
-            l_Brush.Color = value;
+            brush.Color = value;
             OnPropertyChanged();
         }
     }
@@ -168,41 +100,41 @@ public class Job : INotifyPropertyChanged
     [NotMapped]
     public Color ContentColorAsColor
     {
-        get => m_ContentColor is SolidColorBrush l_Brush ? l_Brush.Color : Colors.White;
+        get => ContentColor is SolidColorBrush brush ? brush.Color : Colors.White;
         set
         {
-            if (m_ContentColor is not SolidColorBrush l_Brush)
+            if (ContentColor is not SolidColorBrush brush)
                 return;
 
-            l_Brush.Color = value;
+            brush.Color = value;
             OnPropertyChanged();
         }
     }
 
-    [MaxLength((int)MAX_TEXT_LENGTH)]
+    [MaxLength((int)MaxTextLength)]
     public string Text
     {
-        get => m_Text;
+        get;
         set
         {
-            SetField(ref m_Text, value);
+            SetField(ref field, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    }
-    
+    } = "Unknown";
+
     [NotMapped]
     public string NormalizedText => Text.Replace("\\n", " ");
 
-    [MaxLength((int)MAX_EMOJI_LENGTH)]
+    [MaxLength((int)MaxEmojiLength)]
     public string Emoji
     {
-        get => m_Emoji;
+        get;
         set
         {
-            SetField(ref m_Emoji, value);
+            SetField(ref field, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    }
+    } = "fa-question";
 
     [NotMapped]
     public ICommand OnDeleteCommand { get; init; }
@@ -215,38 +147,39 @@ public class Job : INotifyPropertyChanged
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    private void OnPropertyChanged([CallerMemberName] string? p_PropertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p_PropertyName));
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    private bool SetField<T>(ref T p_Field, T p_Value, [CallerMemberName] string? p_PropertyName = null)
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(p_Field, p_Value))
+        if (EqualityComparer<T>.Default.Equals(field, value))
             return false;
 
-        p_Field = p_Value;
-        OnPropertyChanged(p_PropertyName);
+        field = value;
+        OnPropertyChanged(propertyName);
         return true;
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
     private ReactiveCommand<Unit, Unit> GetDeleteCommand() => ReactiveCommand.Create(() =>
     {
-        using var l_DBContext = new AppDbContext();
+        using var dbContext = new AppDbContext();
 
-        if (l_DBContext.Tasks.Any(p_X => p_X.JobID == Id))
+        if (dbContext.Tasks.Any(x => x.JobID == Id))
         {
-            MessageBoxManager.GetMessageBoxStandard("Job has saved tasks", "The job has saved tasks and cannot be deleted.\nIf you wish to delete it, delete or migrate all it's linked tasks first (in the history section)").ShowWindowAsync();
+            MessageBoxManager.GetMessageBoxStandard(
+                    title: "Job has saved tasks",
+                    "The job has saved tasks and cannot be deleted.\nIf you wish to delete it, delete or migrate all it's linked tasks first (in the history section)")
+                .ShowWindowAsync();
             return;
         }
 
-        l_DBContext.Jobs.Remove(l_DBContext.Jobs.First(p_X => p_X.Id == Id));
-        l_DBContext.SaveChanges();
+        dbContext.Jobs.Remove(dbContext.Jobs.First(x => x.Id == Id));
+        dbContext.SaveChanges();
 
         Id = Guid.Empty;
 
         AppConfiguration.StaticCache.Jobs.Remove(this);
+        // Because removing from the collection does not trigger a re-render, we need to do it manually.
         AppConfiguration.StaticCache.TriggerReRender();
     });
 }

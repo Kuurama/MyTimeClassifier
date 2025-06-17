@@ -31,10 +31,13 @@
                     <TextBlock Grid.Column="0" Text="History"
                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"
                                FontWeight="ExtraBold" FontSize="20" Foreground="{DynamicResource TextColor}" />
-                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton" avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26" Foreground="{DynamicResource TextColor}" />
+                    <Button Grid.Column="2" Background="Transparent" HorizontalAlignment="Right" Click="OnCloseButton"
+                            avalonia:Attached.Icon="fa-solid fa-xmark" FontSize="26"
+                            Foreground="{DynamicResource TextColor}" />
                 </Grid>
 
-                <Grid Name="Body" RowDefinitions="Auto,Auto,Auto,Auto" Row="1" Margin="10" MinWidth="625" Background="{DynamicResource MainLight}">
+                <Grid Name="Body" RowDefinitions="Auto,Auto,Auto,Auto" Row="1" Margin="10" MinWidth="625"
+                      Background="{DynamicResource MainLight}">
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <TextBlock Text="Start Time" FontWeight="Bold" Margin="50,0,0,0" HorizontalAlignment="Left" />
                         <TextBlock Text="End Time" FontWeight="Bold" Margin="95,0,0,0" HorizontalAlignment="Left" />
@@ -43,8 +46,11 @@
                     </StackPanel>
 
                     <!-- Separation line -->
-                    <Rectangle Grid.Row="1" Height="1" Fill="{DynamicResource MainBorder}" VerticalAlignment="Bottom" Margin="0,5,0,5" />
-                    <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TaskModels}" Height="{Binding ListBoxHeight}" Background="{DynamicResource MainLight}" Scroll="{Binding ScrollViewer, Mode=OneWayToSource}">
+                    <Rectangle Grid.Row="1" Height="1" Fill="{DynamicResource MainBorder}" VerticalAlignment="Bottom"
+                               Margin="0,5,0,5" />
+                    <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TaskModels}"
+                             Height="{Binding ListBoxHeight}" Background="{DynamicResource MainLight}"
+                             Scroll="{Binding ScrollViewer, Mode=OneWayToSource}">
                         <ListBox.Styles>
                             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
                                 <Setter Property="Background" Value="Transparent" />
@@ -57,11 +63,14 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="models:TaskModel">
                                 <StackPanel Orientation="Horizontal" Spacing="5" Margin="-6,0,0,0">
-                                    <Button Width="160" HorizontalAlignment="Center" Content="{Binding StartDate}" Click="OnContextMenuButtonPressed">
+                                    <Button Width="160" HorizontalAlignment="Center" Content="{Binding StartDate}"
+                                            Click="OnContextMenuButtonPressed">
                                         <Button.ContextMenu>
                                             <ContextMenu Placement="Right">
                                                 <MenuItem Header="Date">
-                                                    <CalendarDatePicker DisplayDateEnd="{Binding Source={x:Static system:DateTime.Now}, Path=Date}" SelectedDate="{Binding StartDate, Mode=TwoWay}" />
+                                                    <CalendarDatePicker
+                                                        DisplayDateEnd="{Binding Source={x:Static system:DateTime.Now}, Path=Date}"
+                                                        SelectedDate="{Binding StartDate, Mode=TwoWay}" />
                                                 </MenuItem>
                                                 <MenuItem Header="Time">
                                                     <TimePicker SelectedTime="{Binding StartTime, Mode=TwoWay}" />
@@ -73,17 +82,21 @@
                                         <Button.ContextMenu>
                                             <ContextMenu Placement="Right">
                                                 <MenuItem Header="Date">
-                                                    <CalendarDatePicker DisplayDateEnd="{Binding Source={x:Static system:DateTime.Now}, Path=Date}" SelectedDate="{Binding EndDate, Mode=TwoWay}" >
-                                                    </CalendarDatePicker>
+                                                    <CalendarDatePicker
+                                                        DisplayDateEnd="{Binding Source={x:Static system:DateTime.Now}, Path=Date}"
+                                                        SelectedDate="{Binding EndDate, Mode=TwoWay}" />
                                                 </MenuItem>
-                                                <MenuItem Header="Time" >
-                                                    <TimePicker SelectedTime="{Binding EndTime, Mode=TwoWay}"  />
+                                                <MenuItem Header="Time">
+                                                    <TimePicker SelectedTime="{Binding EndTime, Mode=TwoWay}" />
                                                 </MenuItem>
                                             </ContextMenu>
                                         </Button.ContextMenu>
                                     </Button>
-                                    <TextBlock Text="{Binding ElapsedTime}" VerticalAlignment="Center" FontWeight="Bold" Width="100" Margin="20, 0, 0, 0" />
-                                    <ComboBox ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}" SelectedItem="{Binding Job}" Width="160">
+                                    <TextBlock Text="{Binding ElapsedTime}" VerticalAlignment="Center"
+                                               FontWeight="Bold" Width="100" Margin="20, 0, 0, 0" />
+                                    <ComboBox
+                                        ItemsSource="{Binding Source={x:Static configuration:AppConfiguration.StaticCache}, Path=Jobs}"
+                                        SelectedItem="{Binding Job}" Width="160">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate DataType="entities:Job">
                                                 <TextBlock Text="{Binding NormalizedText}" />
@@ -91,11 +104,16 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
                                     <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-                                        <Button Name="DeleteButton" avalonia:Attached.Icon="fa-solid fa-trash" Foreground="#ec5a72" Click="DeleteButton_Click" />
-                                        <StackPanel Name="ConfirmDeletePanel" Orientation="Horizontal" IsVisible="False" Spacing="5">
+                                        <Button Name="DeleteButton" avalonia:Attached.Icon="fa-solid fa-trash"
+                                                Foreground="#ec5a72" Click="DeleteButton_Click" />
+                                        <StackPanel Name="ConfirmDeletePanel" Orientation="Horizontal"
+                                                    IsVisible="False" Spacing="5">
                                             <TextBlock Text="Are you sure?" VerticalAlignment="Center" />
-                                            <Button Name="YesButton" Content="Yes" Foreground="#ec5a72" Command="{Binding OnDeleteCommand}" Click="ConfirmDeleteButton_Click" />
-                                            <Button Name="NoButton" Content="No" Foreground="#30a96e" VerticalAlignment="Center" Click="CloseDeleteMenuButton_Click" />
+                                            <Button Name="YesButton" Content="Yes" Foreground="#ec5a72"
+                                                    Command="{Binding OnDeleteCommand}"
+                                                    Click="ConfirmDeleteButton_Click" />
+                                            <Button Name="NoButton" Content="No" Foreground="#30a96e"
+                                                    VerticalAlignment="Center" Click="CloseDeleteMenuButton_Click" />
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
