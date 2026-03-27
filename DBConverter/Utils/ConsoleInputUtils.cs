@@ -99,10 +99,10 @@ public static class ConsoleInputUtils
             inputString = Console.ReadLine();
         }
 
-        if (VerifyParse(inputString, parseVerificationType, out var parsedObject, out var succeededConstraint,
-                minValue, maxValue) == false) goto GoParseFailed;
+        if (!VerifyParse(inputString, parseVerificationType, out var parsedObject, out var succeededConstraint,
+                minValue, maxValue)) goto GoParseFailed;
 
-        if (succeededConstraint == false)
+        if (!succeededConstraint)
         {
             Console.WriteLine("The constraint was not respected, please try again with other values.");
             goto GoInputString;
@@ -130,7 +130,7 @@ public static class ConsoleInputUtils
             inputString = Console.ReadLine();
         }
 
-        if (Enum.TryParse(inputString, out T value) == false || Enum.IsDefined(value) == false)
+        if (!Enum.TryParse(inputString, out T value) || !Enum.IsDefined(value))
             goto GoParseFailed;
 
         return value;
@@ -181,7 +181,7 @@ public static class ConsoleInputUtils
         }
 
         // Returns true if it's not a number, and indeed not a string or file path.
-        if (parseVerification.HasAnyFlag(EParseVerificationScheme.NumberTypes) == false) return true;
+        if (!parseVerification.HasAnyFlag(EParseVerificationScheme.NumberTypes)) return true;
 
         if (!T.TryParse(input, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var parsedValue))
             return false;

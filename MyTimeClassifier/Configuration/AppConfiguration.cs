@@ -10,7 +10,7 @@ namespace MyTimeClassifier.Configuration;
 
 public static class AppConfiguration
 {
-    [field: MaybeNull]
+    [field: MaybeNull, AllowNull]
     public static Database.Entities.Configuration StaticCache
         => field ??= LoadConfiguration();
 

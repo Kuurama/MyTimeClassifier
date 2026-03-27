@@ -16,32 +16,80 @@ namespace MyTimeClassifier.Database.Entities;
 
 public class Job : INotifyPropertyChanged
 {
-    private const uint MaxEmojiLength = 63;
-    private const uint MaxTextLength = 48;
+    private const uint MaxEmojiLenght = 63;
+    private const uint MaxTextLenght = 48;
+    private IBrush _contentColor = new SolidColorBrush(Color.Parse("#FAFAFA"));
+    private string _emoji = "fa-question";
+    private bool _enabled = true;
+    private IBrush _fillColor = new SolidColorBrush(Color.Parse("#191E27"));
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    private Guid _id;
+    private bool _isRadial = true;
+    private uint _priority;
+    private IBrush _strokeColor = new SolidColorBrush(Color.Parse("#151A23"));
+    private string _text = "Unknown";
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// Constructor used by Entity Framework.
+    /// </summary>
     public Job() => OnDeleteCommand = GetDeleteCommand();
+
+    public Job(uint priority)
+    {
+        _priority = priority;
+        OnDeleteCommand = GetDeleteCommand();
+    }
+
+    public Job(string? text, string? emoji, IBrush? fillColor, IBrush? strokeColor, IBrush? contentColor,
+               uint priority, bool isRadial, bool enabled = true)
+    {
+        _text = text ?? "Unknown";
+        _emoji = emoji ?? "fa-question";
+        _fillColor = fillColor ?? new SolidColorBrush(Color.Parse("#191E27"));
+        _strokeColor = strokeColor ?? new SolidColorBrush(Color.Parse("#151A23"));
+        _contentColor = contentColor ?? new SolidColorBrush(Color.Parse("#FAFAFA"));
+        _priority = priority;
+        _isRadial = isRadial;
+        _enabled = enabled;
+
+        OnDeleteCommand = GetDeleteCommand();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
 
     [Key]
-    public Guid Id { get; set => SetField(ref field, value); }
+    public Guid Id { get => _id; set => SetField(ref _id, value); }
 
-    public IBrush StrokeColor { get; set => SetField(ref field, value); }
-        = new SolidColorBrush(Color.Parse("#151A23"));
+    public IBrush StrokeColor { get => _strokeColor; set => SetField(ref _strokeColor, value); }
 
-    public IBrush FillColor { get; set => SetField(ref field, value); }
-        = new SolidColorBrush(Color.Parse("#191E27"));
+    public IBrush FillColor { get => _fillColor; set => SetField(ref _fillColor, value); }
 
-    public IBrush ContentColor { get; set => SetField(ref field, value); }
-        = new SolidColorBrush(Color.Parse("#FAFAFA"));
+    public IBrush ContentColor { get => _contentColor; set => SetField(ref _contentColor, value); }
 
-    public uint Priority { get; set => SetField(ref field, value); }
+    public uint Priority
+    {
+        get => _priority;
+        set
+        {
+            SetField(ref _priority, value);
+            AppConfiguration.StaticCache.TriggerReRender();
+        }
+    }
 
     public bool IsRadial
     {
-        get;
+        get => _isRadial;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _isRadial, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
     }
@@ -49,33 +97,33 @@ public class Job : INotifyPropertyChanged
     [NotMapped]
     public uint PriorityWithReordering
     {
-        get => Priority;
+        get => _priority;
         set
         {
-            var oldPriority = Priority;
-            Priority = value;
-            AppConfiguration.StaticCache.ReOrderJobs((JobID: Id, NewValue: value, OldValue: oldPriority));
+            var oldPriority = _priority;
+            SetField(ref _priority, value);
+            AppConfiguration.StaticCache.ReOrderJobs((JobID: Id, NewValue: _priority, OldValue: oldPriority));
             AppConfiguration.StaticCache.TriggerReRender();
         }
     }
 
     public bool Enabled
     {
-        get;
+        get => _enabled;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _enabled, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    } = true;
+    }
 
     [NotMapped]
     public Color FillColorAsColor
     {
-        get => FillColor is SolidColorBrush brush ? brush.Color : Colors.Black;
+        get => _fillColor is SolidColorBrush brush ? brush.Color : Colors.Black;
         set
         {
-            if (FillColor is not SolidColorBrush brush)
+            if (_fillColor is not SolidColorBrush brush)
                 return;
 
             brush.Color = value;
@@ -86,10 +134,10 @@ public class Job : INotifyPropertyChanged
     [NotMapped]
     public Color StrokeColorAsColor
     {
-        get => StrokeColor is SolidColorBrush brush ? brush.Color : Colors.White;
+        get => _strokeColor is SolidColorBrush brush ? brush.Color : Colors.White;
         set
         {
-            if (StrokeColor is not SolidColorBrush brush)
+            if (_strokeColor is not SolidColorBrush brush)
                 return;
 
             brush.Color = value;
@@ -100,10 +148,10 @@ public class Job : INotifyPropertyChanged
     [NotMapped]
     public Color ContentColorAsColor
     {
-        get => ContentColor is SolidColorBrush brush ? brush.Color : Colors.White;
+        get => _contentColor is SolidColorBrush brush ? brush.Color : Colors.White;
         set
         {
-            if (ContentColor is not SolidColorBrush brush)
+            if (_contentColor is not SolidColorBrush brush)
                 return;
 
             brush.Color = value;
@@ -111,30 +159,30 @@ public class Job : INotifyPropertyChanged
         }
     }
 
-    [MaxLength((int)MaxTextLength)]
+    [MaxLength((int)MaxTextLenght)]
     public string Text
     {
-        get;
+        get => _text;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _text, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    } = "Unknown";
+    }
 
     [NotMapped]
     public string NormalizedText => Text.Replace("\\n", " ");
 
-    [MaxLength((int)MaxEmojiLength)]
+    [MaxLength((int)MaxEmojiLenght)]
     public string Emoji
     {
-        get;
+        get => _emoji;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _emoji, value);
             AppConfiguration.StaticCache.TriggerReRender();
         }
-    } = "fa-question";
+    }
 
     [NotMapped]
     public ICommand OnDeleteCommand { get; init; }

@@ -12,20 +12,41 @@ namespace MyTimeClassifier.Database.Entities;
 [PrimaryKey(nameof(Id), nameof(JobID))]
 public class Task : INotifyPropertyChanged
 {
+    private uint _id;
+    private Guid _jobID;
+
+    /* uint32 is fine because it's enough for use until 2106 */
+    private uint _unixEndTime;
+    private uint _unixStartTime;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     /// <summary>
     /// Constructor used by Entity Framework.
     /// </summary>
     public Task() { }
 
+    public Task(uint id, Guid jobID, uint unixStartTime, uint unixEndTime)
+    {
+        _id = id;
+        _jobID = jobID;
+        _unixStartTime = unixStartTime;
+        _unixEndTime = unixEndTime;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     [Key]
-    public uint Id { get; set => SetField(ref field, value); }
+    public uint Id { get => _id; set => SetField(ref _id, value); }
 
     [ForeignKey(nameof(Job.Id))]
-    public Guid JobID { get; set => SetField(ref field, value); }
+    public Guid JobID { get => _jobID; set => SetField(ref _jobID, value); }
 
     public uint UnixStartTime
     {
-        get;
+        get => _unixStartTime;
         set
         {
             /* Throw if the value is higher than the end time */
@@ -33,14 +54,14 @@ public class Task : INotifyPropertyChanged
                 throw new ArgumentOutOfRangeException(nameof(UnixStartTime),
                     "The start time cannot be higher than the end time.");
 
-            SetField(ref field, value);
+            SetField(ref _unixStartTime, value);
         }
     }
 
     /* uint32 is fine because it's enough for use until 2106 */
     public uint UnixEndTime
     {
-        get;
+        get => _unixEndTime;
         set
         {
             /* Throw if the value is lower than the start time */
@@ -48,7 +69,7 @@ public class Task : INotifyPropertyChanged
                 throw new ArgumentOutOfRangeException(nameof(UnixEndTime),
                     "The end time cannot be lower than the start time.");
 
-            SetField(ref field, value);
+            SetField(ref _unixEndTime, value);
         }
     }
 

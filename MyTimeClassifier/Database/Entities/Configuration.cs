@@ -17,24 +17,93 @@ public sealed class Configuration : INotifyPropertyChanged
 {
     private const uint MaxProgramNameLength = 63;
 
+    private float _globalScale;
+
+    private uint _id;
+    private float _innerRadiusRatio;
+    private bool _isMinimalistic;
+    private ObservableCollection<Job> _jobs = new();
+
+
+    private string _programName = string.Empty;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    private float _radialContentScale;
+    private uint _radialSelectorRadius;
+
     /// <summary>
     /// A property that is sole purpose is to be bound and act as a trigger for re-rendering the UI.
     /// </summary>
     [NotMapped]
     private byte _reRenderProp;
 
+    private uint _spacingAngle;
+    private float _timerScale;
+    private float _titleBarScale;
+
+    private bool _useLightTheme;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// Constructor used by Entity Framework.
+    /// </summary>
+    public Configuration() { }
+
+    public Configuration(
+        uint id, string programName, uint radialSelectorRadius, float innerRadiusRatio, bool useLightTheme,
+        bool isMinimalistic, uint spacingAngle, float radialContentScale, float globalScale, float timerScale,
+        float titleBarScale, ObservableCollection<Job> jobs)
+    {
+        _id = id;
+        _programName = programName;
+        _radialSelectorRadius = radialSelectorRadius;
+        _innerRadiusRatio = innerRadiusRatio;
+        _useLightTheme = useLightTheme;
+        _isMinimalistic = isMinimalistic;
+        _spacingAngle = spacingAngle;
+        _radialContentScale = radialContentScale;
+        _globalScale = globalScale;
+        _timerScale = timerScale;
+        _titleBarScale = titleBarScale;
+        _jobs = jobs;
+    }
+
+    public Configuration(Configuration configuration, bool referenceJobs)
+    {
+        _id = configuration.Id;
+        _programName = configuration.ProgramName;
+        _radialSelectorRadius = configuration.RadialSelectorRadius;
+        _innerRadiusRatio = configuration.InnerRadiusRatio;
+        _useLightTheme = configuration.UseLightTheme;
+        _isMinimalistic = configuration.IsMinimalistic;
+        _spacingAngle = configuration.SpacingAngle;
+        _radialContentScale = configuration.RadialContentScale;
+        _globalScale = configuration.GlobalScale;
+        _timerScale = configuration.TimerScale;
+        _titleBarScale = configuration.TitleBarScale;
+        if (referenceJobs)
+            _jobs = configuration.Jobs;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     [Key]
-    public uint Id { get; set => SetField(ref field, value); }
+    public uint Id { get => _id; set => SetField(ref _id, value); }
 
     [MaxLength((int)MaxProgramNameLength)]
-    public required string ProgramName { get; set => SetField(ref field, value); } = string.Empty;
+    public string ProgramName { get => _programName; set => SetField(ref _programName, value); }
 
-    public required bool UseLightTheme
+    public bool UseLightTheme
     {
-        get;
+        get => _useLightTheme;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _useLightTheme, value);
 
             try
             {
@@ -49,38 +118,45 @@ public sealed class Configuration : INotifyPropertyChanged
         }
     }
 
-    public required ObservableCollection<Job> Jobs
+    public ObservableCollection<Job> Jobs
     {
-        get;
+        get => _jobs;
         set
         {
-            SetField(ref field, value);
+            SetField(ref _jobs, value);
             OnPropertyChanged(nameof(Priorities));
         }
     }
 
-    public required float RadialContentScale { get; set => SetField(ref field, value); }
+    public float RadialContentScale { get => _radialContentScale; set => SetField(ref _radialContentScale, value); }
 
-    public required float GlobalScale { get; set => SetField(ref field, value); }
+    public float GlobalScale { get => _globalScale; set => SetField(ref _globalScale, value); }
 
-    public required bool IsMinimalistic { get; set => SetField(ref field, value); }
+    public bool IsMinimalistic { get => _isMinimalistic; set => SetField(ref _isMinimalistic, value); }
 
-    public required float InnerRadiusRatio { get; set => SetField(ref field, value); }
+    public float InnerRadiusRatio { get => _innerRadiusRatio; set => SetField(ref _innerRadiusRatio, value); }
 
-    public required uint RadialSelectorRadius { get; set => SetField(ref field, value); }
+    public uint RadialSelectorRadius
+    {
+        get => _radialSelectorRadius;
+        set => SetField(ref _radialSelectorRadius, value);
+    }
 
-    public required uint SpacingAngle { get; set => SetField(ref field, value); }
+    public uint SpacingAngle { get => _spacingAngle; set => SetField(ref _spacingAngle, value); }
 
-    public required float TimerScale { get; set => SetField(ref field, value); }
+    public float TimerScale { get => _timerScale; set => SetField(ref _timerScale, value); }
 
-    public required float TitleBarScale { get; set => SetField(ref field, value); }
+    public float TitleBarScale { get => _titleBarScale; set => SetField(ref _titleBarScale, value); }
 
     /// <inheritdoc cref="_reRenderProp" />
     [NotMapped]
     public byte ReRenderProp { get => _reRenderProp; set => SetField(ref _reRenderProp, value); }
 
     [NotMapped]
-    public uint[] Priorities => Jobs.Select(x => x.Priority).ToArray();
+    public uint[] Priorities => _jobs.Select(x => x.Priority).ToArray();
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -106,12 +182,12 @@ public sealed class Configuration : INotifyPropertyChanged
 
     public void ReOrderJobs((Guid JobID, uint NewValue, uint OldValue) jobChange)
     {
-        Job[]? jobs;
+        Job[]? newJobsOrdering;
 
         if (jobChange.NewValue != jobChange.OldValue)
         {
             /* Find the jobs in between the new and old priority */
-            jobs = Jobs.Where(x =>
+            newJobsOrdering = Jobs.Where(x =>
                     x.Priority >= Math.Min(jobChange.OldValue, jobChange.NewValue)
                     && x.Priority <= Math.Max(jobChange.OldValue, jobChange.NewValue)
                     && x.Id != jobChange.JobID)
@@ -119,16 +195,16 @@ public sealed class Configuration : INotifyPropertyChanged
                 .ToArray();
 
             /* Move the jobs in between down */
-            foreach (var job in jobs)
+            foreach (var job in newJobsOrdering)
                 job.Priority = jobChange.NewValue > jobChange.OldValue
                     ? job.Priority - 1
                     : job.Priority + 1;
         }
 
         /* Reorder the jobs */
-        jobs = Jobs.OrderBy(x => x.Priority).ToArray();
+        newJobsOrdering = Jobs.OrderBy(x => x.Priority).ToArray();
 
-        for (var i = 0; i < jobs.Length; i++)
-            Jobs.Move(Jobs.IndexOf(jobs[i]), i);
+        for (var i = 0; i < newJobsOrdering.Length; i++)
+            _jobs.Move(_jobs.IndexOf(newJobsOrdering[i]), i);
     }
 }

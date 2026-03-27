@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Avalonia;
-using Avalonia.ReactiveUI;
 using MyTimeClassifier.Database;
 using MyTimeClassifier.UI;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
+using ReactiveUI.Avalonia;
 
 namespace MyTimeClassifier;
 
@@ -42,6 +42,6 @@ internal sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI(config => config.BuildApp());
     }
 }
